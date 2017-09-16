@@ -7,9 +7,9 @@ import android.content.SharedPreferences
  * Created by wuruoye on 2017/9/15.
  * this file is to do
  */
-class BaseCache {
+open class BaseCache(context: Context) {
 
-    fun BaseCache(context: Context){
+    init {
         if (mSP == null){
             synchronized(this, {
                 if (mSP == null){

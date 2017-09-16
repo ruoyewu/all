@@ -3,4 +3,16 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+
+    <color name="romance">#FDFDFC</color>
+    <color name="onyx">#0D0F0D</color>
+    <color name="cape_cod">#515151</color>
+    <color name="monsoon">#787878</color>
+    <color name="white">#EFEDED</color>
+    <color name="mercury">#E7E5E5</color>
+    <color name="chicago">#5E5E5D</color>
+    <color name="mountain_mist">#959595</color>
+    <color name="platinum">#E3E3E3</color>
+    <color name="seashell">#F1F1F1</color>
 </resources>
