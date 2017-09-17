@@ -1,9 +1,11 @@
 package com.wuruoye.all2.v3
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import com.wuruoye.all2.R
 import com.wuruoye.all2.base.BaseActivity
@@ -52,9 +54,54 @@ class ArticleDetailActivity : BaseActivity() {
     }
 
     override fun initView() {
-        srl_article.setOnRefreshListener { requestArticle(METHOD_NET) }
+        srl_article.setOnRefreshListener {
+            if (item.content.size == 0) {
+                requestArticle(METHOD_NET)
+            }
+        }
 
-        requestArticle(METHOD_LOCAL)
+        if (item.content.size > 0){
+            setData()
+        }else {
+            requestArticle(METHOD_LOCAL)
+        }
+    }
+
+    private fun setData(){
+        tv_article_title.text = item.title
+
+        if (item.author == ""){
+            tv_article_author.visibility = View.GONE
+        }else{
+            tv_article_author.text = item.author
+        }
+
+        if (item.forward == ""){
+            tv_article_forward.visibility = View.GONE
+        }else{
+            tv_article_forward.text = item.forward
+        }
+
+        if (item.age == ""){
+            if (item.date == ""){
+                if (item.time_millis == ""){
+                    tv_article_date.visibility = View.GONE
+                }else{
+                    val calendar = Calendar.getInstance()
+                    calendar.timeInMillis = item.time_millis.toLong()
+                    val date = calendar.get(Calendar.YEAR).toString() + "-" + (calendar.get(Calendar.MONTH) + 1) +
+                            "-" + calendar.get(Calendar.DAY_OF_MONTH) + " " + calendar.get(Calendar.HOUR) + ":" +
+                            calendar.get(Calendar.MINUTE)
+                    tv_article_date.text = date
+                }
+            }else{
+                tv_article_date.text = item.date.substring(0, 16)
+            }
+        }else{
+            tv_article_date.text = item.age
+        }
+
+        setContentList(item.content)
     }
 
     private fun requestArticle(method: Int){
@@ -66,6 +113,8 @@ class ArticleDetailActivity : BaseActivity() {
     }
 
     private fun setDetail(detail: ArticleDetail){
+        srl_article.isRefreshing = false
+
         if (detail.title == ""){
             tv_article_title.text = item.title
         }else{
@@ -120,6 +169,7 @@ class ArticleDetailActivity : BaseActivity() {
         setContentList(detail.content)
     }
 
+    @SuppressLint("InflateParams")
     private fun setContentList(content: ArrayList<Pair>){
         for (i in 0 until content.size){
             val pair = content[i]
@@ -141,6 +191,19 @@ class ArticleDetailActivity : BaseActivity() {
                             val view = LayoutInflater.from(this)
                                     .inflate(R.layout.view_txt_cen, null) as TextView
                             view.text = pair.info
+                            view
+                        }
+                        TYPE_H1 -> {
+                            val view = LayoutInflater.from(this)
+                                    .inflate(R.layout.view_h1, null) as TextView
+                            view.text = pair.info
+                            view
+                        }
+                        TYPE_QUOTE -> {
+                            val view = LayoutInflater.from(this)
+                                    .inflate(R.layout.view_quote, null) as LinearLayout
+                            val tv = view.findViewById<TextView>(R.id.tv_view_quote)
+                            tv.text = pair.info
                             view
                         }
                         else -> {
@@ -170,5 +233,6 @@ class ArticleDetailActivity : BaseActivity() {
         val TYPE_H2 = "5"
         val TYPE_LI = "6"
         val TYPE_TEXT_CEN = "7"
+        val TYPE_QUOTE = "8"
     }
 }

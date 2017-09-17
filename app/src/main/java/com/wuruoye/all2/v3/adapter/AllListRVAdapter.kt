@@ -13,6 +13,7 @@ import com.wuruoye.all2.v3.adapter.viewholder.RefreshViewHolder
 import com.wuruoye.all2.v3.model.AppList
 import com.wuruoye.all2.v3.model.ListItem
 import com.wuruoye.all2.base.util.extensions.loadImage
+import com.wuruoye.all2.base.util.extensions.loge
 import java.util.*
 
 /**
@@ -152,6 +153,16 @@ class AllListRVAdapter(
     fun changeData(data: AppList){
         this.data = data
         notifyDataSetChanged()
+    }
+
+    fun removeItem(position: Int){
+        data.list.removeAt(position)
+        notifyItemRemoved(position)
+    }
+
+    fun addItem(position: Int, item: ListItem){
+        data.list.add(position, item)
+        notifyItemInserted(position)
     }
 
     interface OnItemClickListener{

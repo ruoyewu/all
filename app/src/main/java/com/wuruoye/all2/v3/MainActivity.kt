@@ -42,6 +42,10 @@ class MainActivity : BaseActivity(){
             toast(message)
         }
 
+        override fun onLongClick(item: AppInfo) {
+            toast(item.name)
+        }
+
         override fun onItemClick(item: ListItem, name: String, category: String) {
             when (item.open_type){
                 TYPE_ARTICLE -> {

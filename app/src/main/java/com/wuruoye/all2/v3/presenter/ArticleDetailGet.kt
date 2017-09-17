@@ -41,7 +41,7 @@ class ArticleDetailGet(context: Context) : AbsPresenter<AbsView<ArticleDetail>>(
         if (method == Method.NET){
             NetUtil.get(getUrl(name, category, data), object : Listener<String>{
                 override fun onSuccess(model: String) {
-                    loge(model)
+//                    loge(model)
                     this@ArticleDetailGet.onSuccess(parseData(model))
                     appInfoCache.setArticleDetail(model, key)
                 }

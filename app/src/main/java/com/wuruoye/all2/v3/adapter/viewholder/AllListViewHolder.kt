@@ -23,7 +23,7 @@ class AllListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
     init {
         val layoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT,
                 RecyclerView.LayoutParams.WRAP_CONTENT)
-        layoutParams.setMargins(10, 10, 10, 10)
+//        layoutParams.setMargins(10, 10, 10, 10)
         itemView.layoutParams = layoutParams
     }
 }

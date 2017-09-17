@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="15dp"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <View
+        android:background="@color/mountain_mist"
+        android:layout_marginStart="10dp"
+        android:layout_width="6dp"
+        android:layout_height="match_parent"/>
+
+    <TextView
+        android:id="@+id/tv_view_quote"
+        android:paddingLeft="10dp"
+        android:gravity="center_vertical"
+        android:textColor="@color/mountain_mist"
+        android:textSize="15sp"
+        android:lineSpacingExtra="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>
