@@ -27,10 +27,22 @@ class AppInfoCache(context: Context) : BaseCache(context) {
         return getString(key, INFO_APP_DEFAULT)
     }
 
+    fun setArticleDetail(info: String, name: String){
+        val key = ARTICLE_DETAIL + name
+        setString(key, info)
+    }
+
+    fun getArticleDetail(name: String): String{
+        val key = ARTICLE_DETAIL + name
+        return getString(key, ARTICLE_DETAIL_DEFAULT)
+    }
+
     companion object {
         val INFO_LIST = "info_list"
         val INFO_LIST_DEFAULT = ""
         val INFO_APP = "info_app_"
         val INFO_APP_DEFAULT = ""
+        val ARTICLE_DETAIL = "article_detail_"
+        val ARTICLE_DETAIL_DEFAULT = ""
     }
 }

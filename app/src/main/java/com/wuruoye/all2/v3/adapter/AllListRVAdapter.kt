@@ -31,7 +31,7 @@ class AllListRVAdapter(
             onItemClickListener.loadMore(data.next, viewHolder.tv)
         }else{
             val item = data.list[position]
-            holder!!.itemView.setOnClickListener { onItemClickListener.onItemClick(item) }
+            holder!!.itemView.setOnClickListener { onItemClickListener.onItemClick(item, data.name, data.category) }
             if (item.category_id == "0"){
                 val viewHolder: OneHeadViewHolder = holder as OneHeadViewHolder
                 val date = item.date.substring(0, 10).split("-")
@@ -50,7 +50,7 @@ class AllListRVAdapter(
                         tvType.visibility = View.GONE
                     }else{
                         tvType.visibility = View.VISIBLE
-                        tvType.text = item.type
+                        tvType.text = "-- " + item.type + " --"
                     }
                     if (item.title == ""){
                         tvTitle.visibility = View.GONE
@@ -156,7 +156,7 @@ class AllListRVAdapter(
 
     interface OnItemClickListener{
         fun loadMore(next: String, tv: TextView)
-        fun onItemClick(item: ListItem)
+        fun onItemClick(item: ListItem, name: String, category: String)
     }
 
     companion object {

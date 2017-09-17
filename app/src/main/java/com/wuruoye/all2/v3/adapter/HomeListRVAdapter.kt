@@ -5,13 +5,11 @@ import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.ArrayMap
-import android.view.ContextMenu
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Button
 import android.widget.TextView
 import com.bumptech.glide.Glide
+import com.transitionseverywhere.*
 import com.wuruoye.all2.R
 import com.wuruoye.all2.base.presenter.AbsPresenter
 import com.wuruoye.all2.base.presenter.AbsView
@@ -29,13 +27,16 @@ import com.wuruoye.all2.v3.presenter.AppListGet
  */
 class HomeListRVAdapter(
         private val infoList: ArrayList<AppInfo>,
-        private val onItemClickListener: OnItemClickListener
+        private val onItemClickListener: OnItemClickListener,
+        private val isNetRefresh: Boolean
 ) : RecyclerView.Adapter<HomeListRVAdapter.ViewHolder>() {
 
     private lateinit var context: Context
+    private var isShowAll = false
 
     private val rlMaps = HashMap<String, RecyclerView>()
     private val dataMaps = HashMap<String, AppList>()
+    private val btnMaps = HashMap<String, Button>()
 
 
     private lateinit var appListGet: AppListGet
@@ -43,7 +44,7 @@ class HomeListRVAdapter(
         override fun setModel(model: AppList) {
             (context as Activity).runOnUiThread {
                 dataMaps.put(model.name, model)
-                setRecyclerView(model, false)
+                setRecyclerView(model)
             }
         }
 
@@ -59,8 +60,8 @@ class HomeListRVAdapter(
 
         }
 
-        override fun onItemClick(item: ListItem) {
-
+        override fun onItemClick(item: ListItem, name: String, category: String) {
+            onItemClickListener.onItemClick(item, name, category)
         }
 
     }
@@ -76,7 +77,12 @@ class HomeListRVAdapter(
                     .into(ivIcon)
             rlList.layoutManager = LinearLayoutManager(context)
             rlMaps.put(appInfo.name, rlList)
-            appListGet.requestData(appInfo.name, appInfo.category_name[0], "0", AbsPresenter.Method.LOCAL)
+            btnMaps.put(appInfo.name, btnMore)
+            if (!isNetRefresh) {
+                appListGet.requestData(appInfo.name, appInfo.category_name[0], "0", AbsPresenter.Method.LOCAL)
+            }else{
+                appListGet.requestData(appInfo.name, appInfo.category_name[0], "0", AbsPresenter.Method.NET)
+            }
         }
     }
 
@@ -92,20 +98,36 @@ class HomeListRVAdapter(
     }
 
     private fun showAll(name: String){
-        val rl = rlMaps[name]!!
-        val adapter = rl.adapter as AllListRVAdapter
-        adapter.changeData(dataMaps[name]!!)
+        if (rlMaps[name] != null && dataMaps[name] != null){
+            val set = TransitionSet()
+                    .addTransition(ChangeBounds())
+                    .addTransition(Fade())
+            isShowAll = !isShowAll
+            val newModel =
+                    if (isShowAll){
+                        set.addTransition(Slide(Gravity.BOTTOM))
+                        btnMaps[name]!!.text = "收起更多"
+                        dataMaps[name]!!
+                    }else{
+                        set.addTransition(Slide(Gravity.TOP))
+                        btnMaps[name]!!.text = "显示更多"
+                        val model = dataMaps[name]!!
+                        val arrayList = ArrayList<ListItem>()
+                        arrayList.add(model.list[0])
+                        AppList(model.name, model.category, model.next, arrayList)
+                    }
+            TransitionManager.beginDelayedTransition(rlMaps[name]!!, set)
+            val adapter = rlMaps[name]!!.adapter as AllListRVAdapter
+            adapter.changeData(newModel)
+        }else{
+            onItemClickListener.onError("请等待数据加载完成...")
+        }
     }
 
-    private fun setRecyclerView(model: AppList, isAll: Boolean){
-        val newModel =
-                if (!isAll){
-                    val arrayList = ArrayList<ListItem>()
-                    arrayList.add(model.list[0])
-                    AppList(model.name, model.category, model.next, arrayList)
-                }else{
-                    model
-                }
+    private fun setRecyclerView(model: AppList){
+        val arrayList = ArrayList<ListItem>()
+        arrayList.add(model.list[0])
+        val newModel = AppList(model.name, model.category, model.next, arrayList)
         val rl = rlMaps[model.name]
         val adapter = AllListRVAdapter(false, newModel, mListener)
         rl!!.adapter = adapter
@@ -129,5 +151,7 @@ class HomeListRVAdapter(
     interface OnItemClickListener{
         fun showMore(position: Int)
         fun enterApp(position: Int)
+        fun onItemClick(item: ListItem, name: String, category: String)
+        fun onError(message: String)
     }
 }

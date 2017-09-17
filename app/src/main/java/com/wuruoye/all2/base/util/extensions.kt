@@ -2,6 +2,7 @@ package com.wuruoye.all2.base.util
 
 import android.app.Activity
 import android.content.Context
+import android.util.Log
 import android.widget.ImageView
 import android.widget.Toast
 import com.bumptech.glide.Glide
@@ -20,5 +21,9 @@ object extensions {
         Glide.with(this)
                 .load(url)
                 .into(imageView)
+    }
+
+    fun loge(message: String){
+        Log.e("zhangqun", message)
     }
 }
