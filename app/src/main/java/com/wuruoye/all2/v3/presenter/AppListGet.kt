@@ -18,11 +18,11 @@ class AppListGet(context: Context) : AbsPresenter<AbsView<AppList>>(context), Li
     private val appInfoCache = AppInfoCache(context)
 
     override fun onSuccess(model: AppList) {
-        getView()!!.setModel(model)
+        getView()?.setModel(model)
     }
 
     override fun onFail(message: String) {
-        getView()!!.setWorn(message)
+        getView()?.setWorn(message)
     }
 
     override fun requestData(name: String, category: String, data: String, method: Method) {
@@ -39,7 +39,9 @@ class AppListGet(context: Context) : AbsPresenter<AbsView<AppList>>(context), Li
             NetUtil.get(getUrl(name, category, data), object : Listener<String>{
                 override fun onSuccess(model: String) {
                     this@AppListGet.onSuccess(parseData(model))
-                    appInfoCache.setAppInfo(model, key)
+                    if (data == "0") {
+                        appInfoCache.setAppInfo(model, key)
+                    }
                 }
 
                 override fun onFail(message: String) {

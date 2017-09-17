@@ -34,16 +34,21 @@ class MainActivity : BaseActivity(){
             toast("show more")
         }
 
-        override fun enterApp(position: Int) {
-            toast("click " + position)
+        override fun enterApp(item: AppInfo) {
+            val bundle = Bundle()
+            bundle.putParcelable("info", item)
+            val intent = Intent(this@MainActivity, AppInfoActivity::class.java)
+            intent.putExtras(bundle)
+            startActivity(intent)
         }
 
         override fun onError(message: String) {
             toast(message)
         }
 
-        override fun onLongClick(item: AppInfo) {
+        override fun onLongClick(item: AppInfo): Boolean{
             toast(item.name)
+            return true
         }
 
         override fun onItemClick(item: ListItem, name: String, category: String) {

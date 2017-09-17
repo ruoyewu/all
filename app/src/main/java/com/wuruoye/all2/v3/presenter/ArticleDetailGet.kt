@@ -19,11 +19,11 @@ class ArticleDetailGet(context: Context) : AbsPresenter<AbsView<ArticleDetail>>(
     private val appInfoCache = AppInfoCache(context)
 
     override fun onSuccess(model: ArticleDetail) {
-        getView()!!.setModel(model)
+        getView()?.setModel(model)
     }
 
     override fun onFail(message: String) {
-        getView()!!.setWorn(message)
+        getView()?.setWorn(message)
     }
 
     override fun requestData(name: String, category: String, data: String, method: Method) {

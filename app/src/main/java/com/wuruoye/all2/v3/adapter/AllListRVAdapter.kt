@@ -1,6 +1,7 @@
 package com.wuruoye.all2.v3.adapter
 
 import android.annotation.SuppressLint
+import android.os.Handler
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,7 @@ import com.wuruoye.all2.v3.model.ListItem
 import com.wuruoye.all2.base.util.extensions.loadImage
 import com.wuruoye.all2.base.util.extensions.loge
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Created by wuruoye on 2017/9/16.
@@ -165,6 +167,19 @@ class AllListRVAdapter(
         notifyItemInserted(position)
     }
 
+    fun addItems(list: ArrayList<ListItem>){
+//        for (i in 0 until list.size){
+//            val item = list[i]
+//            val delay = i * ANIMATOR_DELAY
+//            Handler().postDelayed({
+//                addItem(data.list.size, item)
+//                notifyItemInserted(data.list.size)
+//            }, delay.toLong())
+//        }
+        data.list.addAll(list)
+        notifyDataSetChanged()
+    }
+
     interface OnItemClickListener{
         fun loadMore(next: String, tv: TextView)
         fun onItemClick(item: ListItem, name: String, category: String)
@@ -174,5 +189,7 @@ class AllListRVAdapter(
         val TYPE_NORMAL = 1
         val TYPE_REFRESH = 2
         val TYPE_ONE_HEAD = 3
+
+        val ANIMATOR_DELAY = 50
     }
 }

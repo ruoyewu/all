@@ -19,11 +19,11 @@ class AppInfoListGet(context: Context) : AbsPresenter<AbsView<ArrayList<AppInfo>
     private val appInfoCache = AppInfoCache(context)
 
     override fun onSuccess(model: ArrayList<AppInfo>) {
-        getView()!!.setModel(model)
+        getView()?.setModel(model)
     }
 
     override fun onFail(message: String) {
-        getView()!!.setWorn(message)
+        getView()?.setWorn(message)
     }
 
     override fun requestData(name: String, category: String, data: String, method: Method) {

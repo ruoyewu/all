@@ -60,11 +60,17 @@ class ArticleDetailActivity : BaseActivity() {
             }
         }
 
+        tv_article_original.setOnClickListener { openOriginal() }
+
         if (item.content.size > 0){
             setData()
         }else {
             requestArticle(METHOD_LOCAL)
         }
+    }
+
+    private fun openOriginal(){
+        toast(item.original_url)
     }
 
     private fun setData(){
@@ -99,6 +105,10 @@ class ArticleDetailActivity : BaseActivity() {
             }
         }else{
             tv_article_date.text = item.age
+        }
+
+        if (item.original_url != ""){
+            tv_article_original.visibility = View.VISIBLE
         }
 
         setContentList(item.content)
@@ -164,6 +174,10 @@ class ArticleDetailActivity : BaseActivity() {
             }
         }else{
             tv_article_date.text = detail.date
+        }
+
+        if (item.original_url != ""){
+            tv_article_original.visibility = View.VISIBLE
         }
 
         setContentList(detail.content)

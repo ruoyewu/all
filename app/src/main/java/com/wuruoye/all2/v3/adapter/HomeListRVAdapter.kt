@@ -71,8 +71,8 @@ class HomeListRVAdapter(
         val appInfo = infoList[position]
         with(holder!!){
             tvTitle.text = appInfo.title
-            itemView.setOnClickListener { onItemClickListener.onLongClick(appInfo) }
-            btnEnter.setOnClickListener { onItemClickListener.enterApp(position) }
+            itemView.setOnLongClickListener { onItemClickListener.onLongClick(appInfo) }
+            btnEnter.setOnClickListener { onItemClickListener.enterApp(appInfo) }
             btnMore.setOnClickListener { showAll(appInfo.name) }
             Glide.with(context)
                     .load(appInfo.icon)
@@ -160,10 +160,10 @@ class HomeListRVAdapter(
 
     interface OnItemClickListener{
         fun showMore(position: Int)
-        fun enterApp(position: Int)
+        fun enterApp(item: AppInfo)
         fun onItemClick(item: ListItem, name: String, category: String)
         fun onError(message: String)
-        fun onLongClick(item: AppInfo)
+        fun onLongClick(item: AppInfo): Boolean
     }
 
     companion object {
