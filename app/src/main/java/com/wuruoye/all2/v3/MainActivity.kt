@@ -106,7 +106,7 @@ class MainActivity : BaseActivity(){
     private fun setRecyclerView(list: ArrayList<AppInfo>, isNet: Boolean){
         isNetRefresh = false
         srl_main.isRefreshing = false
-        val adapter = HomeListRVAdapter(list, onItemClickListener, isNet)
+        val adapter = HomeListRVAdapter(list, onItemClickListener, isNet, rl_main)
         rl_main.layoutManager = LinearLayoutManager(this)
         rl_main.adapter = adapter
     }

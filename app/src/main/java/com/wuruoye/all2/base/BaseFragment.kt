@@ -22,8 +22,8 @@ abstract class BaseFragment : Fragment() {
         return view
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         initView(view!!)
     }
 }

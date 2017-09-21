@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="15dp"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <View
+        android:background="@drawable/li_head"
+        android:layout_width="10dp"
+        android:layout_height="10dp"/>
+
+    <TextView
+        android:id="@+id/tv_view_li"
+        android:textSize="14sp"
+        android:textColor="@color/mountain_mist"
+        android:textIsSelectable="true"
+        android:lineSpacingExtra="15sp"
+        android:paddingLeft="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>

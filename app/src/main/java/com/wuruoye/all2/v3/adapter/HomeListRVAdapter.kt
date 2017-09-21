@@ -12,9 +12,15 @@ import android.view.animation.OvershootInterpolator
 import android.widget.Button
 import android.widget.TextView
 import com.bumptech.glide.Glide
+import com.transitionseverywhere.ChangeBounds
+import com.transitionseverywhere.Fade
+import com.transitionseverywhere.TransitionManager
+import com.transitionseverywhere.TransitionSet
+import com.transitionseverywhere.extra.Scale
 import com.wuruoye.all2.R
 import com.wuruoye.all2.base.presenter.AbsPresenter
 import com.wuruoye.all2.base.presenter.AbsView
+import com.wuruoye.all2.base.util.extensions.loge
 import com.wuruoye.all2.base.util.extensions.toast
 import com.wuruoye.all2.v3.model.AppInfo
 import com.wuruoye.all2.v3.model.AppList
@@ -30,7 +36,8 @@ import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator
 class HomeListRVAdapter(
         private val infoList: ArrayList<AppInfo>,
         private val onItemClickListener: OnItemClickListener,
-        private val isNetRefresh: Boolean
+        private val isNetRefresh: Boolean,
+        private val rlMain: RecyclerView
 ) : RecyclerView.Adapter<HomeListRVAdapter.ViewHolder>() {
 
     private lateinit var context: Context
@@ -78,8 +85,6 @@ class HomeListRVAdapter(
                     .load(appInfo.icon)
                     .into(ivIcon)
             rlList.layoutManager = LinearLayoutManager(context)
-            rlList.itemAnimator = FadeInLeftAnimator(OvershootInterpolator(1f))
-//            rlList.itemAnimator = DefaultItemAnimator()
             val itemAnimator = FadeInLeftAnimator(OvershootInterpolator(1f))
             itemAnimator.addDuration = ANIMATOR_DURATION
             itemAnimator.removeDuration = ANIMATOR_DURATION
@@ -103,13 +108,14 @@ class HomeListRVAdapter(
         context = parent.context
         appListGet = AppListGet(context)
         appListGet.attachView(mView)
+
         return ViewHolder(view)
     }
 
     private fun showAll(name: String){
         if (rlMaps[name] != null && dataMaps[name] != null && isShowAll[name] != null){
             isShowAll[name] = !isShowAll[name]!!
-            rlMaps[name]!!.requestFocus()
+//            rlMaps[name]!!.requestFocus()
             val adapter = rlMaps[name]!!.adapter as AllListRVAdapter
             if (isShowAll[name]!!){
                 btnMaps[name]!!.text = "收起更多"
@@ -121,12 +127,21 @@ class HomeListRVAdapter(
                 }
             }else{
                 btnMaps[name]!!.text = "显示更多"
+//                val set = TransitionSet()
+//                        .addTransition(ChangeBounds())
+//                        .addTransition(Scale())
+//                        .addTransition(Fade())
+//                TransitionManager.beginDelayedTransition(rlMaps[name]!!, set)
+//                val dataList = dataMaps[name]!!
+//                val appList = AppList(dataList.name, dataList.category, dataList.next, arrayListOf(dataList.list[0]))
+//                adapter.changeData(appList)
+//                rlMain.smoothScrollToPosition(getPosition(name))
                 for (i in dataMaps[name]!!.list.size - 1 downTo 1){
-                    val delay = (dataMaps[name]!!.list.size - 1 - i) * ANIMATOR_DELAY
-                    Handler().postDelayed({
-                        adapter.removeItem(i)
-                    }, 0)
+                    adapter.removeItem(i)
                 }
+                Handler().postDelayed({
+                    rlMain.smoothScrollToPosition(getPosition(name))
+                }, 20)
             }
         }else{
             onItemClickListener.onError("请等待数据加载完成...")
@@ -141,6 +156,12 @@ class HomeListRVAdapter(
         val rl = rlMaps[model.name]
         val adapter = AllListRVAdapter(false, newModel, mListener)
         rl!!.adapter = adapter
+    }
+
+    private fun getPosition(name: String): Int{
+        return (0 until infoList.size)
+                .firstOrNull { name == infoList[it].name }
+                ?: infoList.size - 1
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {

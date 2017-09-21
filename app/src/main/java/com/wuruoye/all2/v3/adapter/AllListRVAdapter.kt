@@ -72,6 +72,12 @@ class AllListRVAdapter(
                     }else{
                         ivImg.visibility = View.VISIBLE
                         itemView.context.loadImage(item.image, ivImg)
+                        ivImg.post {
+                            val width = ivImg.measuredWidth
+                            val layoutParams = ivImg.layoutParams
+                            layoutParams.height = width * 3 / 5
+                            ivImg.layoutParams = layoutParams
+                        }
                     }
                     if (item.forward == ""){
                         tvForward.visibility = View.GONE
@@ -168,14 +174,6 @@ class AllListRVAdapter(
     }
 
     fun addItems(list: ArrayList<ListItem>){
-//        for (i in 0 until list.size){
-//            val item = list[i]
-//            val delay = i * ANIMATOR_DELAY
-//            Handler().postDelayed({
-//                addItem(data.list.size, item)
-//                notifyItemInserted(data.list.size)
-//            }, delay.toLong())
-//        }
         data.list.addAll(list)
         notifyDataSetChanged()
     }

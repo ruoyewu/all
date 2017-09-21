@@ -213,6 +213,25 @@ class ArticleDetailActivity : BaseActivity() {
                             view.text = pair.info
                             view
                         }
+                        TYPE_H2 -> {
+                            val view = LayoutInflater.from(this)
+                                    .inflate(R.layout.view_h2, null) as TextView
+                            view.text = pair.info
+                            view
+                        }
+                        TYPE_H3 -> {
+                            val view = LayoutInflater.from(this)
+                                    .inflate(R.layout.view_h3, null) as TextView
+                            view.text = pair.info
+                            view
+                        }
+                        TYPE_LI -> {
+                            val view = LayoutInflater.from(this)
+                                    .inflate(R.layout.view_li, null) as LinearLayout
+                            val tv = view.findViewById<TextView>(R.id.tv_view_li)
+                            tv.text = pair.info
+                            view
+                        }
                         TYPE_QUOTE -> {
                             val view = LayoutInflater.from(this)
                                     .inflate(R.layout.view_quote, null) as LinearLayout
@@ -248,5 +267,6 @@ class ArticleDetailActivity : BaseActivity() {
         val TYPE_LI = "6"
         val TYPE_TEXT_CEN = "7"
         val TYPE_QUOTE = "8"
+        val TYPE_H3 = "9"
     }
 }

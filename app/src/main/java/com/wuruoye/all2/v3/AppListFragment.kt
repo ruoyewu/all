@@ -10,6 +10,7 @@ import com.wuruoye.all2.R
 import com.wuruoye.all2.base.BaseFragment
 import com.wuruoye.all2.base.presenter.AbsPresenter
 import com.wuruoye.all2.base.presenter.AbsView
+import com.wuruoye.all2.base.util.extensions.loge
 import com.wuruoye.all2.v3.model.AppList
 import com.wuruoye.all2.v3.presenter.AppListGet
 
@@ -131,8 +132,17 @@ class AppListFragment : BaseFragment() {
 
     private fun setMore(data: AppList){
         mNext = data.next
-        val adapter = rl_fragment_list.adapter as AllListRVAdapter
-        adapter.addItems(data.list)
+        try {
+            val adapter = rl_fragment_list.adapter as AllListRVAdapter
+            adapter.addItems(data.list)
+        } catch (e: Exception) {
+            loge("setMore: $mName : $mCategory : $mNext")
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        appListGet.detachView()
     }
 
     override fun onDestroy() {
