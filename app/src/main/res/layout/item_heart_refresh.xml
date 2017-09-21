@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/btn_border"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.wuruoye.all2.base.widget.HeartbeatView
+        android:id="@+id/hv_refresh"
+        android:layout_centerInParent="true"
+        android:layout_margin="10dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp" />
+
+    <TextView
+        android:id="@+id/tv_refresh"
+        android:visibility="gone"
+        android:text="没有更多数据了..."
+        android:textSize="13sp"
+        android:layout_centerInParent="true"
+        android:padding="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</RelativeLayout>

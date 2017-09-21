@@ -22,6 +22,7 @@ import com.wuruoye.all2.base.presenter.AbsPresenter
 import com.wuruoye.all2.base.presenter.AbsView
 import com.wuruoye.all2.base.util.extensions.loge
 import com.wuruoye.all2.base.util.extensions.toast
+import com.wuruoye.all2.v3.adapter.viewholder.HeartRefreshViewHolder
 import com.wuruoye.all2.v3.model.AppInfo
 import com.wuruoye.all2.v3.model.AppList
 import com.wuruoye.all2.v3.model.ListItem
@@ -64,7 +65,7 @@ class HomeListRVAdapter(
 
     }
     private val mListener = object : AllListRVAdapter.OnItemClickListener{
-        override fun loadMore(next: String, tv: TextView) {
+        override fun loadMore(next: String, vh: HeartRefreshViewHolder) {
 
         }
 

@@ -5,19 +5,18 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import android.view.animation.OvershootInterpolator
-import android.widget.TextView
 import com.wuruoye.all2.R
 import com.wuruoye.all2.base.BaseFragment
 import com.wuruoye.all2.base.presenter.AbsPresenter
 import com.wuruoye.all2.base.presenter.AbsView
 import com.wuruoye.all2.base.util.extensions.loge
-import com.wuruoye.all2.v3.model.AppList
-import com.wuruoye.all2.v3.presenter.AppListGet
-
 import com.wuruoye.all2.base.util.extensions.toast
 import com.wuruoye.all2.v3.adapter.AllListRVAdapter
 import com.wuruoye.all2.v3.adapter.HomeListRVAdapter
+import com.wuruoye.all2.v3.adapter.viewholder.HeartRefreshViewHolder
+import com.wuruoye.all2.v3.model.AppList
 import com.wuruoye.all2.v3.model.ListItem
+import com.wuruoye.all2.v3.presenter.AppListGet
 import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator
 import kotlinx.android.synthetic.main.fragment_list.*
 
@@ -31,6 +30,7 @@ class AppListFragment : BaseFragment() {
     private lateinit var mNext: String
 
     private var isLoadMore = false
+    private lateinit var refreshVH: HeartRefreshViewHolder
 
     private lateinit var appListGet: AppListGet
     private val mView = object : AbsView<AppList>{
@@ -51,7 +51,8 @@ class AppListFragment : BaseFragment() {
         }
     }
     private val onItemClickListener = object : AllListRVAdapter.OnItemClickListener{
-        override fun loadMore(next: String, tv: TextView) {
+        override fun loadMore(next: String, vh: HeartRefreshViewHolder) {
+            this@AppListFragment.refreshVH = vh
             isLoadMore = true
             requestData(METHOD_NET)
         }
@@ -131,12 +132,17 @@ class AppListFragment : BaseFragment() {
     }
 
     private fun setMore(data: AppList){
-        mNext = data.next
-        try {
-            val adapter = rl_fragment_list.adapter as AllListRVAdapter
-            adapter.addItems(data.list)
-        } catch (e: Exception) {
-            loge("setMore: $mName : $mCategory : $mNext")
+        if (data.list.size > 0){
+            mNext = data.next
+            try {
+                val adapter = rl_fragment_list.adapter as AllListRVAdapter
+                adapter.addItems(data.list)
+            } catch (e: Exception) {
+                loge("setMore: $mName : $mCategory : $mNext")
+            }
+        }else{
+            refreshVH.hv.visibility = View.GONE
+            refreshVH.tv.visibility = View.VISIBLE
         }
     }
 

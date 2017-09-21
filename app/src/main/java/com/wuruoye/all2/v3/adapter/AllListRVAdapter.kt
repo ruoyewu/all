@@ -1,22 +1,18 @@
 package com.wuruoye.all2.v3.adapter
 
 import android.annotation.SuppressLint
-import android.os.Handler
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import com.wuruoye.all2.R
+import com.wuruoye.all2.base.util.extensions.loadImage
 import com.wuruoye.all2.v3.adapter.viewholder.AllListViewHolder
+import com.wuruoye.all2.v3.adapter.viewholder.HeartRefreshViewHolder
 import com.wuruoye.all2.v3.adapter.viewholder.OneHeadViewHolder
-import com.wuruoye.all2.v3.adapter.viewholder.RefreshViewHolder
 import com.wuruoye.all2.v3.model.AppList
 import com.wuruoye.all2.v3.model.ListItem
-import com.wuruoye.all2.base.util.extensions.loadImage
-import com.wuruoye.all2.base.util.extensions.loge
 import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * Created by wuruoye on 2017/9/16.
@@ -27,11 +23,12 @@ class AllListRVAdapter(
         private var data: AppList,
         private val onItemClickListener: AllListRVAdapter.OnItemClickListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
         if (position >= data.list.size && isShowMore){
-            val viewHolder: RefreshViewHolder = holder as RefreshViewHolder
-            onItemClickListener.loadMore(data.next, viewHolder.tv)
+            val viewHolder: HeartRefreshViewHolder = holder as HeartRefreshViewHolder
+            onItemClickListener.loadMore(data.next, viewHolder)
         }else{
             val item = data.list[position]
             holder!!.itemView.setOnClickListener { onItemClickListener.onItemClick(item, data.name, data.category) }
@@ -126,9 +123,9 @@ class AllListRVAdapter(
                     )
                 }
                 TYPE_REFRESH -> {
-                    RefreshViewHolder(
+                    HeartRefreshViewHolder(
                             LayoutInflater.from(parent!!.context)
-                                    .inflate(R.layout.item_all_refresh, null, false)
+                                    .inflate(R.layout.item_heart_refresh, null, false)
                     )
                 }
                 else -> {
@@ -179,7 +176,7 @@ class AllListRVAdapter(
     }
 
     interface OnItemClickListener{
-        fun loadMore(next: String, tv: TextView)
+        fun loadMore(next: String, vh: HeartRefreshViewHolder)
         fun onItemClick(item: ListItem, name: String, category: String)
     }
 
