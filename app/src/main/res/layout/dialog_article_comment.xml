@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:padding="10dp"
+    tools:ignore="NewApi"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tv_comment_dialog_user"
+        android:text="ruoye"
+        android:textSize="15sp"
+        android:textColor="@color/mountain_mist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/tv_comment_dialog_parent"
+        android:visibility="gone"
+        android:layout_margin="16dp"
+        android:background="@drawable/btn_border"
+        android:maxLines="2"
+        android:lineSpacingExtra="10sp"
+        android:textSize="15sp"
+        android:textColor="@color/monsoon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <android.support.design.widget.TextInputLayout
+        android:hint="写下你的评论..."
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/et_comment_dialog"
+            android:lineSpacingExtra="15sp"
+            android:minLines="2"
+            android:textSize="15sp"
+            android:padding="10dp"
+            android:background="@null"
+            android:textColor="@color/monsoon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/btn_comment_dialog_cancel"
+                android:text="取消"
+                android:textColor="@color/monsoon"
+                android:background="@drawable/btn_border"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                android:layout_marginRight="20dp"
+                android:layout_width="100dp"
+                android:layout_height="35dp"/>
+
+            <Button
+                android:id="@+id/btn_comment_dialog_publish"
+                android:text="发布"
+                android:textColor="@color/monsoon"
+                android:background="@drawable/btn_border"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                android:layout_marginLeft="20dp"
+                android:layout_width="100dp"
+                android:layout_height="35dp" />
+        </LinearLayout>
+    </RelativeLayout>
+</LinearLayout>

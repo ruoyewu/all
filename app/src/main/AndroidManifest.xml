@@ -19,7 +19,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".v3.ArticleDetailActivity"/>
+        <activity android:name=".v3.ArticleDetailActivity"
+            android:windowSoftInputMode="adjustNothing"/>
         <activity android:name=".v3.AppInfoActivity" />
     </application>
 

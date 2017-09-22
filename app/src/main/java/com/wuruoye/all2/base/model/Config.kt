@@ -1,5 +1,7 @@
 package com.wuruoye.all2.base.model
 
+import android.os.RemoteException
+
 /**
  * Created by wuruoye on 2017/9/15.
  * this file is to do
@@ -7,4 +9,7 @@ package com.wuruoye.all2.base.model
 object Config {
     val REMOTE_HOST = "http://139.199.153.45/"
     val APP_LIST_URL = "https://raw.githubusercontent.com/ruoyewu/repository/master/all/v3_all.json"
+
+    val COMMENT_GET_URL = REMOTE_HOST + "v3/comment/get?"
+    val COMMENT_PUT_URL = REMOTE_HOST + "v3/comment/add?"
 }

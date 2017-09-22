@@ -2,20 +2,28 @@ package com.wuruoye.all2.v3
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.os.Handler
+import android.support.v7.app.AlertDialog
+import android.support.v7.widget.LinearLayoutManager
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.transitionseverywhere.*
+import com.transitionseverywhere.extra.Scale
 import com.wuruoye.all2.R
 import com.wuruoye.all2.base.BaseActivity
 import com.wuruoye.all2.base.presenter.AbsPresenter
 import com.wuruoye.all2.base.presenter.AbsView
 import com.wuruoye.all2.base.util.extensions.loadImage
 import com.wuruoye.all2.base.util.extensions.toast
-import com.wuruoye.all2.v3.model.ArticleDetail
-import com.wuruoye.all2.v3.model.ListItem
-import com.wuruoye.all2.v3.model.Pair
+import com.wuruoye.all2.v3.adapter.ArticleCommentRVAdapter
+import com.wuruoye.all2.v3.adapter.viewholder.HeartRefreshViewHolder
+import com.wuruoye.all2.v3.model.*
+import com.wuruoye.all2.v3.presenter.ArticleCommentGet
+import com.wuruoye.all2.v3.presenter.ArticleCommentPut
 import com.wuruoye.all2.v3.presenter.ArticleDetailGet
 import kotlinx.android.synthetic.main.activity_article.*
 import java.util.*
@@ -26,9 +34,20 @@ import kotlin.collections.ArrayList
  * this file is to do
  */
 class ArticleDetailActivity : BaseActivity() {
+
+    private val viewFloatList = ArrayList<View>()
+
     private lateinit var item: ListItem
     private lateinit var name: String
     private lateinit var category: String
+    private lateinit var articleKey: String
+
+    private var isShow = false
+    private var isClick = false
+    private lateinit var commentDialog: AlertDialog
+    private lateinit var commentView: CommentDialogView
+
+    private lateinit var refreshVH: HeartRefreshViewHolder
 
     private lateinit var articleDetailGet: ArticleDetailGet
     private val mView = object : AbsView<ArticleDetail>{
@@ -42,6 +61,41 @@ class ArticleDetailActivity : BaseActivity() {
 
     }
 
+    private lateinit var commentGet: ArticleCommentGet
+    private val mCommentGetView = object : AbsView<ArticleComment>{
+        override fun setModel(model: ArticleComment) {
+            runOnUiThread { setComment(model) }
+        }
+
+        override fun setWorn(message: String) {
+            runOnUiThread { toast(message) }
+        }
+    }
+
+    private lateinit var commentPut: ArticleCommentPut
+    private val mCommentPutView = object : AbsView<String>{
+        override fun setModel(model: String) {
+            runOnUiThread { initComment() }
+        }
+
+        override fun setWorn(message: String) {
+            runOnUiThread { toast(message) }
+        }
+
+    }
+
+    private val onItemClickListener = object : ArticleCommentRVAdapter.OnItemClickListener{
+        override fun onLoadMore(next: Long, hv: HeartRefreshViewHolder) {
+            refreshVH = hv
+            requestComment(next)
+        }
+
+        override fun onItemClick(item: ArticleCommentItem) {
+            toast(item.content + " + " + item.id)
+        }
+
+    }
+
     override val contentView: Int
         get() = R.layout.activity_article
 
@@ -49,16 +103,17 @@ class ArticleDetailActivity : BaseActivity() {
         item = bundle!!.getParcelable("item")
         name = bundle.getString("name")
         category = bundle.getString("category")
+        articleKey = name + "_" + category + "_" + item.id
+
         articleDetailGet = ArticleDetailGet(applicationContext)
+        commentGet = ArticleCommentGet(applicationContext)
+        commentPut = ArticleCommentPut(applicationContext)
         articleDetailGet.attachView(mView)
+        commentGet.attachView(mCommentGetView)
+        commentPut.attachView(mCommentPutView)
     }
 
     override fun initView() {
-        srl_article.setOnRefreshListener {
-            if (item.content.size == 0) {
-                requestArticle(METHOD_NET)
-            }
-        }
 
         tv_article_original.setOnClickListener { openOriginal() }
 
@@ -66,6 +121,124 @@ class ArticleDetailActivity : BaseActivity() {
             setData()
         }else {
             requestArticle(METHOD_LOCAL)
+        }
+
+        viewFloatList.add(cv_article_likes)
+        viewFloatList.add(cv_article_comments)
+        viewFloatList.add(fab_article_comment)
+        viewFloatList.add(fab_article_like)
+
+        fab_article_drawer.setOnClickListener {
+            if (isClick) {
+                isShow = !isShow
+                showFAB()
+            }
+        }
+
+        fab_article_comment.setOnClickListener {
+            showCommentDialog()
+        }
+        fab_article_comment.setOnLongClickListener {
+            toast("点击添加评论...")
+            true
+        }
+
+        fab_article_like.setOnClickListener {
+
+        }
+
+        fab_article_like.setOnLongClickListener {
+            toast("点击喜欢文章")
+            true
+        }
+
+        initCommentDialog()
+    }
+
+    private fun initComment(){
+        ll_article_comment.visibility = View.VISIBLE
+        val adapter = ArticleCommentRVAdapter(ArticleComment.getNullCommentList(), onItemClickListener)
+        val layoutManager = object : LinearLayoutManager(this) {
+            override fun canScrollVertically(): Boolean = false
+        }
+        layoutManager.isAutoMeasureEnabled = true
+        rl_article_comment.layoutManager = layoutManager
+        rl_article_comment.adapter = adapter
+    }
+
+    private fun initCommentDialog(){
+        val view = LayoutInflater.from(this)
+                .inflate(R.layout.dialog_article_comment, null)
+        commentView = CommentDialogView(view)
+        commentView.btnCancel.setOnClickListener { commentDialog.cancel() }
+        commentView.btnPublish.setOnClickListener { publishComment() }
+        commentDialog = AlertDialog.Builder(this)
+                .setView(view)
+                .setCancelable(false)
+                .create()
+    }
+
+    private fun showCommentDialog(){
+        showCommentDialog(0, "")
+    }
+
+    private fun showCommentDialog(parentId: Int, string: String){
+        commentView.et.clearFocus()
+        if (parentId != 0){
+            commentView.tvParent.visibility = View.VISIBLE
+            commentView.tvParent.text = string
+            commentView.tvParent.tag = parentId
+        }else{
+            commentView.tvParent.visibility = View.GONE
+        }
+        commentDialog.show()
+    }
+
+    private fun publishComment(){
+        if (commentView.et.text.toString() == ""){
+            toast("评论内容不能为空...")
+        }else{
+            val time = System.currentTimeMillis()
+            val username = "ruoye"
+            val content = commentView.et.text.toString()
+            val parent =
+                    if (commentView.tvParent.visibility == View.VISIBLE){
+                        commentView.tvParent.tag as Int
+                    }else{
+                        0
+                    }
+            commentView.et.setText("")
+            commentPut.requestCommentPut(time, username, content, articleKey, parent)
+            commentDialog.cancel()
+        }
+    }
+
+    private fun showFAB(){
+        val set = TransitionSet()
+                .addTransition(Fade())
+                .addTransition(Scale())
+                .addTransition(Slide(Gravity.BOTTOM))
+        set.duration = ANIMATION_DURATION
+        if (isShow) {
+            TransitionManager.beginDelayedTransition(ll_article_fab, Rotate())
+            fab_article_drawer.rotation = ANIMATION_ROTATION
+            for (i in 0 until viewFloatList.size){
+                val delay = i * ANIMATION_DELAY
+                Handler().postDelayed({
+                    TransitionManager.beginDelayedTransition(ll_article_fab, set)
+                    viewFloatList[i].visibility = View.VISIBLE
+                }, delay.toLong())
+            }
+        }else{
+            TransitionManager.beginDelayedTransition(ll_article_fab, Rotate())
+            fab_article_drawer.rotation = 0f
+            for (i in 0 until viewFloatList.size){
+                val delay = (viewFloatList.size - 1 - i) * ANIMATION_DELAY
+                Handler().postDelayed({
+                    TransitionManager.beginDelayedTransition(ll_article_fab, set)
+                    viewFloatList[i].visibility = View.INVISIBLE
+                }, delay.toLong())
+            }
         }
     }
 
@@ -112,6 +285,7 @@ class ArticleDetailActivity : BaseActivity() {
         }
 
         setContentList(item.content)
+        buttonValuable()
     }
 
     private fun requestArticle(method: Int){
@@ -122,8 +296,11 @@ class ArticleDetailActivity : BaseActivity() {
         }
     }
 
+    private fun requestComment(next: Long){
+        commentGet.requestComment(articleKey, next)
+    }
+
     private fun setDetail(detail: ArticleDetail){
-        srl_article.isRefreshing = false
 
         if (detail.title == ""){
             tv_article_title.text = item.title
@@ -181,10 +358,30 @@ class ArticleDetailActivity : BaseActivity() {
         }
 
         setContentList(detail.content)
+        buttonValuable()
+    }
+
+    private fun buttonValuable(){
+        initComment()
+        fab_article_drawer.show()
+        isClick = true
+    }
+
+    private fun setComment(model: ArticleComment){
+        if (model.list.size > 0) {
+            val adapter = rl_article_comment.adapter as ArticleCommentRVAdapter
+            adapter.setNext(model.next)
+            adapter.addItems(model.list)
+        }else{
+            refreshVH.hv.visibility = View.GONE
+            refreshVH.tv.visibility = View.VISIBLE
+            refreshVH.tv.text = "快来点击右侧添加评论吧！"
+        }
     }
 
     @SuppressLint("InflateParams")
     private fun setContentList(content: ArrayList<Pair>){
+        ll_article_content.removeAllViews()
         for (i in 0 until content.size){
             val pair = content[i]
             ll_article_content.addView(
@@ -253,6 +450,8 @@ class ArticleDetailActivity : BaseActivity() {
     override fun onDestroy() {
         super.onDestroy()
         articleDetailGet.detachView()
+        commentGet.detachView()
+        commentPut.detachView()
     }
 
     companion object {
@@ -268,5 +467,9 @@ class ArticleDetailActivity : BaseActivity() {
         val TYPE_TEXT_CEN = "7"
         val TYPE_QUOTE = "8"
         val TYPE_H3 = "9"
+
+        val ANIMATION_DURATION = 400L
+        val ANIMATION_DELAY = 80
+        val ANIMATION_ROTATION = -135f
     }
 }
