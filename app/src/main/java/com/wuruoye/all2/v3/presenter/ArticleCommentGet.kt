@@ -14,7 +14,7 @@ import com.wuruoye.all2.v3.model.ArticleCommentItem
  * Created by wuruoye on 2017/9/21.
  * this file is to do
  */
-class ArticleCommentGet(context: Context) : AbsPresenter<AbsView<ArticleComment>>(context), Listener<ArticleComment>{
+class ArticleCommentGet(context: Context) : AbsPresenter<AbsView<ArticleComment>>(), Listener<ArticleComment>{
 
     override fun onSuccess(model: ArticleComment) {
         getView()?.setModel(model)

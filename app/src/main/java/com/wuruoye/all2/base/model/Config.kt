@@ -12,4 +12,7 @@ object Config {
 
     val COMMENT_GET_URL = REMOTE_HOST + "v3/comment/get?"
     val COMMENT_PUT_URL = REMOTE_HOST + "v3/comment/add?"
+
+    val CONNECT_TIME_OUT = 10L
+    val READ_TIME_OUT = 30L
 }

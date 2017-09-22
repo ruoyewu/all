@@ -71,6 +71,11 @@ class ArticleCommentRVAdapter(
                 TYPE_NORMAL
             }
 
+    fun addItem(item: ArticleCommentItem){
+        comment.list.add(0, item)
+        notifyItemInserted(0)
+    }
+
     fun addItems(list: ArrayList<ArticleCommentItem>){
         comment.list.addAll(list)
         notifyDataSetChanged()

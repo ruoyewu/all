@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.animation.OvershootInterpolator
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -25,6 +26,7 @@ import com.wuruoye.all2.v3.model.*
 import com.wuruoye.all2.v3.presenter.ArticleCommentGet
 import com.wuruoye.all2.v3.presenter.ArticleCommentPut
 import com.wuruoye.all2.v3.presenter.ArticleDetailGet
+import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator
 import kotlinx.android.synthetic.main.activity_article.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -73,9 +75,11 @@ class ArticleDetailActivity : BaseActivity() {
     }
 
     private lateinit var commentPut: ArticleCommentPut
-    private val mCommentPutView = object : AbsView<String>{
-        override fun setModel(model: String) {
-            runOnUiThread { initComment() }
+    private val mCommentPutView = object : AbsView<ArticleCommentItem>{
+        override fun setModel(model: ArticleCommentItem) {
+            runOnUiThread {
+                insertComment(model)
+            }
         }
 
         override fun setWorn(message: String) {
@@ -107,7 +111,7 @@ class ArticleDetailActivity : BaseActivity() {
 
         articleDetailGet = ArticleDetailGet(applicationContext)
         commentGet = ArticleCommentGet(applicationContext)
-        commentPut = ArticleCommentPut(applicationContext)
+        commentPut = ArticleCommentPut()
         articleDetailGet.attachView(mView)
         commentGet.attachView(mCommentGetView)
         commentPut.attachView(mCommentPutView)
@@ -164,6 +168,10 @@ class ArticleDetailActivity : BaseActivity() {
         layoutManager.isAutoMeasureEnabled = true
         rl_article_comment.layoutManager = layoutManager
         rl_article_comment.adapter = adapter
+        val itemAnimator = FadeInLeftAnimator(OvershootInterpolator(1f))
+        itemAnimator.addDuration = ANIMATOR_DURATION
+        itemAnimator.removeDuration = ANIMATOR_DURATION
+        rl_article_comment.itemAnimator = itemAnimator
     }
 
     private fun initCommentDialog(){
@@ -372,11 +380,17 @@ class ArticleDetailActivity : BaseActivity() {
             val adapter = rl_article_comment.adapter as ArticleCommentRVAdapter
             adapter.setNext(model.next)
             adapter.addItems(model.list)
-        }else{
+        }
+        if (model.list.size < 10){
             refreshVH.hv.visibility = View.GONE
             refreshVH.tv.visibility = View.VISIBLE
             refreshVH.tv.text = "快来点击右侧添加评论吧！"
         }
+    }
+
+    private fun insertComment(item: ArticleCommentItem){
+        val adapter = rl_article_comment.adapter as ArticleCommentRVAdapter
+        adapter.addItem(item)
     }
 
     @SuppressLint("InflateParams")
@@ -468,8 +482,9 @@ class ArticleDetailActivity : BaseActivity() {
         val TYPE_QUOTE = "8"
         val TYPE_H3 = "9"
 
-        val ANIMATION_DURATION = 400L
+        val ANIMATION_DURATION = 200L
         val ANIMATION_DELAY = 80
         val ANIMATION_ROTATION = -135f
+        val ANIMATOR_DURATION = 100L
     }
 }

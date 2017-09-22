@@ -14,7 +14,7 @@ import com.wuruoye.all2.v3.model.AppList
  * Created by wuruoye on 2017/9/16.
  * this file is to do
  */
-class AppListGet(context: Context) : AbsPresenter<AbsView<AppList>>(context), Listener<AppList> {
+class AppListGet(context: Context) : AbsPresenter<AbsView<AppList>>(), Listener<AppList> {
     private val appInfoCache = AppInfoCache(context)
 
     override fun onSuccess(model: AppList) {

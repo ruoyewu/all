@@ -7,9 +7,7 @@ import java.lang.ref.WeakReference
  * Created by wuruoye on 2017/9/15.
  * this file is to do
  */
-abstract class AbsPresenter<out V : BaseView>(
-        private val context: Context
-) : BasePresenter {
+abstract class AbsPresenter<out V : BaseView> : BasePresenter {
     private var mViewRef: WeakReference<V>? = null
 
     public enum class Method{

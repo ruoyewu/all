@@ -1,19 +1,20 @@
 package com.wuruoye.all2.v3.presenter
 
-import android.content.Context
+import com.google.gson.Gson
 import com.wuruoye.all2.base.model.Config
 import com.wuruoye.all2.base.model.Listener
 import com.wuruoye.all2.base.presenter.AbsPresenter
 import com.wuruoye.all2.base.presenter.AbsView
 import com.wuruoye.all2.base.util.NetUtil
+import com.wuruoye.all2.v3.model.ArticleCommentItem
 import org.json.JSONObject
 
 /**
  * Created by wuruoye on 2017/9/21.
  * this file is to do
  */
-class ArticleCommentPut(context: Context) : AbsPresenter<AbsView<String>>(context), Listener<String> {
-    override fun onSuccess(model: String) {
+class ArticleCommentPut : AbsPresenter<AbsView<ArticleCommentItem>>(), Listener<ArticleCommentItem> {
+    override fun onSuccess(model: ArticleCommentItem) {
         getView()?.setModel(model)
     }
 
@@ -31,7 +32,7 @@ class ArticleCommentPut(context: Context) : AbsPresenter<AbsView<String>>(contex
                 val result = jsonObject.getBoolean("result")
                 val info = jsonObject.getString("info")
                 if (result){
-                    this@ArticleCommentPut.onSuccess(info)
+                    this@ArticleCommentPut.onSuccess(parseData(info))
                 }else{
                     this@ArticleCommentPut.onFail(info)
                 }
@@ -42,6 +43,9 @@ class ArticleCommentPut(context: Context) : AbsPresenter<AbsView<String>>(contex
             }
         })
     }
+
+    private fun parseData(data: String): ArticleCommentItem =
+            Gson().fromJson(data, ArticleCommentItem::class.java)
 
     override fun requestData(name: String, category: String, data: String, method: Method) {
 

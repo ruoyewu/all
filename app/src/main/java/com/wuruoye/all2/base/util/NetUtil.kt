@@ -1,5 +1,6 @@
 package com.wuruoye.all2.base.util
 
+import com.wuruoye.all2.base.model.Config
 import com.wuruoye.all2.base.model.Listener
 import okhttp3.*
 import java.io.IOException
@@ -10,11 +11,16 @@ import java.util.concurrent.TimeUnit
  * this file is to do
  */
 object NetUtil {
+    //初始化唯一的一个client
     private val client = OkHttpClient.Builder()
-            .readTimeout(30, TimeUnit.SECONDS)
-
+            .connectTimeout(Config.CONNECT_TIME_OUT, TimeUnit.SECONDS)
+            .readTimeout(Config.READ_TIME_OUT, TimeUnit.SECONDS)
             .build()!!
 
+    /**
+     * get 请求
+     * @url 请求url
+     */
     fun get(url: String, listener: Listener<String>){
         val request = Request.Builder()
                 .url(url)
@@ -35,6 +41,12 @@ object NetUtil {
         })
     }
 
+    /**
+     * post 请求
+     * @keyList 请求参数key
+     * @valueList 请求参数值
+     * @worn 必须保证两个list的大小完全一致
+     */
     fun post(url: String, keyList: List<String>, valueList: List<String>, listener: Listener<String>){
         val requestBody = FormBody.Builder()
         for (i in 0 until keyList.size){

@@ -15,7 +15,7 @@ import org.json.JSONArray
  * Created by wuruoye on 2017/9/16.
  * this file is to do
  */
-class AppInfoListGet(context: Context) : AbsPresenter<AbsView<ArrayList<AppInfo>>>(context), Listener<ArrayList<AppInfo>> {
+class AppInfoListGet(context: Context) : AbsPresenter<AbsView<ArrayList<AppInfo>>>(), Listener<ArrayList<AppInfo>> {
     private val appInfoCache = AppInfoCache(context)
 
     override fun onSuccess(model: ArrayList<AppInfo>) {

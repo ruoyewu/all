@@ -15,7 +15,7 @@ import com.wuruoye.all2.base.util.extensions.loge
  * Created by wuruoye on 2017/9/16.
  * this file is to do
  */
-class ArticleDetailGet(context: Context) : AbsPresenter<AbsView<ArticleDetail>>(context), Listener<ArticleDetail> {
+class ArticleDetailGet(context: Context) : AbsPresenter<AbsView<ArticleDetail>>(), Listener<ArticleDetail> {
     private val appInfoCache = AppInfoCache(context)
 
     override fun onSuccess(model: ArticleDetail) {
