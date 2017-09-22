@@ -18,6 +18,34 @@ object DateUtil {
         val hour = calender.get(Calendar.HOUR_OF_DAY)
         val minute = calender.get(Calendar.MINUTE)
 
-        return "$year.$month.$day $hour:$minute"
+        val newMonth =
+                if (month < 10){
+                    "0$month"
+                }else{
+                    month.toString()
+                }
+
+        val newDay =
+                if (day < 10){
+                    "0$day"
+                }else{
+                    day.toString()
+                }
+
+        val newHour =
+                if (hour < 10){
+                    "0$hour"
+                }else{
+                    hour.toString()
+                }
+
+        val newMinute =
+                if (minute < 10){
+                    "0$minute"
+                }else{
+                    minute.toString()
+                }
+
+        return "$year.$newMonth.$newDay $newHour:$newMinute"
     }
 }
