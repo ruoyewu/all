@@ -62,7 +62,7 @@ class ArticleDetailActivity : BaseActivity() {
     private lateinit var mArticleGet: ArticleGet
     private val mArticleView = object : ArticleView() {
         override fun setModel(model: String) {
-
+            // ignore
         }
 
         override fun setWorn(message: String) {
@@ -86,11 +86,18 @@ class ArticleDetailActivity : BaseActivity() {
         }
 
         override fun onCommentDelete(model: Boolean) {
-
+            runOnUiThread {
+                if (model){
+                    initComment()
+                    mArticleGet.getArticleInfo(articleKey, "ruoye")
+                }else{
+                    toast("删除评论失败")
+                }
+            }
         }
 
         override fun onCommentReport(model: Boolean) {
-
+            runOnUiThread {  }
         }
 
         override fun onLovePut(model: Boolean) {
@@ -568,7 +575,7 @@ class ArticleDetailActivity : BaseActivity() {
                                     showCommentDialog(item.id, item.username + ":\t" + item.content)
                                 }
                                 3 -> {      //删除
-
+                                    mArticleGet.deleteComment(item.id)
                                 }
                             }
                         }
