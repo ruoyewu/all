@@ -5,12 +5,16 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/romance</item>
         <item name="colorPrimaryDark">@color/romance</item>
-        <item name="colorAccent">@color/white_smoke</item>
+        <item name="colorAccent">@color/monsoon</item>
         <item name="android:windowLightStatusBar">true</item>
     </style>
 
     <style name="HintTheme" parent="AppTheme">
         <item name="android:textColor">@color/mountain_mist</item>
         <item name="android:textSize">13sp</item>
+    </style>
+
+    <style name="FabTheme" parent="AppTheme">
+        <item name="colorAccent">@color/white_smoke</item>
     </style>
 </resources>
