@@ -8,16 +8,16 @@ import com.wuruoye.all2.base.presenter.AbsPresenter
 import com.wuruoye.all2.base.presenter.AbsView
 import com.wuruoye.all2.base.util.NetUtil
 import com.wuruoye.all2.v3.model.AppInfoCache
-import com.wuruoye.all2.v3.model.AppList
+import com.wuruoye.all2.v3.model.ArticleList
 
 /**
  * Created by wuruoye on 2017/9/16.
  * this file is to do
  */
-class AppListGet(context: Context) : AbsPresenter<AbsView<AppList>>(), Listener<AppList> {
+class AppListGet(context: Context) : AbsPresenter<AbsView<ArticleList>>(), Listener<ArticleList> {
     private val appInfoCache = AppInfoCache(context)
 
-    override fun onSuccess(model: AppList) {
+    override fun onSuccess(model: ArticleList) {
         getView()?.setModel(model)
     }
 
@@ -51,9 +51,9 @@ class AppListGet(context: Context) : AbsPresenter<AbsView<AppList>>(), Listener<
         }
     }
 
-    private fun parseData(data: String): AppList =
-            Gson().fromJson(data, AppList::class.java)
+    private fun parseData(data: String): ArticleList =
+            Gson().fromJson(data, ArticleList::class.java)
 
     private fun getUrl(name: String, category: String, data: String): String =
-            Config.REMOTE_HOST + "v3/list/" + name + "/" + category + "/" + data;
+            Config.ARTICLE_LIST_URL + "name=" + name + "&category=" + category + "&page=" + data;
 }

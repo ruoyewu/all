@@ -23,9 +23,7 @@ import com.wuruoye.all2.base.util.extensions.toast
 import com.wuruoye.all2.v3.adapter.ArticleCommentRVAdapter
 import com.wuruoye.all2.v3.adapter.viewholder.HeartRefreshViewHolder
 import com.wuruoye.all2.v3.model.*
-import com.wuruoye.all2.v3.presenter.ArticleCommentGet
-import com.wuruoye.all2.v3.presenter.ArticleCommentPut
-import com.wuruoye.all2.v3.presenter.ArticleDetailGet
+import com.wuruoye.all2.v3.presenter.*
 import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator
 import kotlinx.android.synthetic.main.activity_article.*
 import java.util.*
@@ -37,20 +35,29 @@ import kotlin.collections.ArrayList
  */
 class ArticleDetailActivity : BaseActivity() {
 
+    // 侧边 button 集合， 用于批量管理动画
     private val viewFloatList = ArrayList<View>()
 
-    private lateinit var item: ListItem
+    //当前文章基本信息
+    private lateinit var item: ArticleListItem
     private lateinit var name: String
     private lateinit var category: String
     private lateinit var articleKey: String
 
+    // 侧边 button 是否在显示状态
     private var isShow = false
+    // 侧边 button 是否可以点击，只有在文章加载出来之后才可以点击， true 代表文章详情已经加载出来
     private var isClick = false
+    private var isLove = false
+    // 编写文章评论的 dialog
     private lateinit var commentDialog: AlertDialog
+    // 包含评论 dialog 的view
     private lateinit var commentView: CommentDialogView
 
+    //用于显示正在 刷新状态 或 没有更多内容的 viewholder
     private lateinit var refreshVH: HeartRefreshViewHolder
 
+    //文章详情获取
     private lateinit var articleDetailGet: ArticleDetailGet
     private val mView = object : AbsView<ArticleDetail>{
         override fun setModel(model: ArticleDetail) {
@@ -63,6 +70,20 @@ class ArticleDetailActivity : BaseActivity() {
 
     }
 
+    //文章信息获取，点赞量，评论量，当前用户是否点赞
+    private lateinit var articleInfoGet: ArticleInfoGet
+    private val mArticleInfoView = object : AbsView<ArticleInfo>{
+        override fun setModel(model: ArticleInfo) {
+            runOnUiThread { setArticleInfo(model) }
+        }
+
+        override fun setWorn(message: String) {
+            runOnUiThread { toast(message) }
+        }
+
+    }
+
+    //文章评论获取，返回 评论列表
     private lateinit var commentGet: ArticleCommentGet
     private val mCommentGetView = object : AbsView<ArticleComment>{
         override fun setModel(model: ArticleComment) {
@@ -74,6 +95,7 @@ class ArticleDetailActivity : BaseActivity() {
         }
     }
 
+    //文章评论提交，返回当前评论信息
     private lateinit var commentPut: ArticleCommentPut
     private val mCommentPutView = object : AbsView<ArticleCommentItem>{
         override fun setModel(model: ArticleCommentItem) {
@@ -88,6 +110,26 @@ class ArticleDetailActivity : BaseActivity() {
 
     }
 
+    //文章点赞提交，返回当前提交结果
+    private lateinit var lovePut: ArticleLovePut
+    private val mLovePutView = object : AbsView<Boolean>{
+        override fun setModel(model: Boolean) {
+            runOnUiThread {
+                // 如果提交结果 与 当前状态 不相同， 则认定为提交错误，并
+                if (model != isLove){
+                    toast("提交出错...请重试")
+                    setLove(model, false)
+                }
+            }
+        }
+
+        override fun setWorn(message: String) {
+            runOnUiThread { toast(message) }
+        }
+
+    }
+
+    //文章评论列表 点击事件监听
     private val onItemClickListener = object : ArticleCommentRVAdapter.OnItemClickListener{
         override fun onLoadMore(next: Long, hv: HeartRefreshViewHolder) {
             refreshVH = hv
@@ -109,12 +151,18 @@ class ArticleDetailActivity : BaseActivity() {
         category = bundle.getString("category")
         articleKey = name + "_" + category + "_" + item.id
 
+        // 初始化各种 get 和 view
         articleDetailGet = ArticleDetailGet(applicationContext)
         commentGet = ArticleCommentGet(applicationContext)
         commentPut = ArticleCommentPut()
+        articleInfoGet = ArticleInfoGet()
+        lovePut = ArticleLovePut()
+
         articleDetailGet.attachView(mView)
         commentGet.attachView(mCommentGetView)
         commentPut.attachView(mCommentPutView)
+        articleInfoGet.attachView(mArticleInfoView)
+        lovePut.attachView(mLovePutView)
     }
 
     override fun initView() {
@@ -122,20 +170,26 @@ class ArticleDetailActivity : BaseActivity() {
         tv_article_original.setOnClickListener { openOriginal() }
 
         if (item.content.size > 0){
+            //在 ArticleListItem 中已有文章详情的直接设置
             setData()
         }else {
+            //否则 网络请求文章详情
             requestArticle(METHOD_LOCAL)
         }
 
+        //将要添加动画的放到一个数组
         viewFloatList.add(cv_article_likes)
         viewFloatList.add(cv_article_comments)
         viewFloatList.add(fab_article_comment)
         viewFloatList.add(fab_article_like)
 
+        //以下是 各种控件的监听
         fab_article_drawer.setOnClickListener {
             if (isClick) {
                 isShow = !isShow
                 showFAB()
+            }else{
+                toast("等待加载完成...")
             }
         }
 
@@ -148,17 +202,37 @@ class ArticleDetailActivity : BaseActivity() {
         }
 
         fab_article_like.setOnClickListener {
-
+            setLove(!isLove, true)
         }
 
         fab_article_like.setOnLongClickListener {
-            toast("点击喜欢文章")
+            toast("点击喜欢文章...")
+            true
+        }
+
+        cv_article_comments.setOnClickListener {
+            val height = ll_article_detail.measuredHeight
+            sv_article.smoothScrollTo(0, height)
+        }
+
+        cv_article_comments.setOnLongClickListener {
+            toast("点击查看评论...")
+            true
+        }
+
+        cv_article_likes.setOnClickListener {
+            sv_article.smoothScrollTo(0, 0)
+        }
+
+        cv_article_likes.setOnLongClickListener {
+            toast("点击查看文章...")
             true
         }
 
         initCommentDialog()
     }
 
+    //文章详情加载出来之后显示 comment 内容
     private fun initComment(){
         ll_article_comment.visibility = View.VISIBLE
         val adapter = ArticleCommentRVAdapter(ArticleComment.getNullCommentList(), onItemClickListener)
@@ -174,6 +248,7 @@ class ArticleDetailActivity : BaseActivity() {
         rl_article_comment.itemAnimator = itemAnimator
     }
 
+    //初始化添加评论时的 dialog
     private fun initCommentDialog(){
         val view = LayoutInflater.from(this)
                 .inflate(R.layout.dialog_article_comment, null)
@@ -190,6 +265,11 @@ class ArticleDetailActivity : BaseActivity() {
         showCommentDialog(0, "")
     }
 
+    /**
+     * 显示文章评论 dialog
+     * @parentId 如果是对某个已有评论作出评论， parentId 为其 id， 否则默认为 0
+     * @string 与 parentId 对应的 评论内容， 默认为 ""
+     */
     private fun showCommentDialog(parentId: Int, string: String){
         commentView.et.clearFocus()
         if (parentId != 0){
@@ -202,6 +282,7 @@ class ArticleDetailActivity : BaseActivity() {
         commentDialog.show()
     }
 
+    //提交评论
     private fun publishComment(){
         if (commentView.et.text.toString() == ""){
             toast("评论内容不能为空...")
@@ -209,6 +290,7 @@ class ArticleDetailActivity : BaseActivity() {
             val time = System.currentTimeMillis()
             val username = "ruoye"
             val content = commentView.et.text.toString()
+            //根据 tvParent 控件是否显示 判断 是否是对某个评论的评论
             val parent =
                     if (commentView.tvParent.visibility == View.VISIBLE){
                         commentView.tvParent.tag as Int
@@ -221,6 +303,7 @@ class ArticleDetailActivity : BaseActivity() {
         }
     }
 
+    //侧边 button 的显示与隐藏动画
     private fun showFAB(){
         val set = TransitionSet()
                 .addTransition(Fade())
@@ -228,32 +311,40 @@ class ArticleDetailActivity : BaseActivity() {
                 .addTransition(Slide(Gravity.BOTTOM))
         set.duration = ANIMATION_DURATION
         if (isShow) {
+            set.duration = ANIMATION_DURATION + ANIMATION_DELAY * 4
             TransitionManager.beginDelayedTransition(ll_article_fab, Rotate())
             fab_article_drawer.rotation = ANIMATION_ROTATION
+
+            set.duration = ANIMATION_DURATION
             for (i in 0 until viewFloatList.size){
                 val delay = i * ANIMATION_DELAY
                 Handler().postDelayed({
                     TransitionManager.beginDelayedTransition(ll_article_fab, set)
                     viewFloatList[i].visibility = View.VISIBLE
-                }, delay.toLong())
+                }, delay)
             }
         }else{
+            set.duration = ANIMATION_DURATION + ANIMATION_DELAY * 4
             TransitionManager.beginDelayedTransition(ll_article_fab, Rotate())
             fab_article_drawer.rotation = 0f
+
+            set.duration = ANIMATION_DURATION
             for (i in 0 until viewFloatList.size){
                 val delay = (viewFloatList.size - 1 - i) * ANIMATION_DELAY
                 Handler().postDelayed({
                     TransitionManager.beginDelayedTransition(ll_article_fab, set)
                     viewFloatList[i].visibility = View.INVISIBLE
-                }, delay.toLong())
+                }, delay)
             }
         }
     }
 
+    //查看文章原网址
     private fun openOriginal(){
         toast(item.original_url)
     }
 
+    // ArticleListItem 中已有详情时 调用此方法
     private fun setData(){
         tv_article_title.text = item.title
 
@@ -296,6 +387,7 @@ class ArticleDetailActivity : BaseActivity() {
         buttonValuable()
     }
 
+    //请求文章详情
     private fun requestArticle(method: Int){
         if (method == METHOD_LOCAL){
             articleDetailGet.requestData(name, category, item.id, AbsPresenter.Method.LOCAL)
@@ -304,10 +396,12 @@ class ArticleDetailActivity : BaseActivity() {
         }
     }
 
+    //请求文章评论
     private fun requestComment(next: Long){
         commentGet.requestComment(articleKey, next)
     }
 
+    //对网络请求得到的 ArticleDetail 做操作
     private fun setDetail(detail: ArticleDetail){
 
         if (detail.title == ""){
@@ -369,12 +463,19 @@ class ArticleDetailActivity : BaseActivity() {
         buttonValuable()
     }
 
-    private fun buttonValuable(){
-        initComment()
-        fab_article_drawer.show()
-        isClick = true
+    // 对网络请求得到的 ArticleInfo 做操作
+    private fun setArticleInfo(info: ArticleInfo){
+        isLove = info.result
+        if (info.result){
+            fab_article_like.setImageResource(R.drawable.ic_like_on)
+        }else{
+            fab_article_like.setImageResource(R.drawable.ic_like_off)
+        }
+        tv_article_num_like.text = info.love.toString()
+        tv_article_num_comment.text = info.comment.toString()
     }
 
+    // 对网络请求得到的 ArticleComment 做操作
     private fun setComment(model: ArticleComment){
         if (model.list.size > 0) {
             val adapter = rl_article_comment.adapter as ArticleCommentRVAdapter
@@ -388,11 +489,40 @@ class ArticleDetailActivity : BaseActivity() {
         }
     }
 
+    // 添加评论成功时插入一个 ArticleCommentItem
     private fun insertComment(item: ArticleCommentItem){
+        val newNum = tv_article_num_comment.text.toString().toInt() + 1
+        tv_article_num_comment.text = newNum.toString()
         val adapter = rl_article_comment.adapter as ArticleCommentRVAdapter
         adapter.addItem(item)
     }
 
+    //获取文章详情成功时 进行的下一步操作
+    private fun buttonValuable(){
+        initComment()
+        articleInfoGet.getArticleInfo(articleKey, "ruoye")
+        fab_article_drawer.show()
+        isClick = true
+    }
+
+    //设置是否喜欢文章，并且上传到服务器
+    private fun setLove(love: Boolean, isPut: Boolean){
+        isLove = love
+        if (isPut) {
+            lovePut.putLove(articleKey, "ruoye", isLove)
+        }
+        if (love){
+            fab_article_like.setImageResource(R.drawable.ic_like_on)
+            val newNum = tv_article_num_like.text.toString().toInt() + 1
+            tv_article_num_like.text = newNum.toString()
+        }else{
+            fab_article_like.setImageResource(R.drawable.ic_like_off)
+            val newNum = tv_article_num_like.text.toString().toInt() - 1
+            tv_article_num_like.text = newNum.toString()
+        }
+    }
+
+    //根据 ArrayList<Pair> 设置文章内容
     @SuppressLint("InflateParams")
     private fun setContentList(content: ArrayList<Pair>){
         ll_article_content.removeAllViews()
@@ -466,6 +596,8 @@ class ArticleDetailActivity : BaseActivity() {
         articleDetailGet.detachView()
         commentGet.detachView()
         commentPut.detachView()
+        articleInfoGet.detachView()
+        lovePut.detachView()
     }
 
     companion object {
@@ -482,8 +614,8 @@ class ArticleDetailActivity : BaseActivity() {
         val TYPE_QUOTE = "8"
         val TYPE_H3 = "9"
 
-        val ANIMATION_DURATION = 200L
-        val ANIMATION_DELAY = 80
+        val ANIMATION_DURATION = 300L
+        val ANIMATION_DELAY = 50L
         val ANIMATION_ROTATION = -135f
         val ANIMATOR_DURATION = 100L
     }

@@ -12,7 +12,7 @@ import com.wuruoye.all2.v3.presenter.AppInfoListGet
 import kotlinx.android.synthetic.main.activity_main.*
 import com.wuruoye.all2.base.util.extensions.toast
 import com.wuruoye.all2.v3.adapter.HomeListRVAdapter
-import com.wuruoye.all2.v3.model.ListItem
+import com.wuruoye.all2.v3.model.ArticleListItem
 
 class MainActivity : BaseActivity(){
 
@@ -51,7 +51,7 @@ class MainActivity : BaseActivity(){
             return true
         }
 
-        override fun onItemClick(item: ListItem, name: String, category: String) {
+        override fun onItemClick(item: ArticleListItem, name: String, category: String) {
             when (item.open_type){
                 TYPE_ARTICLE -> {
                     if (item.category_id != "0") {

@@ -14,8 +14,8 @@ import com.wuruoye.all2.base.util.extensions.toast
 import com.wuruoye.all2.v3.adapter.AllListRVAdapter
 import com.wuruoye.all2.v3.adapter.HomeListRVAdapter
 import com.wuruoye.all2.v3.adapter.viewholder.HeartRefreshViewHolder
-import com.wuruoye.all2.v3.model.AppList
-import com.wuruoye.all2.v3.model.ListItem
+import com.wuruoye.all2.v3.model.ArticleList
+import com.wuruoye.all2.v3.model.ArticleListItem
 import com.wuruoye.all2.v3.presenter.AppListGet
 import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator
 import kotlinx.android.synthetic.main.fragment_list.*
@@ -33,8 +33,8 @@ class AppListFragment : BaseFragment() {
     private lateinit var refreshVH: HeartRefreshViewHolder
 
     private lateinit var appListGet: AppListGet
-    private val mView = object : AbsView<AppList>{
-        override fun setModel(model: AppList) {
+    private val mView = object : AbsView<ArticleList>{
+        override fun setModel(model: ArticleList) {
             activity.runOnUiThread{
                 if (!isLoadMore) {
                     setRecyclerView(model)
@@ -57,7 +57,7 @@ class AppListFragment : BaseFragment() {
             requestData(METHOD_NET)
         }
 
-        override fun onItemClick(item: ListItem, name: String, category: String) {
+        override fun onItemClick(item: ArticleListItem, name: String, category: String) {
             when (item.open_type){
                 MainActivity.TYPE_ARTICLE -> {
                     if (item.category_id != "0") {
@@ -119,7 +119,7 @@ class AppListFragment : BaseFragment() {
         }
     }
 
-    private fun setRecyclerView(data: AppList){
+    private fun setRecyclerView(data: ArticleList){
         srl_fragment_list.isRefreshing = false
         mNext = data.next
         val adapter = AllListRVAdapter(true, data, onItemClickListener)
@@ -131,7 +131,7 @@ class AppListFragment : BaseFragment() {
         rl_fragment_list.adapter = adapter
     }
 
-    private fun setMore(data: AppList){
+    private fun setMore(data: ArticleList){
         if (data.list.size > 0){
             mNext = data.next
             try {

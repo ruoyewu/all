@@ -7,7 +7,7 @@ import android.os.Parcelable
  * Created by wuruoye on 2017/9/16.
  * this file is to do
  */
-data class ListItem(
+data class ArticleListItem(
         var id: String,
         var title: String,
         var forward: String,
@@ -64,9 +64,9 @@ data class ListItem(
 
     companion object {
         @JvmField
-        val CREATOR: Parcelable.Creator<ListItem> = object : Parcelable.Creator<ListItem> {
-            override fun createFromParcel(source: Parcel): ListItem = ListItem(source)
-            override fun newArray(size: Int): Array<ListItem?> = arrayOfNulls(size)
+        val CREATOR: Parcelable.Creator<ArticleListItem> = object : Parcelable.Creator<ArticleListItem> {
+            override fun createFromParcel(source: Parcel): ArticleListItem = ArticleListItem(source)
+            override fun newArray(size: Int): Array<ArticleListItem?> = arrayOfNulls(size)
         }
     }
 }

@@ -46,6 +46,6 @@ object DateUtil {
                     minute.toString()
                 }
 
-        return "$year.$newMonth.$newDay $newHour:$newMinute"
+        return "$year.$newMonth.$newDay\t$newHour:$newMinute"
     }
 }

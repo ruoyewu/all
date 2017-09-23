@@ -58,6 +58,6 @@ class ArticleDetailGet(context: Context) : AbsPresenter<AbsView<ArticleDetail>>(
             Gson().fromJson(data, ArticleDetail::class.java)
 
     private fun getUrl(name: String, category: String, data: String): String =
-            Config.REMOTE_HOST + "v3/detail/" + name + "/" + category + "/" + data
+            Config.ARTICLE_DETAIL_URL + "name=" + name + "&category=" + category + "&id=" + data;
 
 }

@@ -8,4 +8,9 @@
         <item name="colorAccent">@color/white_smoke</item>
         <item name="android:windowLightStatusBar">true</item>
     </style>
+
+    <style name="HintTheme" parent="AppTheme">
+        <item name="android:textColor">@color/mountain_mist</item>
+        <item name="android:textSize">13sp</item>
+    </style>
 </resources>

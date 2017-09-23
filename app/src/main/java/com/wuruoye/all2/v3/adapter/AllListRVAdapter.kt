@@ -10,8 +10,8 @@ import com.wuruoye.all2.base.util.extensions.loadImage
 import com.wuruoye.all2.v3.adapter.viewholder.AllListViewHolder
 import com.wuruoye.all2.v3.adapter.viewholder.HeartRefreshViewHolder
 import com.wuruoye.all2.v3.adapter.viewholder.OneHeadViewHolder
-import com.wuruoye.all2.v3.model.AppList
-import com.wuruoye.all2.v3.model.ListItem
+import com.wuruoye.all2.v3.model.ArticleList
+import com.wuruoye.all2.v3.model.ArticleListItem
 import java.util.*
 
 /**
@@ -20,7 +20,7 @@ import java.util.*
  */
 class AllListRVAdapter(
         private val isShowMore: Boolean,
-        private var data: AppList,
+        private var data: ArticleList,
         private val onItemClickListener: AllListRVAdapter.OnItemClickListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
@@ -155,7 +155,7 @@ class AllListRVAdapter(
                 data.list.size
             }
 
-    fun changeData(data: AppList){
+    fun changeData(data: ArticleList){
         this.data = data
         notifyDataSetChanged()
     }
@@ -165,19 +165,19 @@ class AllListRVAdapter(
         notifyItemRemoved(position)
     }
 
-    fun addItem(position: Int, item: ListItem){
+    fun addItem(position: Int, item: ArticleListItem){
         data.list.add(position, item)
         notifyItemInserted(position)
     }
 
-    fun addItems(list: ArrayList<ListItem>){
+    fun addItems(list: ArrayList<ArticleListItem>){
         data.list.addAll(list)
         notifyDataSetChanged()
     }
 
     interface OnItemClickListener{
         fun loadMore(next: String, vh: HeartRefreshViewHolder)
-        fun onItemClick(item: ListItem, name: String, category: String)
+        fun onItemClick(item: ArticleListItem, name: String, category: String)
     }
 
     companion object {

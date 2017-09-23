@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout android:id="@+id/srl_article"
+<RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/srl_article"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    tools:ignore="NewApi"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ScrollView
+        android:id="@+id/sv_article"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
@@ -15,6 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <LinearLayout
+                android:id="@+id/ll_article_detail"
                 android:padding="16dp"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
@@ -127,6 +131,7 @@
             android:id="@+id/cv_article_likes"
             android:visibility="invisible"
             app:cardBackgroundColor="@color/white_smoke"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="16dp"
             android:layout_width="wrap_content"
@@ -143,10 +148,13 @@
                     android:layout_height="15dp" />
 
                 <TextView
+                    android:id="@+id/tv_article_num_like"
                     android:padding="5dp"
-                    android:text="1000"
+                    android:text="0"
                     android:textSize="10sp"
                     android:maxLines="1"
+                    android:gravity="center"
+                    android:minWidth="30dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
             </LinearLayout>
@@ -156,6 +164,7 @@
             android:id="@+id/cv_article_comments"
             android:visibility="invisible"
             app:cardBackgroundColor="@color/white_smoke"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="16dp"
             android:layout_width="wrap_content"
@@ -171,10 +180,13 @@
                     android:layout_height="15dp" />
 
                 <TextView
+                    android:id="@+id/tv_article_num_comment"
+                    android:text="0"
                     android:padding="5dp"
-                    android:text="1000"
                     android:textSize="10sp"
                     android:maxLines="1"
+                    android:gravity="center"
+                    android:minWidth="30dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
             </LinearLayout>
@@ -183,7 +195,7 @@
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_article_like"
             android:visibility="invisible"
-            android:src="@drawable/ic_like_on"
+            android:src="@drawable/ic_like_off"
             android:layout_marginBottom="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
