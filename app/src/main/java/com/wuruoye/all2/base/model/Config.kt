@@ -16,6 +16,7 @@ object Config {
 
     val COMMENT_GET_URL = REMOTE_HOST + "v3/comment/get?"
     val COMMENT_PUT_URL = REMOTE_HOST + "v3/comment/add"
+    val COMMENT_DELETE_URL = REMOTE_HOST + "v3/comment/delete?"
 
     val ARTICLE_LOVE_URL = REMOTE_HOST + "v3/article/love?"
 

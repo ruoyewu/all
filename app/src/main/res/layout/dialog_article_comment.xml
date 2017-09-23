@@ -23,6 +23,7 @@
         android:maxLines="2"
         android:lineSpacingExtra="10sp"
         android:textSize="15sp"
+        android:padding="10dp"
         android:textColor="@color/monsoon"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
@@ -62,7 +63,8 @@
                 android:foreground="?android:attr/selectableItemBackgroundBorderless"
                 android:layout_marginRight="20dp"
                 android:layout_width="100dp"
-                android:layout_height="35dp"/>
+                android:layout_height="35dp"
+                tools:ignore="NewApi" />
 
             <Button
                 android:id="@+id/btn_comment_dialog_publish"
@@ -72,7 +74,8 @@
                 android:foreground="?android:attr/selectableItemBackgroundBorderless"
                 android:layout_marginLeft="20dp"
                 android:layout_width="100dp"
-                android:layout_height="35dp" />
+                android:layout_height="35dp"
+                tools:ignore="NewApi" />
         </LinearLayout>
     </RelativeLayout>
 </LinearLayout>

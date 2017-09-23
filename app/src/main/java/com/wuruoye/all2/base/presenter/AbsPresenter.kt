@@ -15,8 +15,6 @@ abstract class AbsPresenter<out V : BaseView> : BasePresenter {
         LOCAL
     }
 
-    public abstract fun requestData(name: String, category: String, data: String, method: Method)
-
     override fun attachView(view: BaseView) {
         mViewRef = WeakReference<V>(view as V)
     }

@@ -88,9 +88,9 @@ class HomeListRVAdapter(
             btnMaps.put(appInfo.name, btnMore)
             isShowAll.put(appInfo.name, false)
             if (!isNetRefresh) {
-                appListGet.requestData(appInfo.name, appInfo.category_name[0], "0", AbsPresenter.Method.LOCAL)
+                appListGet.requestArticleList(appInfo.name, appInfo.category_name[0], "0", AbsPresenter.Method.LOCAL)
             }else{
-                appListGet.requestData(appInfo.name, appInfo.category_name[0], "0", AbsPresenter.Method.NET)
+                appListGet.requestArticleList(appInfo.name, appInfo.category_name[0], "0", AbsPresenter.Method.NET)
             }
         }
     }

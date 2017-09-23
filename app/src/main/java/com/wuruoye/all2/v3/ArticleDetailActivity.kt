@@ -1,6 +1,9 @@
 package com.wuruoye.all2.v3
 
 import android.annotation.SuppressLint
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AlertDialog
@@ -16,14 +19,13 @@ import com.transitionseverywhere.*
 import com.transitionseverywhere.extra.Scale
 import com.wuruoye.all2.R
 import com.wuruoye.all2.base.BaseActivity
-import com.wuruoye.all2.base.presenter.AbsPresenter
-import com.wuruoye.all2.base.presenter.AbsView
 import com.wuruoye.all2.base.util.extensions.loadImage
 import com.wuruoye.all2.base.util.extensions.toast
 import com.wuruoye.all2.v3.adapter.ArticleCommentRVAdapter
 import com.wuruoye.all2.v3.adapter.viewholder.HeartRefreshViewHolder
 import com.wuruoye.all2.v3.model.*
-import com.wuruoye.all2.v3.presenter.*
+import com.wuruoye.all2.v3.presenter.ArticleGet
+import com.wuruoye.all2.v3.presenter.ArticleView
 import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator
 import kotlinx.android.synthetic.main.activity_article.*
 import java.util.*
@@ -50,81 +52,53 @@ class ArticleDetailActivity : BaseActivity() {
     private var isClick = false
     private var isLove = false
     // 编写文章评论的 dialog
-    private lateinit var commentDialog: AlertDialog
+    private lateinit var commentEditDialog: AlertDialog
     // 包含评论 dialog 的view
-    private lateinit var commentView: CommentDialogView
+    private lateinit var commentEditView: CommentDialogView
 
     //用于显示正在 刷新状态 或 没有更多内容的 viewholder
     private lateinit var refreshVH: HeartRefreshViewHolder
 
-    //文章详情获取
-    private lateinit var articleDetailGet: ArticleDetailGet
-    private val mView = object : AbsView<ArticleDetail>{
-        override fun setModel(model: ArticleDetail) {
+    private lateinit var mArticleGet: ArticleGet
+    private val mArticleView = object : ArticleView() {
+        override fun setModel(model: String) {
+
+        }
+
+        override fun setWorn(message: String) {
+            runOnUiThread { toast(message) }
+        }
+
+        override fun onArticleDetail(model: ArticleDetail) {
             runOnUiThread { setDetail(model) }
         }
 
-        override fun setWorn(message: String) {
-            runOnUiThread { toast(message) }
-        }
-
-    }
-
-    //文章信息获取，点赞量，评论量，当前用户是否点赞
-    private lateinit var articleInfoGet: ArticleInfoGet
-    private val mArticleInfoView = object : AbsView<ArticleInfo>{
-        override fun setModel(model: ArticleInfo) {
+        override fun onArticleInfo(model: ArticleInfo) {
             runOnUiThread { setArticleInfo(model) }
         }
 
-        override fun setWorn(message: String) {
-            runOnUiThread { toast(message) }
-        }
-
-    }
-
-    //文章评论获取，返回 评论列表
-    private lateinit var commentGet: ArticleCommentGet
-    private val mCommentGetView = object : AbsView<ArticleComment>{
-        override fun setModel(model: ArticleComment) {
+        override fun onCommentGet(model: ArticleComment) {
             runOnUiThread { setComment(model) }
         }
 
-        override fun setWorn(message: String) {
-            runOnUiThread { toast(message) }
+        override fun onCommentPut(model: ArticleCommentItem) {
+            runOnUiThread { insertComment(model) }
         }
-    }
 
-    //文章评论提交，返回当前评论信息
-    private lateinit var commentPut: ArticleCommentPut
-    private val mCommentPutView = object : AbsView<ArticleCommentItem>{
-        override fun setModel(model: ArticleCommentItem) {
-            runOnUiThread {
-                insertComment(model)
+        override fun onCommentDelete(model: Boolean) {
+
+        }
+
+        override fun onCommentReport(model: Boolean) {
+
+        }
+
+        override fun onLovePut(model: Boolean) {
+            // 如果提交结果 与 当前状态 不相同， 则认定为提交错误，并
+            if (model != isLove){
+                toast("提交出错...请重试")
+                setLove(model, false)
             }
-        }
-
-        override fun setWorn(message: String) {
-            runOnUiThread { toast(message) }
-        }
-
-    }
-
-    //文章点赞提交，返回当前提交结果
-    private lateinit var lovePut: ArticleLovePut
-    private val mLovePutView = object : AbsView<Boolean>{
-        override fun setModel(model: Boolean) {
-            runOnUiThread {
-                // 如果提交结果 与 当前状态 不相同， 则认定为提交错误，并
-                if (model != isLove){
-                    toast("提交出错...请重试")
-                    setLove(model, false)
-                }
-            }
-        }
-
-        override fun setWorn(message: String) {
-            runOnUiThread { toast(message) }
         }
 
     }
@@ -137,7 +111,7 @@ class ArticleDetailActivity : BaseActivity() {
         }
 
         override fun onItemClick(item: ArticleCommentItem) {
-            toast(item.content + " + " + item.id)
+            this@ArticleDetailActivity.onItemClick(item)
         }
 
     }
@@ -151,18 +125,8 @@ class ArticleDetailActivity : BaseActivity() {
         category = bundle.getString("category")
         articleKey = name + "_" + category + "_" + item.id
 
-        // 初始化各种 get 和 view
-        articleDetailGet = ArticleDetailGet(applicationContext)
-        commentGet = ArticleCommentGet(applicationContext)
-        commentPut = ArticleCommentPut()
-        articleInfoGet = ArticleInfoGet()
-        lovePut = ArticleLovePut()
-
-        articleDetailGet.attachView(mView)
-        commentGet.attachView(mCommentGetView)
-        commentPut.attachView(mCommentPutView)
-        articleInfoGet.attachView(mArticleInfoView)
-        lovePut.attachView(mLovePutView)
+        mArticleGet = ArticleGet()
+        mArticleGet.attachView(mArticleView)
     }
 
     override fun initView() {
@@ -174,7 +138,7 @@ class ArticleDetailActivity : BaseActivity() {
             setData()
         }else {
             //否则 网络请求文章详情
-            requestArticle(METHOD_LOCAL)
+            mArticleGet.getArticleDetail(name, category, item.id)
         }
 
         //将要添加动画的放到一个数组
@@ -229,7 +193,7 @@ class ArticleDetailActivity : BaseActivity() {
             true
         }
 
-        initCommentDialog()
+        initCommentEditDialog()
     }
 
     //文章详情加载出来之后显示 comment 内容
@@ -249,13 +213,13 @@ class ArticleDetailActivity : BaseActivity() {
     }
 
     //初始化添加评论时的 dialog
-    private fun initCommentDialog(){
+    private fun initCommentEditDialog(){
         val view = LayoutInflater.from(this)
                 .inflate(R.layout.dialog_article_comment, null)
-        commentView = CommentDialogView(view)
-        commentView.btnCancel.setOnClickListener { commentDialog.cancel() }
-        commentView.btnPublish.setOnClickListener { publishComment() }
-        commentDialog = AlertDialog.Builder(this)
+        commentEditView = CommentDialogView(view)
+        commentEditView.btnCancel.setOnClickListener { commentEditDialog.cancel() }
+        commentEditView.btnPublish.setOnClickListener { publishComment() }
+        commentEditDialog = AlertDialog.Builder(this)
                 .setView(view)
                 .setCancelable(false)
                 .create()
@@ -271,35 +235,35 @@ class ArticleDetailActivity : BaseActivity() {
      * @string 与 parentId 对应的 评论内容， 默认为 ""
      */
     private fun showCommentDialog(parentId: Int, string: String){
-        commentView.et.clearFocus()
+        commentEditView.et.clearFocus()
         if (parentId != 0){
-            commentView.tvParent.visibility = View.VISIBLE
-            commentView.tvParent.text = string
-            commentView.tvParent.tag = parentId
+            commentEditView.tvParent.visibility = View.VISIBLE
+            commentEditView.tvParent.text = string
+            commentEditView.tvParent.tag = parentId
         }else{
-            commentView.tvParent.visibility = View.GONE
+            commentEditView.tvParent.visibility = View.GONE
         }
-        commentDialog.show()
+        commentEditDialog.show()
     }
 
     //提交评论
     private fun publishComment(){
-        if (commentView.et.text.toString() == ""){
+        if (commentEditView.et.text.toString() == ""){
             toast("评论内容不能为空...")
         }else{
             val time = System.currentTimeMillis()
             val username = "ruoye"
-            val content = commentView.et.text.toString()
+            val content = commentEditView.et.text.toString()
             //根据 tvParent 控件是否显示 判断 是否是对某个评论的评论
             val parent =
-                    if (commentView.tvParent.visibility == View.VISIBLE){
-                        commentView.tvParent.tag as Int
+                    if (commentEditView.tvParent.visibility == View.VISIBLE){
+                        commentEditView.tvParent.tag as Int
                     }else{
                         0
                     }
-            commentView.et.setText("")
-            commentPut.requestCommentPut(time, username, content, articleKey, parent)
-            commentDialog.cancel()
+            commentEditView.et.setText("")
+            mArticleGet.putComment(time, username, content,articleKey, parent)
+            commentEditDialog.cancel()
         }
     }
 
@@ -387,18 +351,9 @@ class ArticleDetailActivity : BaseActivity() {
         buttonValuable()
     }
 
-    //请求文章详情
-    private fun requestArticle(method: Int){
-        if (method == METHOD_LOCAL){
-            articleDetailGet.requestData(name, category, item.id, AbsPresenter.Method.LOCAL)
-        }else{
-            articleDetailGet.requestData(name, category, item.id, AbsPresenter.Method.NET)
-        }
-    }
-
     //请求文章评论
     private fun requestComment(next: Long){
-        commentGet.requestComment(articleKey, next)
+        mArticleGet.getCommentList(articleKey, next)
     }
 
     //对网络请求得到的 ArticleDetail 做操作
@@ -500,7 +455,7 @@ class ArticleDetailActivity : BaseActivity() {
     //获取文章详情成功时 进行的下一步操作
     private fun buttonValuable(){
         initComment()
-        articleInfoGet.getArticleInfo(articleKey, "ruoye")
+        mArticleGet.getArticleInfo(articleKey, "ruoye")
         fab_article_drawer.show()
         isClick = true
     }
@@ -509,7 +464,7 @@ class ArticleDetailActivity : BaseActivity() {
     private fun setLove(love: Boolean, isPut: Boolean){
         isLove = love
         if (isPut) {
-            lovePut.putLove(articleKey, "ruoye", isLove)
+            mArticleGet.putLove(articleKey, "ruoye", isLove)
         }
         if (love){
             fab_article_like.setImageResource(R.drawable.ic_like_on)
@@ -591,13 +546,40 @@ class ArticleDetailActivity : BaseActivity() {
         }
     }
 
+    private fun onItemClick(item: ArticleCommentItem){
+        AlertDialog.Builder(this)
+                .setItems(
+                        if (item.username == "ruoye"){
+                            COMMENT_ITEM_M
+                        }else{
+                            COMMENT_ITEM
+                        },
+                        { _, which ->
+                            when (which){
+                                0 -> {      //复制
+                                    val cmb = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                                    cmb.primaryClip = ClipData.newPlainText("all", item.content)
+                                    toast("复制成功")
+                                }
+                                1 -> {      //举报
+
+                                }
+                                2 -> {      //评论
+                                    showCommentDialog(item.id, item.username + ":\t" + item.content)
+                                }
+                                3 -> {      //删除
+
+                                }
+                            }
+                        }
+                )
+                .show()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
-        articleDetailGet.detachView()
-        commentGet.detachView()
-        commentPut.detachView()
-        articleInfoGet.detachView()
-        lovePut.detachView()
+
+        mArticleGet.detachView()
     }
 
     companion object {
@@ -618,5 +600,12 @@ class ArticleDetailActivity : BaseActivity() {
         val ANIMATION_DELAY = 50L
         val ANIMATION_ROTATION = -135f
         val ANIMATOR_DURATION = 100L
+
+        val COMMENT_ITEM = arrayOf(
+                "复制", "举报", "评论"
+        )
+        val COMMENT_ITEM_M = arrayOf(
+                "复制", "举报", "评论", "删除"
+        )
     }
 }

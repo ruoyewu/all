@@ -96,10 +96,10 @@ class MainActivity : BaseActivity(){
 
     private fun requestData(method: Int){
         if (method == NET_REQUEST){
-            appInfoListGet.requestData("", "", "", AbsPresenter.Method.NET)
+            appInfoListGet.requestAppInfoList(AbsPresenter.Method.NET)
             isNetRefresh = true
         }else{
-            appInfoListGet.requestData("", "", "", AbsPresenter.Method.LOCAL)
+            appInfoListGet.requestAppInfoList(AbsPresenter.Method.LOCAL)
         }
     }
 

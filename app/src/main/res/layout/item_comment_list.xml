@@ -51,7 +51,7 @@
         <TextView
             android:id="@+id/tv_comment_parent"
             android:visibility="gone"
-            android:padding="5dp"
+            android:padding="10dp"
             android:textSize="13sp"
             android:textColor="@color/monsoon"
             android:background="@drawable/btn_border"

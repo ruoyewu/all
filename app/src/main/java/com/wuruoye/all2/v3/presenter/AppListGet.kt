@@ -25,7 +25,7 @@ class AppListGet(context: Context) : AbsPresenter<AbsView<ArticleList>>(), Liste
         getView()?.setWorn(message)
     }
 
-    override fun requestData(name: String, category: String, data: String, method: Method) {
+    fun requestArticleList(name: String, category: String, data: String, method: Method) {
         var method = method
         val key = name + "_" + category;
         if (method == Method.LOCAL){

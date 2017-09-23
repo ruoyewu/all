@@ -26,7 +26,7 @@ class AppInfoListGet(context: Context) : AbsPresenter<AbsView<ArrayList<AppInfo>
         getView()?.setWorn(message)
     }
 
-    override fun requestData(name: String, category: String, data: String, method: Method) {
+    fun requestAppInfoList(method: Method) {
         var method = method
         if (method == Method.LOCAL){
             val info = appInfoCache.infoList

@@ -113,9 +113,9 @@ class AppListFragment : BaseFragment() {
 
     private fun requestData(method: Int){
         if (method == METHOD_LOCAL){
-            appListGet.requestData(mName, mCategory, mNext, AbsPresenter.Method.LOCAL)
+            appListGet.requestArticleList(mName, mCategory, mNext, AbsPresenter.Method.LOCAL)
         }else{
-            appListGet.requestData(mName, mCategory, mNext, AbsPresenter.Method.NET)
+            appListGet.requestArticleList(mName, mCategory, mNext, AbsPresenter.Method.NET)
         }
     }
 
