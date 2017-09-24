@@ -22,6 +22,7 @@
         <activity android:name=".v3.ArticleDetailActivity"
             android:windowSoftInputMode="adjustNothing"/>
         <activity android:name=".v3.AppInfoActivity" />
+        <activity android:name=".user.UserActivity" />
     </application>
 
 </manifest>

@@ -11,6 +11,7 @@ import com.wuruoye.all2.v3.model.AppInfo
 import com.wuruoye.all2.v3.presenter.AppInfoListGet
 import kotlinx.android.synthetic.main.activity_main.*
 import com.wuruoye.all2.base.util.extensions.toast
+import com.wuruoye.all2.user.UserActivity
 import com.wuruoye.all2.v3.adapter.HomeListRVAdapter
 import com.wuruoye.all2.v3.model.ArticleListItem
 
@@ -92,6 +93,10 @@ class MainActivity : BaseActivity(){
     override fun initView() {
         srl_main.setOnRefreshListener { requestData(NET_REQUEST) }
         requestData(LOCAL_REQUEST)
+
+        fab_main_user.setOnClickListener {
+            startActivity(Intent(this, UserActivity::class.java))
+        }
     }
 
     private fun requestData(method: Int){

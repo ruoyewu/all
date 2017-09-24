@@ -20,6 +20,8 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        renderscriptTargetApi 22
+        renderscriptSupportModeEnabled true
     }
     buildTypes {
         release {
@@ -27,6 +29,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.config
             proguardFile '/Users/wuruoye/Documents/Android/All2/app/proguard-rules.pro'
+        }
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['jniLibs']
         }
     }
 }
