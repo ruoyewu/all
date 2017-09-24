@@ -6,12 +6,14 @@
     android:layout_height="match_parent">
     
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/al_user"
         android:minHeight="?attr/actionBarSize"
         android:layout_width="match_parent"
         android:layout_height="300dp">
 
         <android.support.design.widget.CollapsingToolbarLayout
             app:titleEnabled="false"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -19,17 +21,107 @@
                 android:id="@+id/iv_user_head"
                 android:src="@drawable/ic_avatar"
                 android:scaleType="centerCrop"
+                app:layout_collapseMode="parallax"
+                app:layout_collapseParallaxMultiplier="0.6"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
+            <LinearLayout
+                android:id="@+id/ll_user_center"
+                android:orientation="vertical"
+                android:layout_gravity="center"
+                android:gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/civ_user_avatar1"
+                    android:src="@drawable/ic_avatar"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp" />
+
+                <TextView
+                    android:id="@+id/tv_user_name1"
+                    android:padding="10dp"
+                    android:text="@string/app_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <android.support.v7.widget.Toolbar
+                app:contentInsetStart="0dp"
+                android:layout_gravity="bottom"
+                app:layout_collapseMode="pin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <LinearLayout
+                        android:id="@+id/ll_user_top"
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/actionBarSize"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingEnd="16dp"
+                        android:paddingStart="16dp"
+                        android:visibility="invisible">
+
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/civ_user_avatar2"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:src="@drawable/ic_avatar" />
+
+                        <TextView
+                            android:id="@+id/tv_user_name2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:text="@string/app_name" />
+                    </LinearLayout>
+
+                    <android.support.design.widget.TabLayout
+                        android:id="@+id/tl_user"
+                        app:tabMode="fixed"
+                        app:tabTextColor="@color/mountain_mist"
+                        app:tabSelectedTextColor="@color/monsoon"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </android.support.v7.widget.Toolbar>
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
+    <!--<android.support.v4.view.ViewPager-->
+        <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
+        <!--android:id="@+id/vp_user"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent" />-->
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nsv_user"
+        android:fillViewport="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <android.support.v4.view.ViewPager
+            android:id="@+id/vp_user"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
     </android.support.v4.widget.NestedScrollView>
+
+    <com.wuruoye.all2.base.widget.RefreshFABView
+        android:id="@+id/fab_user"
+        android:layout_gravity="bottom|right"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:theme="@style/FabTheme"
+        android:src="@drawable/ic_refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </android.support.design.widget.CoordinatorLayout>

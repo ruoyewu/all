@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.wuruoye.all2.R
 import com.wuruoye.all2.base.BaseActivity
-import com.wuruoye.all2.v3.adapter.AppVPAdapter
+import com.wuruoye.all2.v3.adapter.FragmentVPAdapter
 import com.wuruoye.all2.v3.model.AppInfo
 import kotlinx.android.synthetic.main.activity_app_info.*
 
@@ -33,7 +33,7 @@ class AppInfoActivity : BaseActivity() {
             fragment.arguments = bundle
             mFragments.add(fragment)
         }
-        val adapter = AppVPAdapter(supportFragmentManager, mFragments, mAppInfo.category_title)
+        val adapter = FragmentVPAdapter(supportFragmentManager, mFragments, mAppInfo.category_title)
         vp_app.adapter = adapter
         tl_app.setupWithViewPager(vp_app)
     }

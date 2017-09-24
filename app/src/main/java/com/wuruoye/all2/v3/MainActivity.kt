@@ -94,8 +94,14 @@ class MainActivity : BaseActivity(){
         srl_main.setOnRefreshListener { requestData(NET_REQUEST) }
         requestData(LOCAL_REQUEST)
 
+        fab_main_drawer.setOnClickListener {
+
+        }
         fab_main_user.setOnClickListener {
             startActivity(Intent(this, UserActivity::class.java))
+        }
+        fab_main_setting.setOnClickListener {
+
         }
     }
 

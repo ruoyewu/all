@@ -553,6 +553,7 @@ class ArticleDetailActivity : BaseActivity() {
         }
     }
 
+    //评论项点击监听， 显示dialog
     private fun onItemClick(item: ArticleCommentItem){
         AlertDialog.Builder(this)
                 .setItems(
