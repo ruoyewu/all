@@ -6,6 +6,7 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.support.design.widget.FloatingActionButton
 import android.util.AttributeSet
+import android.view.animation.LinearInterpolator
 import com.wuruoye.all2.base.util.extensions.loge
 
 /**
@@ -24,13 +25,14 @@ class RefreshFABView : FloatingActionButton {
     private lateinit var mAnimator: ValueAnimator
 
     private fun init(){
-        mAnimator = ObjectAnimator.ofFloat(0f, 180f)
+        mAnimator = ObjectAnimator.ofFloat(0f, 179f)
         mAnimator.duration = 800
-        mAnimator.repeatMode = ValueAnimator.INFINITE
+        mAnimator.startDelay = 0
+        mAnimator.interpolator = LinearInterpolator()
+        mAnimator.repeatCount = ValueAnimator.INFINITE
         mAnimator.repeatMode = ValueAnimator.RESTART
         mAnimator.addUpdateListener { p0 ->
             val value = p0!!.animatedValue as Float
-            loge(value.toString())
             rotation = value
         }
         mAnimator.addListener(object : Animator.AnimatorListener{

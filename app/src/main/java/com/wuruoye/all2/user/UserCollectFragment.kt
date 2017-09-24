@@ -4,8 +4,9 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import com.wuruoye.all2.R
-import com.wuruoye.all2.base.BaseFragment
+import com.wuruoye.all2.base.App
 import com.wuruoye.all2.base.RefreshFragment
+import com.wuruoye.all2.base.util.extensions.toast
 
 /**
  * Created by wuruoye on 2017/9/24.
@@ -26,8 +27,12 @@ class UserCollectFragment : RefreshFragment(){
 
     override fun refresh() {
         Handler().postDelayed({
-            val activity = activity as UserActivity
-            activity.stopRefresh()
+            try {
+                val activity = activity as UserActivity
+                activity.stopRefresh()
+            } catch (e: Exception) {
+                App.getApplication()?.toast("刷新时请不要离开页面...")
+            }
         }, 2000)
     }
 }

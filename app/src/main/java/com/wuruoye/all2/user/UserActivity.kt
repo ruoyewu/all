@@ -4,6 +4,7 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
 import android.support.v4.app.Fragment
+import android.support.v4.view.ViewPager
 import android.view.View
 import com.transitionseverywhere.Fade
 import com.transitionseverywhere.TransitionManager
@@ -12,6 +13,7 @@ import com.wuruoye.all2.R
 import com.wuruoye.all2.base.BaseActivity
 import com.wuruoye.all2.base.RefreshFragment
 import com.wuruoye.all2.base.util.BlurUtil
+import com.wuruoye.all2.base.util.extensions.loge
 import com.wuruoye.all2.user.model.AppBarStateChangeListener
 import com.wuruoye.all2.user.model.UserCache
 import com.wuruoye.all2.v3.adapter.FragmentVPAdapter
@@ -39,6 +41,7 @@ class UserActivity : BaseActivity() {
     override fun initView() {
 //        nsv_user.isFillViewport = true
         initUser()
+        setUserVP()
 
         al_user.addOnOffsetChangedListener(object : AppBarStateChangeListener(){
             override fun onStateChanged(appBarLayout: AppBarLayout?, state: State) {
@@ -54,10 +57,8 @@ class UserActivity : BaseActivity() {
         if (userCache.isLogin){
             tv_user_name1.text = userCache.userName
             tv_user_name2.text = userCache.userName
-
-            setUserVP()
+            tv_user_desc.text = userCache.userDesc
         }
-
         iv_user_head.setImageBitmap(
                 BlurUtil.blurBitmap(applicationContext, BitmapFactory.decodeResource(resources, R.drawable.ic_avatar), 5f)
         )
@@ -72,6 +73,20 @@ class UserActivity : BaseActivity() {
         val adapter = FragmentVPAdapter(supportFragmentManager, mFragmentList, title_items)
         vp_user.adapter = adapter
         tl_user.setupWithViewPager(vp_user)
+
+        vp_user.addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
+            override fun onPageScrollStateChanged(state: Int) {
+
+            }
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+            }
+
+            override fun onPageSelected(position: Int) {
+                currentItem = position
+            }
+
+        })
     }
 
     private fun startRefresh(){
@@ -86,6 +101,10 @@ class UserActivity : BaseActivity() {
     fun stopRefresh(){
         isRefresh = false
         fab_user.stop()
+    }
+
+    fun changeUserInfo(){
+        initUser()
     }
 
     private fun onStateChange(state: AppBarStateChangeListener.State){

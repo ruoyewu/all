@@ -429,9 +429,9 @@ class ArticleDetailActivity : BaseActivity() {
     private fun setArticleInfo(info: ArticleInfo){
         isLove = info.result
         if (info.result){
-            fab_article_like.setImageResource(R.drawable.ic_like_on)
+            fab_article_like.setImageResource(R.drawable.ic_heart_on)
         }else{
-            fab_article_like.setImageResource(R.drawable.ic_like_off)
+            fab_article_like.setImageResource(R.drawable.ic_heart_off)
         }
         tv_article_num_like.text = info.love.toString()
         tv_article_num_comment.text = info.comment.toString()

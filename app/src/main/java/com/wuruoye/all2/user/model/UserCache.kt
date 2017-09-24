@@ -21,10 +21,14 @@ class UserCache(context: Context) : BaseCache(context) {
         get() = getString(USER_AVATAR, "")
         set(value) = setString(USER_AVATAR, value)
 
+    var userDesc: String
+        get() = getString(USER_DESC, "")
+        set(value) = setString(USER_DESC, value)
+
     companion object {
         val USER_NAME = "user_name"
         val USER_AVATAR = "user_avatar"
         val USER_LOGIN = "user_login"
-
+        val USER_DESC = "user_desc"
     }
 }
