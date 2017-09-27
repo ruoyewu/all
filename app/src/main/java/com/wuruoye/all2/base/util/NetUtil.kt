@@ -74,7 +74,6 @@ object NetUtil {
         })
     }
 
-
     fun postFile(url: String, filePath: String, username: String, listener: Listener<String>){
         val file = File(filePath)
 
@@ -100,6 +99,23 @@ object NetUtil {
                 }else{
                     listener.onFail(response.message())
                 }
+            }
+
+        })
+    }
+
+    fun downloadFile(url: String, fileName: String, listener: Listener<String>){
+        val request = Request.Builder()
+                .url(url)
+                .build()
+        client.newCall(request).enqueue(object : Callback{
+            override fun onFailure(call: Call?, e: IOException?) {
+                listener.onSuccess(e!!.message!!)
+            }
+
+            override fun onResponse(call: Call?, response: Response?) {
+                val inStream = response!!.body()!!.byteStream()
+                FileUtil.writeFile(fileName, inStream)
             }
 
         })

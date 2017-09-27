@@ -12,9 +12,10 @@ import android.support.v8.renderscript.ScriptIntrinsicBlur
  * this file is to do
  */
 object BlurUtil {
-    private val scaleRatio = 10;
 
-    fun blurBitmap(context: Context, image: Bitmap, blurRadius: Float): Bitmap{
+    fun blurBitmap(context: Context, image: Bitmap): Bitmap{
+        var scaleRatio = image.width / 100
+        scaleRatio = if (scaleRatio < 1) 1 else scaleRatio
         val width = Math.round(image.width.toDouble() / scaleRatio).toInt()
         val height = Math.round(image.height.toDouble() / scaleRatio).toInt()
 
@@ -26,7 +27,7 @@ object BlurUtil {
         val input = Allocation.createFromBitmap(rs, bitmap)
         val output = Allocation.createTyped(rs, input.type)
 
-        blurScript.setRadius(blurRadius)
+        blurScript.setRadius(5f)
         blurScript.setInput(input)
         blurScript.forEach(output)
         output.copyTo(bitmap)

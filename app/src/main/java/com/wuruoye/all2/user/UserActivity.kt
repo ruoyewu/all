@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AlertDialog
 import android.view.View
-import com.bumptech.glide.Glide
 import com.transitionseverywhere.Fade
 import com.transitionseverywhere.TransitionManager
 import com.wuruoye.all2.R
@@ -92,7 +91,7 @@ class UserActivity : PhotoActivity() {
         civ_user_avatar1.setImageBitmap(bitmap)
         civ_user_avatar2.setImageBitmap(bitmap)
         iv_user_head.setImageBitmap(
-                BlurUtil.blurBitmap(applicationContext, bitmap, 5f)
+                BlurUtil.blurBitmap(applicationContext, bitmap)
         )
         NetUtil.postFile(Config.USER_AVATAR_URL, filePath, mUserCache.userName, object : Listener<String>{
             override fun onSuccess(model: String) {
@@ -113,9 +112,7 @@ class UserActivity : PhotoActivity() {
                         .setItems(dialog_items, { _, which ->
                             when (which){
                                 0 -> {      // 注销登录
-                                    mUserName = ""
-                                    mUserCache.userName = ""
-                                    mUserCache.isLogin = false
+                                    mUserCache.cancelUser()
                                     initUser()
                                 }
                                 1 -> {      //相册
@@ -151,7 +148,7 @@ class UserActivity : PhotoActivity() {
                         civ_user_avatar2.setImageBitmap(avatarBitmap)
 
                         iv_user_head.setImageBitmap(
-                                BlurUtil.blurBitmap(applicationContext, avatarBitmap, 5f)
+                                BlurUtil.blurBitmap(applicationContext, avatarBitmap)
                         )
                     }
                 } catch (e: Exception) {
@@ -168,7 +165,7 @@ class UserActivity : PhotoActivity() {
                 getImageBitmap(Config.USER_AVATAR_URL + "/" + mUserName, object : Listener<Bitmap>{
                     override fun onSuccess(model: Bitmap) {
                         runOnUiThread {
-                            iv_user_head.setImageBitmap(BlurUtil.blurBitmap(applicationContext, model, 5f))
+                            iv_user_head.setImageBitmap(BlurUtil.blurBitmap(applicationContext, model))
                         }
                     }
 

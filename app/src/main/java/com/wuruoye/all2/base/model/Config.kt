@@ -29,7 +29,7 @@ object Config {
     val CONNECT_TIME_OUT = 10L
     val READ_TIME_OUT = 30L
 
-    val FILE_PATH = Environment.getExternalStorageDirectory().absolutePath + "/com.wuruoye.all2/"
+    val APP_PATH = Environment.getExternalStorageDirectory().absolutePath + "/com.wuruoye.all2/"
     val PROVIDER_AUTHORITY = "com.wuruoye.all2.fileprovider"
     val FILE_PERMISSION = arrayOf(
             Manifest.permission.READ_EXTERNAL_STORAGE,

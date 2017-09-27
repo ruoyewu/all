@@ -25,6 +25,12 @@ class UserCache(context: Context) : BaseCache(context) {
         get() = getString(USER_DESC, "")
         set(value) = setString(USER_DESC, value)
 
+    fun cancelUser(){
+        isLogin = false
+        userName = ""
+        userAvatar = ""
+    }
+
     companion object {
         val USER_NAME = "user_name"
         val USER_AVATAR = "user_avatar"
