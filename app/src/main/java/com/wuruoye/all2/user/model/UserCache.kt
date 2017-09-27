@@ -2,6 +2,7 @@ package com.wuruoye.all2.user.model
 
 import android.content.Context
 import com.wuruoye.all2.base.model.BaseCache
+import com.wuruoye.all2.base.model.Config
 
 /**
  * Created by wuruoye on 2017/9/23.
@@ -29,6 +30,17 @@ class UserCache(context: Context) : BaseCache(context) {
         isLogin = false
         userName = ""
         userAvatar = ""
+    }
+
+    fun loginUser(name: String){
+        isLogin = true
+        userName = name
+        userAvatar = Config.APP_PATH + "file/avatar.jpg"
+    }
+
+    fun signUser(name: String){
+        isLogin = true
+        userName = name
     }
 
     companion object {

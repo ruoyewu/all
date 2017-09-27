@@ -5,6 +5,9 @@ import android.view.View
 import com.transitionseverywhere.TransitionManager
 import com.wuruoye.all2.R
 import com.wuruoye.all2.base.BaseActivity
+import com.wuruoye.all2.base.model.Config
+import com.wuruoye.all2.base.model.Listener
+import com.wuruoye.all2.base.util.NetUtil
 import com.wuruoye.all2.base.util.toast
 import com.wuruoye.all2.user.model.UserCache
 import com.wuruoye.all2.user.presenter.LoginGet
@@ -22,8 +25,17 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
         override fun onLogin(result: Boolean, info: String) {
             runOnUiThread {
                 if (result){
-                    mUserCache.userName = et_login_name.text.toString()
-                    mUserCache.isLogin = true
+                    mUserCache.loginUser(info)
+                    NetUtil.downloadFile(Config.USER_AVATAR_URL + "/" + info, "avatar.jpg", object : Listener<String>{
+                        override fun onSuccess(model: String) {
+
+                        }
+
+                        override fun onFail(message: String) {
+
+                        }
+
+                    })
                     changeMode()
                 }else{
                     tv_login_worn.text = info
@@ -34,8 +46,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
         override fun onSign(result: Boolean, info: String) {
             runOnUiThread {
                 if (result){
-                    mUserCache.userName = et_login_name.text.toString()
-                    mUserCache.isLogin = true
+                    mUserCache.signUser(info)
                     changeMode()
                 }else{
                     tv_login_worn.text = info

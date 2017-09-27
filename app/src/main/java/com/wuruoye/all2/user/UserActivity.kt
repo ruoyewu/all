@@ -85,7 +85,6 @@ class UserActivity : PhotoActivity() {
     }
 
     private fun setAvatar(filePath: String){
-        clearGlide()
         val bitmap = BitmapFactory.decodeFile(filePath)
 
         civ_user_avatar1.setImageBitmap(bitmap)
@@ -113,6 +112,7 @@ class UserActivity : PhotoActivity() {
                             when (which){
                                 0 -> {      // 注销登录
                                     mUserCache.cancelUser()
+                                    mUserName = ""
                                     initUser()
                                 }
                                 1 -> {      //相册
@@ -152,6 +152,8 @@ class UserActivity : PhotoActivity() {
                         )
                     }
                 } catch (e: Exception) {
+                    civ_user_avatar1.setImageResource(R.drawable.ic_avatar)
+                    civ_user_avatar2.setImageResource(R.drawable.ic_avatar)
                 }
             }else{
                 //别人的详情页面
