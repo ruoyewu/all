@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AlertDialog
@@ -19,8 +20,10 @@ import com.transitionseverywhere.*
 import com.transitionseverywhere.extra.Scale
 import com.wuruoye.all2.R
 import com.wuruoye.all2.base.BaseActivity
-import com.wuruoye.all2.base.util.extensions.loadImage
-import com.wuruoye.all2.base.util.extensions.toast
+import com.wuruoye.all2.base.util.Extensions.loadImage
+import com.wuruoye.all2.base.util.Extensions.toast
+import com.wuruoye.all2.user.LoginActivity
+import com.wuruoye.all2.user.model.UserCache
 import com.wuruoye.all2.v3.adapter.ArticleCommentRVAdapter
 import com.wuruoye.all2.v3.adapter.viewholder.HeartRefreshViewHolder
 import com.wuruoye.all2.v3.model.*
@@ -45,6 +48,7 @@ class ArticleDetailActivity : BaseActivity() {
     private lateinit var name: String
     private lateinit var category: String
     private lateinit var articleKey: String
+    private lateinit var mUserCache: UserCache
 
     // 侧边 button 是否在显示状态
     private var isShow = false
@@ -56,15 +60,14 @@ class ArticleDetailActivity : BaseActivity() {
     // 包含评论 dialog 的view
     private lateinit var commentEditView: CommentDialogView
 
+    // 使用者未登录是提示框
+    private lateinit var loginDialog: AlertDialog
+
     //用于显示正在 刷新状态 或 没有更多内容的 viewholder
     private lateinit var refreshVH: HeartRefreshViewHolder
 
     private lateinit var mArticleGet: ArticleGet
-    private val mArticleView = object : ArticleView() {
-        override fun setModel(model: String) {
-            // ignore
-        }
-
+    private val mArticleView = object : ArticleView {
         override fun setWorn(message: String) {
             runOnUiThread { toast(message) }
         }
@@ -89,7 +92,7 @@ class ArticleDetailActivity : BaseActivity() {
             runOnUiThread {
                 if (model){
                     initComment()
-                    mArticleGet.getArticleInfo(articleKey, "ruoye")
+                    mArticleGet.getArticleInfo(articleKey, mUserCache.userName)
                 }else{
                     toast("删除评论失败")
                 }
@@ -132,6 +135,8 @@ class ArticleDetailActivity : BaseActivity() {
         category = bundle.getString("category")
         articleKey = name + "_" + category + "_" + item.id
 
+        mUserCache = UserCache(applicationContext)
+
         mArticleGet = ArticleGet()
         mArticleGet.attachView(mArticleView)
     }
@@ -165,7 +170,11 @@ class ArticleDetailActivity : BaseActivity() {
         }
 
         fab_article_comment.setOnClickListener {
-            showCommentDialog()
+            if (mUserCache.isLogin) {
+                showCommentDialog()
+            }else{
+                loginDialog.show()
+            }
         }
         fab_article_comment.setOnLongClickListener {
             toast("点击添加评论...")
@@ -173,7 +182,11 @@ class ArticleDetailActivity : BaseActivity() {
         }
 
         fab_article_like.setOnClickListener {
-            setLove(!isLove, true)
+            if (mUserCache.isLogin) {
+                setLove(!isLove, true)
+            }else{
+                loginDialog.show()
+            }
         }
 
         fab_article_like.setOnLongClickListener {
@@ -201,6 +214,7 @@ class ArticleDetailActivity : BaseActivity() {
         }
 
         initCommentEditDialog()
+        initLoginDialog()
     }
 
     //文章详情加载出来之后显示 comment 内容
@@ -232,6 +246,16 @@ class ArticleDetailActivity : BaseActivity() {
                 .create()
     }
 
+    private fun initLoginDialog(){
+        loginDialog = AlertDialog.Builder(this)
+                .setTitle("您还未登录\n是否前去登录？")
+                .setPositiveButton("是", { _, _ ->
+                    startActivity(Intent(this, LoginActivity::class.java))
+                })
+                .setNegativeButton("否", { _, _ -> })
+                .create()
+    }
+
     private fun showCommentDialog(){
         showCommentDialog(0, "")
     }
@@ -243,6 +267,7 @@ class ArticleDetailActivity : BaseActivity() {
      */
     private fun showCommentDialog(parentId: Int, string: String){
         commentEditView.et.clearFocus()
+        commentEditView.tvUser.text = mUserCache.userName
         if (parentId != 0){
             commentEditView.tvParent.visibility = View.VISIBLE
             commentEditView.tvParent.text = string
@@ -259,7 +284,7 @@ class ArticleDetailActivity : BaseActivity() {
             toast("评论内容不能为空...")
         }else{
             val time = System.currentTimeMillis()
-            val username = "ruoye"
+            val username = mUserCache.userName
             val content = commentEditView.et.text.toString()
             //根据 tvParent 控件是否显示 判断 是否是对某个评论的评论
             val parent =
@@ -462,7 +487,7 @@ class ArticleDetailActivity : BaseActivity() {
     //获取文章详情成功时 进行的下一步操作
     private fun buttonValuable(){
         initComment()
-        mArticleGet.getArticleInfo(articleKey, "ruoye")
+        mArticleGet.getArticleInfo(articleKey, mUserCache.userName)
         fab_article_drawer.show()
         isClick = true
     }
@@ -471,7 +496,7 @@ class ArticleDetailActivity : BaseActivity() {
     private fun setLove(love: Boolean, isPut: Boolean){
         isLove = love
         if (isPut) {
-            mArticleGet.putLove(articleKey, "ruoye", isLove)
+            mArticleGet.putLove(articleKey, mUserCache.userName, isLove)
         }
         if (love){
             fab_article_like.setImageResource(R.drawable.ic_like_on)
@@ -557,7 +582,7 @@ class ArticleDetailActivity : BaseActivity() {
     private fun onItemClick(item: ArticleCommentItem){
         AlertDialog.Builder(this)
                 .setItems(
-                        if (item.username == "ruoye"){
+                        if (item.username == mUserCache.userName){
                             COMMENT_ITEM_M
                         }else{
                             COMMENT_ITEM
@@ -573,7 +598,11 @@ class ArticleDetailActivity : BaseActivity() {
 
                                 }
                                 2 -> {      //评论
-                                    showCommentDialog(item.id, item.username + ":\t" + item.content)
+                                    if (mUserCache.isLogin) {
+                                        showCommentDialog(item.id, item.username + ":\t" + item.content)
+                                    }else{
+                                        loginDialog.show()
+                                    }
                                 }
                                 3 -> {      //删除
                                     mArticleGet.deleteComment(item.id)

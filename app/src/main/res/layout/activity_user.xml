@@ -14,6 +14,7 @@
         <android.support.design.widget.CollapsingToolbarLayout
             app:titleEnabled="false"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+            app:contentScrim="@color/romance"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -37,6 +38,8 @@
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/civ_user_avatar1"
                     android:src="@drawable/ic_avatar"
+                    app:civ_border_color="@color/white_smoke"
+                    app:civ_border_width="2dp"
                     android:layout_width="60dp"
                     android:layout_height="60dp" />
 
@@ -84,6 +87,8 @@
                             android:id="@+id/civ_user_avatar2"
                             android:layout_width="40dp"
                             android:layout_height="40dp"
+                            app:civ_border_color="@color/white_smoke"
+                            app:civ_border_width="1dp"
                             android:src="@drawable/ic_avatar" />
 
                         <TextView
@@ -107,11 +112,6 @@
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
-    <!--<android.support.v4.view.ViewPager-->
-        <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
-        <!--android:id="@+id/vp_user"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent" />-->
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/nsv_user"
         android:fillViewport="true"

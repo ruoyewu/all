@@ -1,5 +1,6 @@
 package com.wuruoye.all2.user
 
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
@@ -10,10 +11,13 @@ import com.transitionseverywhere.Fade
 import com.transitionseverywhere.TransitionManager
 import com.wuruoye.all2.R
 
-import com.wuruoye.all2.base.BaseActivity
-import com.wuruoye.all2.base.RefreshFragment
+import com.wuruoye.all2.base.PhotoActivity
+import com.wuruoye.all2.base.model.Config
+import com.wuruoye.all2.base.model.Listener
 import com.wuruoye.all2.base.util.BlurUtil
-import com.wuruoye.all2.base.util.extensions.loge
+import com.wuruoye.all2.base.util.NetUtil
+import com.wuruoye.all2.base.util.Extensions.loadImage
+import com.wuruoye.all2.base.util.Extensions.loge
 import com.wuruoye.all2.user.model.AppBarStateChangeListener
 import com.wuruoye.all2.user.model.UserCache
 import com.wuruoye.all2.v3.adapter.FragmentVPAdapter
@@ -24,7 +28,7 @@ import kotlinx.android.synthetic.main.activity_user.*
  * this file is to do
  */
 
-class UserActivity : BaseActivity() {
+class UserActivity : PhotoActivity() {
     private lateinit var userCache: UserCache
     private var isRefresh = false
     private var currentItem = 0
@@ -51,6 +55,41 @@ class UserActivity : BaseActivity() {
         fab_user.setOnClickListener {
             startRefresh()
         }
+
+        ll_user_center.setOnClickListener {
+            choosePhoto()
+//            startActivityForResult(Intent(this, LoginActivity::class.java), LOGIN)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == LOGIN){
+            initUser()
+        }
+    }
+
+    override fun onTakePhoto(filePath: String) {
+
+    }
+
+    override fun onChoosePhoto(filePath: String) {
+        val bitmap = BitmapFactory.decodeFile(filePath)
+        civ_user_avatar1.setImageBitmap(bitmap)
+        civ_user_avatar2.setImageBitmap(bitmap)
+        iv_user_head.setImageBitmap(
+                BlurUtil.blurBitmap(applicationContext, bitmap, 5f)
+        )
+        NetUtil.postFile(Config.USER_AVATAR_URL, filePath, userCache.userName, object : Listener<String>{
+            override fun onSuccess(model: String) {
+                loge("success : " + model)
+            }
+
+            override fun onFail(message: String) {
+                loge("fail : " + message)
+            }
+
+        })
     }
 
     private fun initUser(){
@@ -62,6 +101,7 @@ class UserActivity : BaseActivity() {
         iv_user_head.setImageBitmap(
                 BlurUtil.blurBitmap(applicationContext, BitmapFactory.decodeResource(resources, R.drawable.ic_avatar), 5f)
         )
+        loadImage(Config.USER_AVATAR_URL + "/" + userCache.userName, civ_user_avatar1)
     }
 
     private fun setUserVP(){
@@ -103,10 +143,6 @@ class UserActivity : BaseActivity() {
         fab_user.stop()
     }
 
-    fun changeUserInfo(){
-        initUser()
-    }
-
     private fun onStateChange(state: AppBarStateChangeListener.State){
         TransitionManager.beginDelayedTransition(al_user, Fade())
         if (state == AppBarStateChangeListener.State.COLLAPSED){
@@ -122,5 +158,6 @@ class UserActivity : BaseActivity() {
         val title_items = arrayListOf(
                 "收藏文章", "个人历程", "个人信息"
         )
+        val LOGIN = 3
     }
 }

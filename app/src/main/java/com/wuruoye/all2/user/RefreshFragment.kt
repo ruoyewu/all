@@ -1,4 +1,6 @@
-package com.wuruoye.all2.base
+package com.wuruoye.all2.user
+
+import com.wuruoye.all2.base.BaseFragment
 
 /**
  * Created by wuruoye on 2017/9/24.

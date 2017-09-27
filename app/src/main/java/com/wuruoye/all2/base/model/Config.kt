@@ -1,5 +1,7 @@
 package com.wuruoye.all2.base.model
 
+import android.Manifest
+import android.os.Environment
 import android.os.RemoteException
 
 /**
@@ -9,6 +11,10 @@ import android.os.RemoteException
 object Config {
     private val REMOTE_HOST = "http://139.199.153.45/"
     val APP_LIST_URL = "https://raw.githubusercontent.com/ruoyewu/repository/master/all/v3_all.json"
+
+    val USER_LOGIN_URL = REMOTE_HOST + "v3/user/login?"
+    val USER_SIGN_URL = REMOTE_HOST + "v3/user/sign?"
+    val USER_AVATAR_URL = REMOTE_HOST + "v3/user/avatar"
 
     val ARTICLE_LIST_URL = REMOTE_HOST + "v3/article/list?"
     val ARTICLE_DETAIL_URL = REMOTE_HOST + "v3/article/detail?"
@@ -22,4 +28,11 @@ object Config {
 
     val CONNECT_TIME_OUT = 10L
     val READ_TIME_OUT = 30L
+
+    val FILE_PATH = Environment.getExternalStorageDirectory().absolutePath + "/com.wuruoye.all2/"
+    val PROVIDER_AUTHORITY = "com.wuruoye.all2.fileprovider"
+    val FILE_PERMISSION = arrayOf(
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    )
 }

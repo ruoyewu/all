@@ -5,8 +5,7 @@ import android.os.Handler
 import android.view.View
 import com.wuruoye.all2.R
 import com.wuruoye.all2.base.App
-import com.wuruoye.all2.base.RefreshFragment
-import com.wuruoye.all2.base.util.extensions.toast
+import com.wuruoye.all2.base.util.Extensions.toast
 
 /**
  * Created by wuruoye on 2017/9/24.

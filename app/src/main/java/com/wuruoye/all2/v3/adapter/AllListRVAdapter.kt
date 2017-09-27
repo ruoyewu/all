@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.wuruoye.all2.R
-import com.wuruoye.all2.base.util.extensions.loadImage
+import com.wuruoye.all2.base.util.Extensions.loadImage
 import com.wuruoye.all2.v3.adapter.viewholder.AllListViewHolder
 import com.wuruoye.all2.v3.adapter.viewholder.HeartRefreshViewHolder
 import com.wuruoye.all2.v3.adapter.viewholder.OneHeadViewHolder

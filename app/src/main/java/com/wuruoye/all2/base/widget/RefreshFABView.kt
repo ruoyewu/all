@@ -7,7 +7,6 @@ import android.content.Context
 import android.support.design.widget.FloatingActionButton
 import android.util.AttributeSet
 import android.view.animation.LinearInterpolator
-import com.wuruoye.all2.base.util.extensions.loge
 
 /**
  * Created by wuruoye on 2017/9/24.

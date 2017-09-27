@@ -11,7 +11,7 @@ import com.bumptech.glide.Glide
  * Created by wuruoye on 2017/9/16.
  * this file is to do
  */
-object extensions {
+object Extensions {
 
     fun Context.toast(message: String){
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
@@ -21,6 +21,11 @@ object extensions {
         Glide.with(this)
                 .load(url)
                 .into(imageView)
+    }
+
+    fun Context.clearGlide(){
+        Glide.get(this).clearMemory()
+        Thread(Runnable { Glide.get(this).clearDiskCache() }).start()
     }
 
     fun loge(message: String){

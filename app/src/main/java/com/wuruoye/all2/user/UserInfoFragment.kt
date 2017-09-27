@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import com.wuruoye.all2.R
-import com.wuruoye.all2.base.BaseFragment
-import com.wuruoye.all2.base.RefreshFragment
 
 /**
  * Created by wuruoye on 2017/9/24.

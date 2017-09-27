@@ -3,6 +3,7 @@ package com.wuruoye.all2.base.util
 import com.wuruoye.all2.base.model.Config
 import com.wuruoye.all2.base.model.Listener
 import okhttp3.*
+import java.io.File
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
@@ -55,6 +56,37 @@ object NetUtil {
         val request = Request.Builder()
                 .url(url)
                 .post(requestBody.build())
+                .build()
+
+        client.newCall(request).enqueue(object : Callback{
+            override fun onFailure(call: Call?, e: IOException?) {
+                listener.onFail(e!!.message!!)
+            }
+
+            override fun onResponse(call: Call?, response: Response?) {
+                if (response!!.isSuccessful){
+                    listener.onSuccess(response.body()!!.string())
+                }else{
+                    listener.onFail(response.message())
+                }
+            }
+
+        })
+    }
+
+
+    fun postFile(url: String, filePath: String, username: String, listener: Listener<String>){
+        val file = File(filePath)
+
+        val requestBody = MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("image", file.name, RequestBody.create(MediaType.parse("image/*"), file))
+                .addFormDataPart("username", username)
+                .build()
+
+        val request = Request.Builder()
+                .url(url)
+                .post(requestBody)
                 .build()
 
         client.newCall(request).enqueue(object : Callback{

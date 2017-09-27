@@ -10,7 +10,7 @@ import com.wuruoye.all2.base.presenter.AbsView
 import com.wuruoye.all2.v3.model.AppInfo
 import com.wuruoye.all2.v3.presenter.AppInfoListGet
 import kotlinx.android.synthetic.main.activity_main.*
-import com.wuruoye.all2.base.util.extensions.toast
+import com.wuruoye.all2.base.util.Extensions.toast
 import com.wuruoye.all2.user.UserActivity
 import com.wuruoye.all2.v3.adapter.HomeListRVAdapter
 import com.wuruoye.all2.v3.model.ArticleListItem

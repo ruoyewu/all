@@ -10,11 +10,11 @@ import com.wuruoye.all2.base.model.BaseCache
 class UserCache(context: Context) : BaseCache(context) {
 
     var isLogin: Boolean
-        get() = getBoolean(USER_LOGIN, true)
+        get() = getBoolean(USER_LOGIN, false)
         set(value) = setBoolean(USER_LOGIN, value)
 
     var userName: String
-        get() = getString(USER_NAME, "ruoye")
+        get() = getString(USER_NAME, "")
         set(value) = setString(USER_NAME, value)
 
     var userAvatar: String
