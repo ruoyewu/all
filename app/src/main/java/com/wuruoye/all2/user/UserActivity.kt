@@ -1,12 +1,15 @@
 package com.wuruoye.all2.user
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
+import android.support.v7.app.AlertDialog
 import android.view.View
+import com.bumptech.glide.Glide
 import com.transitionseverywhere.Fade
 import com.transitionseverywhere.TransitionManager
 import com.wuruoye.all2.R
@@ -14,10 +17,7 @@ import com.wuruoye.all2.R
 import com.wuruoye.all2.base.PhotoActivity
 import com.wuruoye.all2.base.model.Config
 import com.wuruoye.all2.base.model.Listener
-import com.wuruoye.all2.base.util.BlurUtil
-import com.wuruoye.all2.base.util.NetUtil
-import com.wuruoye.all2.base.util.Extensions.loadImage
-import com.wuruoye.all2.base.util.Extensions.loge
+import com.wuruoye.all2.base.util.*
 import com.wuruoye.all2.user.model.AppBarStateChangeListener
 import com.wuruoye.all2.user.model.UserCache
 import com.wuruoye.all2.v3.adapter.FragmentVPAdapter
@@ -29,7 +29,9 @@ import kotlinx.android.synthetic.main.activity_user.*
  */
 
 class UserActivity : PhotoActivity() {
-    private lateinit var userCache: UserCache
+
+    private lateinit var mUserCache: UserCache
+    private lateinit var mUserName: String
     private var isRefresh = false
     private var currentItem = 0
 
@@ -39,11 +41,12 @@ class UserActivity : PhotoActivity() {
         get() = R.layout.activity_user
 
     override fun initData(bundle: Bundle?) {
-        userCache = UserCache(applicationContext)
+        mUserName = bundle!!.getString("username")
+
+        mUserCache = UserCache(applicationContext)
     }
 
     override fun initView() {
-//        nsv_user.isFillViewport = true
         initUser()
         setUserVP()
 
@@ -57,32 +60,43 @@ class UserActivity : PhotoActivity() {
         }
 
         ll_user_center.setOnClickListener {
-            choosePhoto()
-//            startActivityForResult(Intent(this, LoginActivity::class.java), LOGIN)
+            onAvatarClick()
+        }
+        ll_user_top.setOnClickListener {
+            if (ll_user_top.visibility == View.VISIBLE){
+                onAvatarClick()
+            }
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == LOGIN){
+            mUserName = mUserCache.userName
             initUser()
         }
     }
 
     override fun onTakePhoto(filePath: String) {
-
+        setAvatar(filePath)
     }
 
     override fun onChoosePhoto(filePath: String) {
+        setAvatar(filePath)
+    }
+
+    private fun setAvatar(filePath: String){
+        clearGlide()
         val bitmap = BitmapFactory.decodeFile(filePath)
+
         civ_user_avatar1.setImageBitmap(bitmap)
         civ_user_avatar2.setImageBitmap(bitmap)
         iv_user_head.setImageBitmap(
                 BlurUtil.blurBitmap(applicationContext, bitmap, 5f)
         )
-        NetUtil.postFile(Config.USER_AVATAR_URL, filePath, userCache.userName, object : Listener<String>{
+        NetUtil.postFile(Config.USER_AVATAR_URL, filePath, mUserCache.userName, object : Listener<String>{
             override fun onSuccess(model: String) {
-                loge("success : " + model)
+                mUserCache.userAvatar = filePath
             }
 
             override fun onFail(message: String) {
@@ -92,16 +106,86 @@ class UserActivity : PhotoActivity() {
         })
     }
 
-    private fun initUser(){
-        if (userCache.isLogin){
-            tv_user_name1.text = userCache.userName
-            tv_user_name2.text = userCache.userName
-            tv_user_desc.text = userCache.userDesc
+    private fun onAvatarClick(){
+        if (mUserCache.userName != ""){
+            if (mUserName == mUserCache.userName && mUserCache.isLogin){
+                AlertDialog.Builder(this)
+                        .setItems(dialog_items, { _, which ->
+                            when (which){
+                                0 -> {      // 注销登录
+                                    mUserName = ""
+                                    mUserCache.userName = ""
+                                    mUserCache.isLogin = false
+                                    initUser()
+                                }
+                                1 -> {      //相册
+                                    choosePhoto()
+                                }
+                                2 -> {      //相机
+                                    takePhoto("avatar.jpg")
+                                }
+                            }
+                        })
+                        .show()
+            }else{
+
+            }
+        }else{
+            startActivityForResult(Intent(this, LoginActivity::class.java), LOGIN)
         }
-        iv_user_head.setImageBitmap(
-                BlurUtil.blurBitmap(applicationContext, BitmapFactory.decodeResource(resources, R.drawable.ic_avatar), 5f)
-        )
-        loadImage(Config.USER_AVATAR_URL + "/" + userCache.userName, civ_user_avatar1)
+    }
+
+    private fun initUser(){
+        if (mUserName != ""){
+            if (mUserName == mUserCache.userName && mUserCache.isLogin){
+                //自己的详情页面
+                fab_user.visibility = View.VISIBLE
+                tv_user_name1.text = mUserName
+                tv_user_name2.text = mUserName
+
+                try {
+                    val avatarPath = mUserCache.userAvatar
+                    if (avatarPath != ""){
+                        val avatarBitmap = BitmapFactory.decodeFile(avatarPath)
+                        civ_user_avatar1.setImageBitmap(avatarBitmap)
+                        civ_user_avatar2.setImageBitmap(avatarBitmap)
+
+                        iv_user_head.setImageBitmap(
+                                BlurUtil.blurBitmap(applicationContext, avatarBitmap, 5f)
+                        )
+                    }
+                } catch (e: Exception) {
+                }
+            }else{
+                //别人的详情页面
+                fab_user.visibility = View.GONE
+
+                tv_user_name1.text = mUserName
+                tv_user_name2.text = mUserName
+                loadUserImage(mUserName, civ_user_avatar1)
+                loadUserImage(mUserName, civ_user_avatar2)
+
+                getImageBitmap(Config.USER_AVATAR_URL + "/" + mUserName, object : Listener<Bitmap>{
+                    override fun onSuccess(model: Bitmap) {
+                        runOnUiThread {
+                            iv_user_head.setImageBitmap(BlurUtil.blurBitmap(applicationContext, model, 5f))
+                        }
+                    }
+
+                    override fun onFail(message: String) {
+
+                    }
+
+                })
+            }
+        }else{
+            civ_user_avatar1.setImageResource(R.drawable.ic_avatar)
+            civ_user_avatar2.setImageResource(R.drawable.ic_avatar)
+            tv_user_name1.text = "点击登录"
+            tv_user_name2.text = "点击登录"
+            iv_user_head.setImageResource(0)
+
+        }
     }
 
     private fun setUserVP(){
@@ -157,6 +241,9 @@ class UserActivity : PhotoActivity() {
     companion object {
         val title_items = arrayListOf(
                 "收藏文章", "个人历程", "个人信息"
+        )
+        val dialog_items = arrayOf(
+                "注销登录", "打开相册", "打开相机"
         )
         val LOGIN = 3
     }

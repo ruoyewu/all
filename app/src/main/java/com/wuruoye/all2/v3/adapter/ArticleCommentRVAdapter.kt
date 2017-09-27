@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.wuruoye.all2.R
 import com.wuruoye.all2.base.util.DateUtil
+import com.wuruoye.all2.base.util.loadUserImage
 import com.wuruoye.all2.v3.adapter.viewholder.ArticleCommentViewHolder
 import com.wuruoye.all2.v3.adapter.viewholder.HeartRefreshViewHolder
 import com.wuruoye.all2.v3.model.ArticleComment
@@ -30,7 +31,9 @@ class ArticleCommentRVAdapter(
             val viewHolder = holder as ArticleCommentViewHolder
             with(viewHolder){
                 itemView.setOnClickListener { onItemClickListener.onItemClick(item) }
+                ivUser.setOnClickListener { onItemClickListener.onUserClick(item) }
 
+                itemView.context.loadUserImage(item.username, ivUser)
                 tvUser.text = item.username
                 tvTime.text = DateUtil.getDateString(item.time)
                 tvContent.text = item.content
@@ -88,6 +91,7 @@ class ArticleCommentRVAdapter(
     interface OnItemClickListener{
         fun onLoadMore(next: Long, hv: HeartRefreshViewHolder)
         fun onItemClick(item: ArticleCommentItem)
+        fun onUserClick(item: ArticleCommentItem)
     }
 
     companion object {

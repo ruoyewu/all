@@ -9,8 +9,8 @@ import com.wuruoye.all2.R
 import com.wuruoye.all2.base.BaseFragment
 import com.wuruoye.all2.base.presenter.AbsPresenter
 import com.wuruoye.all2.base.presenter.AbsView
-import com.wuruoye.all2.base.util.Extensions.loge
-import com.wuruoye.all2.base.util.Extensions.toast
+import com.wuruoye.all2.base.util.loge
+import com.wuruoye.all2.base.util.toast
 import com.wuruoye.all2.v3.adapter.AllListRVAdapter
 import com.wuruoye.all2.v3.adapter.HomeListRVAdapter
 import com.wuruoye.all2.v3.adapter.viewholder.HeartRefreshViewHolder

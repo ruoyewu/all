@@ -35,4 +35,8 @@ object Config {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     )
+
+    val CAMERA_PERMISSION = arrayOf(
+            Manifest.permission.CAMERA
+    )
 }

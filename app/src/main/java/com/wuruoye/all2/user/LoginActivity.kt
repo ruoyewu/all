@@ -5,7 +5,7 @@ import android.view.View
 import com.transitionseverywhere.TransitionManager
 import com.wuruoye.all2.R
 import com.wuruoye.all2.base.BaseActivity
-import com.wuruoye.all2.base.util.Extensions.toast
+import com.wuruoye.all2.base.util.toast
 import com.wuruoye.all2.user.model.UserCache
 import com.wuruoye.all2.user.presenter.LoginGet
 import com.wuruoye.all2.user.presenter.LoginView

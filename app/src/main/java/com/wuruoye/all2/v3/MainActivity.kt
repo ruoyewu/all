@@ -7,11 +7,12 @@ import com.wuruoye.all2.R
 import com.wuruoye.all2.base.BaseActivity
 import com.wuruoye.all2.base.presenter.AbsPresenter
 import com.wuruoye.all2.base.presenter.AbsView
+import com.wuruoye.all2.base.util.toast
 import com.wuruoye.all2.v3.model.AppInfo
 import com.wuruoye.all2.v3.presenter.AppInfoListGet
 import kotlinx.android.synthetic.main.activity_main.*
-import com.wuruoye.all2.base.util.Extensions.toast
 import com.wuruoye.all2.user.UserActivity
+import com.wuruoye.all2.user.model.UserCache
 import com.wuruoye.all2.v3.adapter.HomeListRVAdapter
 import com.wuruoye.all2.v3.model.ArticleListItem
 
@@ -98,7 +99,11 @@ class MainActivity : BaseActivity(){
 
         }
         fab_main_user.setOnClickListener {
-            startActivity(Intent(this, UserActivity::class.java))
+            val bundle = Bundle()
+            bundle.putString("username", UserCache(this).userName)
+            val intent = Intent(this, UserActivity::class.java)
+            intent.putExtras(bundle)
+            startActivity(intent)
         }
         fab_main_setting.setOnClickListener {
 

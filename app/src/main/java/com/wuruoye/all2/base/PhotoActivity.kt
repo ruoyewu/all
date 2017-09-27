@@ -43,7 +43,8 @@ abstract class PhotoActivity : BaseActivity(){
     }
 
     fun takePhoto(fileName: String){
-        if (PermissionUtil(this).requestPermission(Config.FILE_PERMISSION)){
+        if (PermissionUtil(this).requestPermission(Config.FILE_PERMISSION) &&
+                PermissionUtil(this).requestPermission(Config.CAMERA_PERMISSION)){
             val file = FileUtil.createFile(fileName)
             filePath = file.absolutePath
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)

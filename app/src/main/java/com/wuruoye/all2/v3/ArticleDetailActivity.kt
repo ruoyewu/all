@@ -20,9 +20,10 @@ import com.transitionseverywhere.*
 import com.transitionseverywhere.extra.Scale
 import com.wuruoye.all2.R
 import com.wuruoye.all2.base.BaseActivity
-import com.wuruoye.all2.base.util.Extensions.loadImage
-import com.wuruoye.all2.base.util.Extensions.toast
+import com.wuruoye.all2.base.util.loadImage
+import com.wuruoye.all2.base.util.toast
 import com.wuruoye.all2.user.LoginActivity
+import com.wuruoye.all2.user.UserActivity
 import com.wuruoye.all2.user.model.UserCache
 import com.wuruoye.all2.v3.adapter.ArticleCommentRVAdapter
 import com.wuruoye.all2.v3.adapter.viewholder.HeartRefreshViewHolder
@@ -124,6 +125,13 @@ class ArticleDetailActivity : BaseActivity() {
             this@ArticleDetailActivity.onItemClick(item)
         }
 
+        override fun onUserClick(item: ArticleCommentItem) {
+            val bundle = Bundle()
+            bundle.putString("username", item.username)
+            val intent = Intent(this@ArticleDetailActivity, UserActivity::class.java)
+            intent.putExtras(bundle)
+            startActivity(intent)
+        }
     }
 
     override val contentView: Int
