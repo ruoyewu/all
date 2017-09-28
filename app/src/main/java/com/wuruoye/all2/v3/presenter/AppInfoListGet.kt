@@ -39,7 +39,13 @@ class AppInfoListGet(context: Context) : AbsPresenter<AbsView<ArrayList<AppInfo>
         if (method == Method.NET){
             NetUtil.get(Config.APP_LIST_URL, object : Listener<String>{
                 override fun onSuccess(model: String) {
-                    this@AppInfoListGet.onSuccess(parseData(model))
+                    val list = parseData(model)
+                    for (i in list){
+                        val name = i.name
+                        val logo = i.icon
+                        appInfoCache.putAppIcon(name, logo)
+                    }
+                    this@AppInfoListGet.onSuccess(list)
                     appInfoCache.infoList = model
                 }
 

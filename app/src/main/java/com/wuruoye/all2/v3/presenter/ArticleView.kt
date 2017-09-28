@@ -20,5 +20,6 @@ interface ArticleView : BaseView{
     fun onCommentDelete(model: Boolean)
     fun onCommentReport(model: Boolean)
     fun onLovePut(model: Boolean)
+    fun onFavoritePut(model: Boolean)
     fun setWorn(message: String)
 }

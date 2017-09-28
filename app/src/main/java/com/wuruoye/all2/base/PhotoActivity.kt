@@ -46,7 +46,6 @@ abstract class PhotoActivity : BaseActivity(){
         if (PermissionUtil(this).requestPermission(Config.FILE_PERMISSION) &&
                 PermissionUtil(this).requestPermission(Config.CAMERA_PERMISSION)){
             val file = FileUtil.createFile(fileName)
-            filePath = file.absolutePath
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             val uri =
                     if (Build.VERSION.SDK_INT < 21){

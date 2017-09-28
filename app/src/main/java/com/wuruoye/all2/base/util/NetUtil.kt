@@ -15,7 +15,7 @@ object NetUtil {
     //初始化唯一的一个client
     private val client = OkHttpClient.Builder()
             .connectTimeout(Config.CONNECT_TIME_OUT, TimeUnit.SECONDS)
-            .readTimeout(Config.READ_TIME_OUT, TimeUnit.SECONDS)
+//            .readTimeout(Config.READ_TIME_OUT, TimeUnit.SECONDS)
             .build()!!
 
     /**

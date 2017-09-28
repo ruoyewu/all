@@ -16,6 +16,7 @@ import android.view.animation.OvershootInterpolator
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.google.gson.Gson
 import com.transitionseverywhere.*
 import com.transitionseverywhere.extra.Scale
 import com.wuruoye.all2.R
@@ -56,6 +57,7 @@ class ArticleDetailActivity : BaseActivity() {
     // 侧边 button 是否可以点击，只有在文章加载出来之后才可以点击， true 代表文章详情已经加载出来
     private var isClick = false
     private var isLove = false
+    private var isFavorite = false
     // 编写文章评论的 dialog
     private lateinit var commentEditDialog: AlertDialog
     // 包含评论 dialog 的view
@@ -106,9 +108,20 @@ class ArticleDetailActivity : BaseActivity() {
 
         override fun onLovePut(model: Boolean) {
             // 如果提交结果 与 当前状态 不相同， 则认定为提交错误，并
-            if (model != isLove){
-                toast("提交出错...请重试")
-                setLove(model, false)
+            runOnUiThread {
+                if (model != isLove){
+                    toast("提交出错...请重试")
+                    setLove(model, false)
+                }
+            }
+        }
+
+        override fun onFavoritePut(model: Boolean) {
+            runOnUiThread {
+                if (model != isFavorite){
+                    toast("提交出错...请重试")
+                    setFavorite(model, false)
+                }
             }
         }
 
@@ -164,8 +177,9 @@ class ArticleDetailActivity : BaseActivity() {
         //将要添加动画的放到一个数组
         viewFloatList.add(cv_article_likes)
         viewFloatList.add(cv_article_comments)
-        viewFloatList.add(fab_article_comment)
+        viewFloatList.add(fab_article_favorite)
         viewFloatList.add(fab_article_like)
+        viewFloatList.add(fab_article_comment)
 
         //以下是 各种控件的监听
         fab_article_drawer.setOnClickListener {
@@ -192,6 +206,14 @@ class ArticleDetailActivity : BaseActivity() {
         fab_article_like.setOnClickListener {
             if (mUserCache.isLogin) {
                 setLove(!isLove, true)
+            }else{
+                loginDialog.show()
+            }
+        }
+
+        fab_article_favorite.setOnClickListener {
+            if (mUserCache.isLogin){
+                setFavorite(!isFavorite, true)
             }else{
                 loginDialog.show()
             }
@@ -461,10 +483,16 @@ class ArticleDetailActivity : BaseActivity() {
     // 对网络请求得到的 ArticleInfo 做操作
     private fun setArticleInfo(info: ArticleInfo){
         isLove = info.result
+        isFavorite = info.favorite
         if (info.result){
             fab_article_like.setImageResource(R.drawable.ic_heart_on)
         }else{
             fab_article_like.setImageResource(R.drawable.ic_heart_off)
+        }
+        if (info.favorite){
+            fab_article_favorite.setImageResource(R.drawable.ic_favorite_on)
+        }else{
+            fab_article_favorite.setImageResource(R.drawable.ic_favorite_off)
         }
         tv_article_num_like.text = info.love.toString()
         tv_article_num_comment.text = info.comment.toString()
@@ -514,6 +542,18 @@ class ArticleDetailActivity : BaseActivity() {
             fab_article_like.setImageResource(R.drawable.ic_like_off)
             val newNum = tv_article_num_like.text.toString().toInt() - 1
             tv_article_num_like.text = newNum.toString()
+        }
+    }
+
+    private fun setFavorite(favorite: Boolean, isPut: Boolean){
+        isFavorite = favorite
+        if (isPut){
+            mArticleGet.putFavorite(articleKey, mUserCache.userName, Gson().toJson(item), System.currentTimeMillis(), isFavorite)
+        }
+        if (favorite){
+            fab_article_favorite.setImageResource(R.drawable.ic_favorite_on)
+        }else{
+            fab_article_favorite.setImageResource(R.drawable.ic_favorite_off)
         }
     }
 
@@ -628,9 +668,6 @@ class ArticleDetailActivity : BaseActivity() {
     }
 
     companion object {
-        val METHOD_LOCAL = 1
-        val METHOD_NET = 2
-
         val TYPE_TEXT = "1"
         val TYPE_IMG = "2"
         val TYPE_VIDEO = "3"

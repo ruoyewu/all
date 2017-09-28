@@ -192,6 +192,16 @@
         </android.support.v7.widget.CardView>
 
         <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_article_favorite"
+            android:visibility="invisible"
+            android:src="@drawable/ic_favorite_off"
+            android:layout_marginBottom="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginLeft="16dp"
+            app:theme="@style/FabTheme"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_article_like"
             android:visibility="invisible"
             android:src="@drawable/ic_heart_off"

@@ -131,4 +131,23 @@ class ArticleGet : AbsPresenter<ArticleView>() {
 
         })
     }
+
+    fun putFavorite(key: String, username: String, info: String, time: Long, favorite: Boolean){
+        val url = Config.FAVORITE_PUT_URL
+        val keyList = arrayListOf("key", "username", "info", "time", "favorite")
+        val valueList = arrayListOf(key, username, info, time.toString(), if (favorite) "1" else "0")
+
+        NetUtil.post(url, keyList, valueList, object : Listener<String>{
+            override fun onSuccess(model: String) {
+                val jsonObject = JSONObject(model)
+                val result = jsonObject.getBoolean("result")
+                getView()?.onFavoritePut(result)
+            }
+
+            override fun onFail(message: String) {
+                getView()?.setWorn(message)
+            }
+
+        })
+    }
 }

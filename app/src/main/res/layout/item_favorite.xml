@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:padding="10dp"
+    tools:ignore="NewApi"
+    android:foreground="?android:attr/selectableItemBackgroundBorderless"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/civ_favorite_app"
+        android:src="@drawable/ic_avatar"
+        android:layout_width="30dp"
+        android:layout_height="30dp" />
+
+    <TextView
+        android:id="@+id/tv_favorite_title"
+        android:text="人生若只如初见"
+        android:textSize="15sp"
+        android:textColor="@color/monsoon"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:padding="10dp"
+        android:maxLines="2"
+        android:layout_height="wrap_content" />
+
+    <ImageView
+        android:id="@+id/iv_favorite_img"
+        android:src="@drawable/all"
+        android:scaleType="centerCrop"
+        android:layout_width="80dp"
+        android:layout_height="80dp" />
+</LinearLayout>

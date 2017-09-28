@@ -7,5 +7,6 @@ package com.wuruoye.all2.v3.model
 data class ArticleInfo(
         var result: Boolean,
         var love: Int,
-        var comment: Int
+        var comment: Int,
+        var favorite: Boolean
 )

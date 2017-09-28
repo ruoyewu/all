@@ -20,13 +20,16 @@ object Config {
     val ARTICLE_DETAIL_URL = REMOTE_HOST + "v3/article/detail?"
     val ARTICLE_INFO_URL = REMOTE_HOST + "v3/article/info?"
 
+    val FAVORITE_PUT_URL = REMOTE_HOST + "v3/favorite/put"
+    val FAVORITE_GET_URL = REMOTE_HOST + "v3/favorite/get?"
+
     val COMMENT_GET_URL = REMOTE_HOST + "v3/comment/get?"
     val COMMENT_PUT_URL = REMOTE_HOST + "v3/comment/add"
     val COMMENT_DELETE_URL = REMOTE_HOST + "v3/comment/delete?"
 
     val ARTICLE_LOVE_URL = REMOTE_HOST + "v3/article/love?"
 
-    val CONNECT_TIME_OUT = 10L
+    val CONNECT_TIME_OUT = 30L
     val READ_TIME_OUT = 30L
 
     val APP_PATH = Environment.getExternalStorageDirectory().absolutePath + "/com.wuruoye.all2/"

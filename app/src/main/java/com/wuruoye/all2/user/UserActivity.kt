@@ -189,7 +189,12 @@ class UserActivity : PhotoActivity() {
 
     private fun setUserVP(){
         mFragmentList.clear()
-        mFragmentList.add(UserCollectFragment())
+        val bundle = Bundle()
+        bundle.putString("username", mUserName)
+
+        val userFavoriteFragment = UserFavoriteFragment()
+        userFavoriteFragment.arguments = bundle
+        mFragmentList.add(userFavoriteFragment)
         mFragmentList.add(UserCourseFragment())
         mFragmentList.add(UserInfoFragment())
 

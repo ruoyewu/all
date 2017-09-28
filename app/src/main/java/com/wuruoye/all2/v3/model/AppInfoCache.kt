@@ -1,10 +1,7 @@
 package com.wuruoye.all2.v3.model
 
 import android.content.Context
-import com.google.gson.Gson
-import com.google.gson.JsonArray
 import com.wuruoye.all2.base.model.BaseCache
-import org.json.JSONArray
 
 /**
  * Created by wuruoye on 2017/9/16.
@@ -27,12 +24,21 @@ class AppInfoCache(context: Context) : BaseCache(context) {
         return getString(key, INFO_APP_DEFAULT)
     }
 
+    fun putAppIcon(name: String, value: String){
+        val key = APP_ICON + name
+        setString(key, value)
+    }
+
+    fun getAppIcon(name: String): String{
+        val key = APP_ICON + name
+        return getString(key, "")
+    }
+
     companion object {
         val INFO_LIST = "info_list"
         val INFO_LIST_DEFAULT = ""
         val INFO_APP = "info_app_"
         val INFO_APP_DEFAULT = ""
-        val ARTICLE_DETAIL = "article_detail_"
-        val ARTICLE_DETAIL_DEFAULT = ""
+        val APP_ICON = "app_logo_"
     }
 }
