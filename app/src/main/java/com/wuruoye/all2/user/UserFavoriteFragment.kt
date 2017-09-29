@@ -2,6 +2,7 @@ package com.wuruoye.all2.user
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import com.google.gson.Gson

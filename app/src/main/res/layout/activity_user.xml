@@ -125,6 +125,7 @@
 
     <com.wuruoye.all2.base.widget.RefreshFABView
         android:id="@+id/fab_user"
+        android:visibility="invisible"
         android:layout_gravity="bottom|right"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"

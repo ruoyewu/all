@@ -33,6 +33,7 @@ class UserActivity : PhotoActivity() {
     private lateinit var mUserName: String
     private var isRefresh = false
     private var currentItem = 0
+    private var isCurrentUser = false
 
     private val mFragmentList = ArrayList<Fragment>()
 
@@ -41,13 +42,14 @@ class UserActivity : PhotoActivity() {
 
     override fun initData(bundle: Bundle?) {
         mUserName = bundle!!.getString("username")
-
         mUserCache = UserCache(applicationContext)
+
+        isCurrentUser = mUserCache.userName == mUserName
     }
 
     override fun initView() {
         initUser()
-        setUserVP()
+        setUserVP(mUserName)
 
         al_user.addOnOffsetChangedListener(object : AppBarStateChangeListener(){
             override fun onStateChanged(appBarLayout: AppBarLayout?, state: State) {
@@ -55,6 +57,7 @@ class UserActivity : PhotoActivity() {
             }
         })
         fab_user.setOnClickListener {
+            loge("refresh")
             startRefresh()
         }
 
@@ -66,13 +69,35 @@ class UserActivity : PhotoActivity() {
                 onAvatarClick()
             }
         }
+
+        vp_user.addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
+            override fun onPageScrollStateChanged(state: Int) {
+
+            }
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+
+            }
+
+            override fun onPageSelected(position: Int) {
+                currentItem = position
+                if (currentItem == 0){
+                    fab_user.hide()
+                }else if (mUserCache.isLogin && mUserName == mUserCache.userName){
+                    fab_user.show()
+                }
+            }
+
+        })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        loge("result: " + requestCode)
         if (requestCode == LOGIN){
             mUserName = mUserCache.userName
             initUser()
+            setUserVP(mUserName)
         }
     }
 
@@ -114,6 +139,7 @@ class UserActivity : PhotoActivity() {
                                     mUserCache.cancelUser()
                                     mUserName = ""
                                     initUser()
+                                    setUserVP(mUserName)
                                 }
                                 1 -> {      //相册
                                     choosePhoto()
@@ -128,7 +154,7 @@ class UserActivity : PhotoActivity() {
 
             }
         }else{
-            startActivityForResult(Intent(this, LoginActivity::class.java), LOGIN)
+            startToLogin()
         }
     }
 
@@ -136,29 +162,9 @@ class UserActivity : PhotoActivity() {
         if (mUserName != ""){
             if (mUserName == mUserCache.userName && mUserCache.isLogin){
                 //自己的详情页面
-                fab_user.visibility = View.VISIBLE
-                tv_user_name1.text = mUserName
-                tv_user_name2.text = mUserName
-
-                try {
-                    val avatarPath = mUserCache.userAvatar
-                    if (avatarPath != ""){
-                        val avatarBitmap = BitmapFactory.decodeFile(avatarPath)
-                        civ_user_avatar1.setImageBitmap(avatarBitmap)
-                        civ_user_avatar2.setImageBitmap(avatarBitmap)
-
-                        iv_user_head.setImageBitmap(
-                                BlurUtil.blurBitmap(applicationContext, avatarBitmap)
-                        )
-                    }
-                } catch (e: Exception) {
-                    civ_user_avatar1.setImageResource(R.drawable.ic_avatar)
-                    civ_user_avatar2.setImageResource(R.drawable.ic_avatar)
-                }
+                setUserInfo(mUserName, mUserCache.userAvatar)
             }else{
                 //别人的详情页面
-                fab_user.visibility = View.GONE
-
                 tv_user_name1.text = mUserName
                 tv_user_name2.text = mUserName
                 loadUserImage(mUserName, civ_user_avatar1)
@@ -183,38 +189,48 @@ class UserActivity : PhotoActivity() {
             tv_user_name1.text = "点击登录"
             tv_user_name2.text = "点击登录"
             iv_user_head.setImageResource(0)
-
         }
     }
 
-    private fun setUserVP(){
+    private fun setUserInfo(name: String, avatarPath: String){
+        tv_user_name1.text = name
+        tv_user_name2.text = name
+
+        if (avatarPath != ""){
+            try {
+                val avatarBitmap = BitmapFactory.decodeFile(avatarPath)
+                civ_user_avatar1.setImageBitmap(avatarBitmap)
+                civ_user_avatar2.setImageBitmap(avatarBitmap)
+
+                iv_user_head.setImageBitmap(
+                        BlurUtil.blurBitmap(applicationContext, avatarBitmap)
+                )
+            } catch (e: Exception) {
+                toast("加载头像失败，请重新选择头像...")
+            }
+        }
+    }
+
+    private fun setUserVP(userName: String){
         mFragmentList.clear()
-        val bundle = Bundle()
-        bundle.putString("username", mUserName)
+        if (userName != "") {
+            val bundle = Bundle()
+            bundle.putString("username", userName)
 
-        val userFavoriteFragment = UserFavoriteFragment()
-        userFavoriteFragment.arguments = bundle
-        mFragmentList.add(userFavoriteFragment)
-        mFragmentList.add(UserCourseFragment())
-        mFragmentList.add(UserInfoFragment())
+            val userFavoriteFragment = UserFavoriteFragment()
+            userFavoriteFragment.arguments = bundle
+            mFragmentList.add(userFavoriteFragment)
+            mFragmentList.add(UserCourseFragment())
+            mFragmentList.add(UserInfoFragment())
 
+        }else{
+            mFragmentList.add(EmptyFragment())
+            mFragmentList.add(EmptyFragment())
+            mFragmentList.add(EmptyFragment())
+        }
         val adapter = FragmentVPAdapter(supportFragmentManager, mFragmentList, title_items)
         vp_user.adapter = adapter
         tl_user.setupWithViewPager(vp_user)
-
-        vp_user.addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
-            override fun onPageScrollStateChanged(state: Int) {
-
-            }
-
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-            }
-
-            override fun onPageSelected(position: Int) {
-                currentItem = position
-            }
-
-        })
     }
 
     private fun startRefresh(){
@@ -229,6 +245,10 @@ class UserActivity : PhotoActivity() {
     fun stopRefresh(){
         isRefresh = false
         fab_user.stop()
+    }
+
+    fun startToLogin(){
+        startActivityForResult(Intent(this, LoginActivity::class.java), LOGIN)
     }
 
     private fun onStateChange(state: AppBarStateChangeListener.State){
