@@ -18,6 +18,7 @@
     </android.support.v4.widget.SwipeRefreshLayout>
     
     <LinearLayout
+        android:id="@+id/ll_main_fab"
         android:orientation="vertical"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
@@ -26,6 +27,7 @@
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_main_setting"
+            android:visibility="invisible"
             android:src="@drawable/ic_setting"
             app:theme="@style/FabTheme"
             android:layout_marginStart="16dp"
@@ -36,6 +38,7 @@
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_main_user"
+            android:visibility="invisible"
             android:src="@drawable/ic_user"
             app:theme="@style/FabTheme"
             android:layout_marginStart="16dp"

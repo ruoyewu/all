@@ -526,6 +526,13 @@ class ArticleDetailActivity : BaseActivity() {
         mArticleGet.getArticleInfo(articleKey, mUserCache.userName)
         fab_article_drawer.show()
         isClick = true
+
+        if (true){
+            ll_article_fab.post {
+                isShow = true
+                showFAB()
+            }
+        }
     }
 
     //设置是否喜欢文章，并且上传到服务器
@@ -535,11 +542,11 @@ class ArticleDetailActivity : BaseActivity() {
             mArticleGet.putLove(articleKey, mUserCache.userName, isLove)
         }
         if (love){
-            fab_article_like.setImageResource(R.drawable.ic_like_on)
+            fab_article_like.setImageResource(R.drawable.ic_heart_on)
             val newNum = tv_article_num_like.text.toString().toInt() + 1
             tv_article_num_like.text = newNum.toString()
         }else{
-            fab_article_like.setImageResource(R.drawable.ic_like_off)
+            fab_article_like.setImageResource(R.drawable.ic_heart_off)
             val newNum = tv_article_num_like.text.toString().toInt() - 1
             tv_article_num_like.text = newNum.toString()
         }

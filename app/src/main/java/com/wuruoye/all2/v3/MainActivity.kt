@@ -2,7 +2,12 @@ package com.wuruoye.all2.v3
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.support.v7.widget.LinearLayoutManager
+import android.view.Gravity
+import android.view.View
+import com.transitionseverywhere.*
+import com.transitionseverywhere.extra.Scale
 import com.wuruoye.all2.R
 import com.wuruoye.all2.base.BaseActivity
 import com.wuruoye.all2.base.presenter.AbsPresenter
@@ -17,6 +22,8 @@ import com.wuruoye.all2.v3.adapter.HomeListRVAdapter
 import com.wuruoye.all2.v3.model.ArticleListItem
 
 class MainActivity : BaseActivity(){
+    private val viewFloatList = ArrayList<View>()
+    private var isShow = false
 
     private var isNetRefresh = false
     private lateinit var appInfoListGet: AppInfoListGet
@@ -95,8 +102,12 @@ class MainActivity : BaseActivity(){
         srl_main.setOnRefreshListener { requestData(NET_REQUEST) }
         requestData(LOCAL_REQUEST)
 
-        fab_main_drawer.setOnClickListener {
+        viewFloatList.add(fab_main_setting)
+        viewFloatList.add(fab_main_user)
 
+        fab_main_drawer.setOnClickListener {
+            isShow = !isShow
+            showFab()
         }
         fab_main_user.setOnClickListener {
             val bundle = Bundle()
@@ -107,6 +118,13 @@ class MainActivity : BaseActivity(){
         }
         fab_main_setting.setOnClickListener {
 
+        }
+
+        if (true){
+            ll_main_fab.post {
+                isShow = true
+                showFab()
+            }
         }
     }
 
@@ -125,6 +143,41 @@ class MainActivity : BaseActivity(){
         val adapter = HomeListRVAdapter(list, onItemClickListener, isNet, rl_main)
         rl_main.layoutManager = LinearLayoutManager(this)
         rl_main.adapter = adapter
+    }
+
+    private fun showFab(){
+        val set = TransitionSet()
+                .addTransition(Fade())
+                .addTransition(Scale())
+                .addTransition(Slide(Gravity.BOTTOM))
+        set.duration = ArticleDetailActivity.ANIMATION_DURATION
+        if (isShow) {
+            set.duration = ArticleDetailActivity.ANIMATION_DURATION + ArticleDetailActivity.ANIMATION_DELAY * 4
+            TransitionManager.beginDelayedTransition(ll_main_fab, Rotate())
+            fab_main_drawer.rotation = ArticleDetailActivity.ANIMATION_ROTATION
+
+            set.duration = ArticleDetailActivity.ANIMATION_DURATION
+            for (i in 0 until viewFloatList.size){
+                val delay = i * ArticleDetailActivity.ANIMATION_DELAY
+                Handler().postDelayed({
+                    TransitionManager.beginDelayedTransition(ll_main_fab, set)
+                    viewFloatList[i].visibility = View.VISIBLE
+                }, delay)
+            }
+        }else{
+            set.duration = ArticleDetailActivity.ANIMATION_DURATION + ArticleDetailActivity.ANIMATION_DELAY * 4
+            TransitionManager.beginDelayedTransition(ll_main_fab, Rotate())
+            fab_main_drawer.rotation = 0f
+
+            set.duration = ArticleDetailActivity.ANIMATION_DURATION
+            for (i in 0 until viewFloatList.size){
+                val delay = (viewFloatList.size - 1 - i) * ArticleDetailActivity.ANIMATION_DELAY
+                Handler().postDelayed({
+                    TransitionManager.beginDelayedTransition(ll_main_fab, set)
+                    viewFloatList[i].visibility = View.INVISIBLE
+                }, delay)
+            }
+        }
     }
 
     override fun onDestroy() {

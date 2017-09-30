@@ -14,13 +14,13 @@ object FileUtil {
     fun createFile(fileName: String): File{
         checkDirectory()
 
-        return File(Config.APP_PATH + "file/" + fileName)
+        return File(Config.FILE_PATH + fileName)
     }
 
     fun writeFile(fileName: String, inStream: InputStream){
         checkDirectory()
 
-        val file = Config.APP_PATH + "file/" + fileName
+        val file = Config.FILE_PATH + fileName
         val fos = FileOutputStream(file)
         val buf = ByteArray(1024)
         var len = 0
@@ -38,7 +38,7 @@ object FileUtil {
     }
 
     private fun checkDirectory(){
-        val directory = Config.APP_PATH + "file/"
+        val directory = Config.FILE_PATH
         val file = File(directory)
 
         if (!file.exists()){

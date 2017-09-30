@@ -101,12 +101,25 @@ class UserActivity : PhotoActivity() {
         }
     }
 
-    override fun onTakePhoto(filePath: String) {
-        setAvatar(filePath)
-    }
+    override fun onPhotoBack(photoPath: String) {
+        val bitmap = BitmapFactory.decodeFile(photoPath)
 
-    override fun onChoosePhoto(filePath: String) {
-        setAvatar(filePath)
+        civ_user_avatar1.setImageBitmap(bitmap)
+        civ_user_avatar2.setImageBitmap(bitmap)
+        iv_user_head.setImageBitmap(
+                BlurUtil.blurBitmap(applicationContext, bitmap)
+        )
+        NetUtil.postFile(Config.USER_AVATAR_URL, photoPath, mUserCache.userName, object : Listener<String>{
+            override fun onSuccess(model: String) {
+                mUserCache.userAvatar = photoPath
+                toast("图片上传成功")
+            }
+
+            override fun onFail(message: String) {
+                loge("fail : " + message)
+            }
+
+        })
     }
 
     private fun setAvatar(filePath: String){
@@ -142,10 +155,10 @@ class UserActivity : PhotoActivity() {
                                     setUserVP(mUserName)
                                 }
                                 1 -> {      //相册
-                                    choosePhoto()
+                                    choosePhoto("avatar.jpg", 1, 1)
                                 }
                                 2 -> {      //相机
-                                    takePhoto("avatar.jpg")
+                                    takePhoto("avatar.jpg", 1, 1)
                                 }
                             }
                         })
