@@ -46,7 +46,7 @@ class AppListFragment : BaseFragment() {
         }
         override fun setWorn(message: String) {
             activity.runOnUiThread{
-                activity.toast(message)
+                toast(message)
             }
         }
     }

@@ -53,7 +53,7 @@ class HomeListRVAdapter(
 
         override fun setWorn(message: String) {
             (context as Activity).runOnUiThread {
-                context.toast(message)
+                toast(message)
             }
         }
 

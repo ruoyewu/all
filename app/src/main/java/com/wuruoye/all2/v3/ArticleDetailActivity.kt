@@ -219,6 +219,11 @@ class ArticleDetailActivity : BaseActivity() {
             }
         }
 
+        fab_article_favorite.setOnLongClickListener {
+            toast("点击收藏文章...")
+            true
+        }
+
         fab_article_like.setOnLongClickListener {
             toast("点击喜欢文章...")
             true

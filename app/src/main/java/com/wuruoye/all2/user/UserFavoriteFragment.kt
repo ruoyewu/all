@@ -36,7 +36,7 @@ class UserFavoriteFragment : RefreshFragment(){
 
         override fun setWorn(message: String) {
             activity.runOnUiThread {
-                context.toast(message)
+                toast(message)
             }
         }
 

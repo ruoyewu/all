@@ -21,6 +21,7 @@ import kotlinx.android.synthetic.main.activity_login.*
 class LoginActivity : BaseActivity(), View.OnClickListener {
     private lateinit var mUserCache: UserCache
     private lateinit var mLoginGet: LoginGet
+
     private val mLoginView = object : LoginView{
         override fun onLogin(result: Boolean, info: String) {
             runOnUiThread {

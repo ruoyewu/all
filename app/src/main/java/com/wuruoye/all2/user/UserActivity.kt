@@ -112,31 +112,11 @@ class UserActivity : PhotoActivity() {
         NetUtil.postFile(Config.USER_AVATAR_URL, photoPath, mUserCache.userName, object : Listener<String>{
             override fun onSuccess(model: String) {
                 mUserCache.userAvatar = photoPath
-                toast("图片上传成功")
+                toast("头像上传成功")
             }
 
             override fun onFail(message: String) {
-                loge("fail : " + message)
-            }
-
-        })
-    }
-
-    private fun setAvatar(filePath: String){
-        val bitmap = BitmapFactory.decodeFile(filePath)
-
-        civ_user_avatar1.setImageBitmap(bitmap)
-        civ_user_avatar2.setImageBitmap(bitmap)
-        iv_user_head.setImageBitmap(
-                BlurUtil.blurBitmap(applicationContext, bitmap)
-        )
-        NetUtil.postFile(Config.USER_AVATAR_URL, filePath, mUserCache.userName, object : Listener<String>{
-            override fun onSuccess(model: String) {
-                mUserCache.userAvatar = filePath
-            }
-
-            override fun onFail(message: String) {
-                loge("fail : " + message)
+                toast("头像上传失败")
             }
 
         })
