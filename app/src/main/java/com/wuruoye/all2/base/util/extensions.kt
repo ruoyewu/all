@@ -59,6 +59,6 @@ fun Context.clearGlide(){
     Thread(Runnable { Glide.get(this).clearDiskCache() }).start()
 }
 
-fun loge(message: String){
-    Log.e("zhangqun", message)
+fun loge(message: Any){
+    Log.e("zhangqun", message.toString())
 }

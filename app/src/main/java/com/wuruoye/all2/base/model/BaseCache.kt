@@ -37,6 +37,12 @@ open class BaseCache(context: Context) {
     fun setBoolean(key: String, value: Boolean) =
             mSP!!.edit().putBoolean(key, value).apply()
 
+    fun getLong(key: String, value: Long): Long =
+            mSP!!.getLong(key, value)
+
+    fun setLong(key: String, value: Long) =
+            mSP!!.edit().putLong(key, value).apply()
+
     companion object {
         private var mSP: SharedPreferences? = null
         private val SP_NAME = "ruoye.sp"

@@ -5,6 +5,7 @@ import com.wuruoye.all2.base.model.Config
 import com.wuruoye.all2.base.model.Listener
 import com.wuruoye.all2.base.presenter.AbsPresenter
 import com.wuruoye.all2.base.util.NetUtil
+import com.wuruoye.all2.base.util.loge
 import com.wuruoye.all2.v3.model.ArticleComment
 import com.wuruoye.all2.v3.model.ArticleCommentItem
 import com.wuruoye.all2.v3.model.ArticleDetail
@@ -136,6 +137,7 @@ class ArticleGet : AbsPresenter<ArticleView>() {
         val url = Config.FAVORITE_PUT_URL
         val keyList = arrayListOf("key", "username", "info", "time", "favorite")
         val valueList = arrayListOf(key, username, info, time.toString(), if (favorite) "1" else "0")
+        loge(info)
 
         NetUtil.post(url, keyList, valueList, object : Listener<String>{
             override fun onSuccess(model: String) {

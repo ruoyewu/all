@@ -32,7 +32,6 @@ class FragmentVPAdapter(
     }
 
     override fun destroyItem(container: ViewGroup?, position: Int, `object`: Any?) {
-        loge("destroy fragment")
         val fragment = fragments[position]
         fm.beginTransaction().hide(fragment).commit()
     }

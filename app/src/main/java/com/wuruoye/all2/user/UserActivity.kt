@@ -1,6 +1,7 @@
 package com.wuruoye.all2.user
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -111,19 +112,23 @@ class UserActivity : PhotoActivity() {
         )
         NetUtil.postFile(Config.USER_AVATAR_URL, photoPath, mUserCache.userName, object : Listener<String>{
             override fun onSuccess(model: String) {
-                mUserCache.userAvatar = photoPath
-                toast("头像上传成功")
-            }
+                runOnUiThread {
+                    mUserCache.userAvatar = photoPath
+                    toast("头像上传成功")
+                }
+                }
 
             override fun onFail(message: String) {
-                toast("头像上传失败")
+                runOnUiThread {
+                    toast("头像上传失败")
+                }
             }
 
         })
     }
 
     private fun onAvatarClick(){
-        if (mUserCache.userName != ""){
+        if (mUserName != ""){
             if (mUserName == mUserCache.userName && mUserCache.isLogin){
                 AlertDialog.Builder(this)
                         .setItems(dialog_items, { _, which ->
@@ -135,10 +140,10 @@ class UserActivity : PhotoActivity() {
                                     setUserVP(mUserName)
                                 }
                                 1 -> {      //相册
-                                    choosePhoto("avatar.jpg", 1, 1)
+                                    choosePhoto("avatar.jpg", 1, 1, 500, 500)
                                 }
                                 2 -> {      //相机
-                                    takePhoto("avatar.jpg", 1, 1)
+                                    takePhoto("avatar.jpg", 1, 1, 500, 500)
                                 }
                             }
                         })

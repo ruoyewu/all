@@ -6,7 +6,10 @@ import com.wuruoye.all2.base.model.Listener
 import com.wuruoye.all2.base.presenter.AbsPresenter
 import com.wuruoye.all2.base.presenter.AbsView
 import com.wuruoye.all2.base.util.NetUtil
+import com.wuruoye.all2.base.util.loge
 import com.wuruoye.all2.user.model.ArticleFavorite
+import com.wuruoye.all2.v3.model.ArticleListItem
+import org.json.JSONObject
 
 /**
  * Created by wuruoye on 2017/9/24.
@@ -19,6 +22,21 @@ class UserGet : AbsPresenter<UserView>() {
 
         NetUtil.get(url, object : Listener<String>{
             override fun onSuccess(model: String) {
+//                val jsonObject = JSONObject(model)
+//                val result = jsonObject.getBoolean("result")
+//                val next = jsonObject.getLong("next")
+//                val info = jsonObject.getJSONArray("info")
+//                val list = ArrayList<ArticleListItem>()
+//                loge(result)
+//                loge(next)
+//                loge(info)
+//                loge(info.length())
+//                for (i in 0 until info.length()){
+//                    val itemString = info[i].toString()
+//                    val item = Gson().fromJson(itemString, ArticleListItem::class.java)
+//                    list.add(item)
+//                }
+//                getView()?.onFavoriteGet(ArticleFavorite(result, next, list))
                 getView()?.onFavoriteGet(Gson().fromJson(model, ArticleFavorite::class.java))
             }
 

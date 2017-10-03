@@ -22,6 +22,7 @@ import com.transitionseverywhere.extra.Scale
 import com.wuruoye.all2.R
 import com.wuruoye.all2.base.BaseActivity
 import com.wuruoye.all2.base.util.loadImage
+import com.wuruoye.all2.base.util.loge
 import com.wuruoye.all2.base.util.toast
 import com.wuruoye.all2.user.LoginActivity
 import com.wuruoye.all2.user.UserActivity
@@ -51,6 +52,8 @@ class ArticleDetailActivity : BaseActivity() {
     private lateinit var category: String
     private lateinit var articleKey: String
     private lateinit var mUserCache: UserCache
+
+    private var mStartTime = 0L
 
     // 侧边 button 是否在显示状态
     private var isShow = false
@@ -671,6 +674,20 @@ class ArticleDetailActivity : BaseActivity() {
                         }
                 )
                 .show()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mStartTime = System.currentTimeMillis()
+        loge("start : " + System.currentTimeMillis())
+    }
+
+    override fun onPause() {
+        super.onPause()
+        val time = System.currentTimeMillis() - mStartTime
+        UserCache(this).addReadTime(time)
+        loge("end : " + System.currentTimeMillis())
+        loge("time : " + time)
     }
 
     override fun onDestroy() {
