@@ -23,7 +23,7 @@ object FileUtil {
         val file = Config.FILE_PATH + fileName
         val fos = FileOutputStream(file)
         val buf = ByteArray(1024)
-        var len = 0
+        var len: Int
 
         while (true){
             len = inStream.read(buf)

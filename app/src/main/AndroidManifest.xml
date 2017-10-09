@@ -14,6 +14,7 @@
         android:icon="@drawable/all"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:largeHeap="true"
         android:theme="@style/AppTheme"
         android:fullBackupContent="true">
 
@@ -40,6 +41,93 @@
         <activity android:name=".v3.AppInfoActivity" />
         <activity android:name=".user.UserActivity" />
         <activity android:name=".user.LoginActivity" />
+        <activity android:name=".v3.ImageActivity"
+            android:theme="@style/TransparentTheme"/>
+
+        <activity-alias
+            android:enabled="false"
+            android:name=".Monday"
+            android:label="@string/app_name"
+            android:icon="@drawable/monday"
+            android:targetActivity=".v3.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+        <activity-alias
+            android:enabled="false"
+            android:name=".Tuesday"
+            android:label="@string/app_name"
+            android:icon="@drawable/tuesday"
+            android:targetActivity=".v3.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+        <activity-alias
+            android:enabled="false"
+            android:name=".Wednesday"
+            android:label="@string/app_name"
+            android:icon="@drawable/wednesday"
+            android:targetActivity=".v3.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+        <activity-alias
+            android:enabled="false"
+            android:name=".Thursday"
+            android:label="@string/app_name"
+            android:icon="@drawable/thursday"
+            android:targetActivity=".v3.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+        <activity-alias
+            android:enabled="false"
+            android:name=".Friday"
+            android:label="@string/app_name"
+            android:icon="@drawable/friday"
+            android:targetActivity=".v3.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+        <activity-alias
+            android:enabled="false"
+            android:name=".Saturday"
+            android:label="@string/app_name"
+            android:icon="@drawable/saturday"
+            android:targetActivity=".v3.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+        <activity-alias
+            android:enabled="false"
+            android:name=".Sunday"
+            android:label="@string/app_name"
+            android:icon="@drawable/sunday"
+            android:targetActivity=".v3.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
     </application>
 
 </manifest>

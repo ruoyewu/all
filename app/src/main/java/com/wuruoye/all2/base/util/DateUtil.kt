@@ -48,4 +48,24 @@ object DateUtil {
 
         return "$year.$newMonth.$newDay\t$newHour:$newMinute"
     }
+
+    fun getTime(time: Long): String{
+        val second = time / 1000
+        val minute = second / 60
+        val hour = minute / 60
+        val day = hour / 24
+        val year = day / 365
+        return when {
+            year > 0 -> "$year 年 $day 天 $hour 小时"
+            day > 0 -> "$day 天 $hour 小时 $minute 分钟"
+            hour > 0 -> "$hour 小时 $minute 分钟 $second 秒"
+            minute > 0 -> "$minute 分钟 $second 秒"
+            else -> "$second 秒"
+        }
+    }
+
+    fun getWeek(): Int{
+        val calender = Calendar.getInstance()
+        return calender.get(Calendar.DAY_OF_WEEK)
+    }
 }

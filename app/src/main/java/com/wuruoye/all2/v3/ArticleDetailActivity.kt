@@ -1,12 +1,16 @@
 package com.wuruoye.all2.v3
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.support.v4.app.ActivityCompat
+import android.support.v4.app.ActivityOptionsCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Gravity
@@ -22,6 +26,7 @@ import com.transitionseverywhere.extra.Scale
 import com.wuruoye.all2.R
 import com.wuruoye.all2.base.BaseActivity
 import com.wuruoye.all2.base.util.loadImage
+import com.wuruoye.all2.base.util.loadUrl
 import com.wuruoye.all2.base.util.loge
 import com.wuruoye.all2.base.util.toast
 import com.wuruoye.all2.user.LoginActivity
@@ -52,6 +57,9 @@ class ArticleDetailActivity : BaseActivity() {
     private lateinit var category: String
     private lateinit var articleKey: String
     private lateinit var mUserCache: UserCache
+
+    private val imageViewList = ArrayList<View>()
+    private val imageUrlList = ArrayList<String>()
 
     private var mStartTime = 0L
 
@@ -166,6 +174,12 @@ class ArticleDetailActivity : BaseActivity() {
     }
 
     override fun initView() {
+        val event = object : Event{
+            override fun onEventOccur(position: Int) {
+                sv_article.smoothScrollTo(0, imageViewList[position].y.toInt())
+            }
+        }
+        EventManager.setListener(event)
 
         tv_article_original.setOnClickListener { openOriginal() }
 
@@ -375,7 +389,8 @@ class ArticleDetailActivity : BaseActivity() {
 
     //查看文章原网址
     private fun openOriginal(){
-        toast(item.original_url)
+//        toast(item.original_url)
+        loadUrl(item.original_url)
     }
 
     // ArticleListItem 中已有详情时 调用此方法
@@ -589,6 +604,9 @@ class ArticleDetailActivity : BaseActivity() {
                         TYPE_IMG -> {
                             val view = LayoutInflater.from(this)
                                     .inflate(R.layout.view_image, null) as ImageView
+                            imageViewList.add(view)
+                            imageUrlList.add(pair.info)
+                            view.setOnClickListener { onImageClick(view) }
                             loadImage(pair.info, view)
                             view
                         }
@@ -676,18 +694,26 @@ class ArticleDetailActivity : BaseActivity() {
                 .show()
     }
 
+    private fun onImageClick(view: ImageView){
+        val position = imageViewList.indexOf(view)
+
+        val bundle = Bundle()
+        bundle.putInt("position", position)
+        bundle.putStringArrayList("images", imageUrlList)
+        val intent = Intent(this, ImageActivity::class.java)
+        intent.putExtras(bundle)
+        startActivity(intent)
+    }
+
     override fun onResume() {
         super.onResume()
         mStartTime = System.currentTimeMillis()
-        loge("start : " + System.currentTimeMillis())
     }
 
     override fun onPause() {
         super.onPause()
         val time = System.currentTimeMillis() - mStartTime
         UserCache(this).addReadTime(time)
-        loge("end : " + System.currentTimeMillis())
-        loge("time : " + time)
     }
 
     override fun onDestroy() {
@@ -696,7 +722,23 @@ class ArticleDetailActivity : BaseActivity() {
         mArticleGet.detachView()
     }
 
+    interface Event{
+        fun onEventOccur(position: Int)
+    }
+
+    object EventManager{
+        lateinit var event: Event
+        fun setListener(event: Event){
+            this.event = event
+        }
+        fun sendEvent(position: Int){
+            event.onEventOccur(position)
+        }
+    }
+
     companion object {
+        val OPEN_IMAGE = 1
+
         val TYPE_TEXT = "1"
         val TYPE_IMG = "2"
         val TYPE_VIDEO = "3"

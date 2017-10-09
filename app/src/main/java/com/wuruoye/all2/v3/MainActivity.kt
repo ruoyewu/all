@@ -1,6 +1,8 @@
 package com.wuruoye.all2.v3
 
+import android.content.ComponentName
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.widget.LinearLayoutManager
@@ -12,7 +14,9 @@ import com.wuruoye.all2.R
 import com.wuruoye.all2.base.BaseActivity
 import com.wuruoye.all2.base.presenter.AbsPresenter
 import com.wuruoye.all2.base.presenter.AbsView
+import com.wuruoye.all2.base.util.DateUtil
 import com.wuruoye.all2.base.util.Toast
+import com.wuruoye.all2.base.util.loge
 import com.wuruoye.all2.base.util.toast
 import com.wuruoye.all2.v3.model.AppInfo
 import com.wuruoye.all2.v3.presenter.AppInfoListGet
@@ -20,6 +24,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import com.wuruoye.all2.user.UserActivity
 import com.wuruoye.all2.user.model.UserCache
 import com.wuruoye.all2.v3.adapter.HomeListRVAdapter
+import com.wuruoye.all2.v3.model.AppInfoCache
 import com.wuruoye.all2.v3.model.ArticleListItem
 
 class MainActivity : BaseActivity(){
@@ -100,6 +105,7 @@ class MainActivity : BaseActivity(){
     }
 
     override fun initView() {
+//        changeIcon()
         srl_main.setOnRefreshListener { requestData(NET_REQUEST) }
         requestData(LOCAL_REQUEST)
 
@@ -181,6 +187,23 @@ class MainActivity : BaseActivity(){
         }
     }
 
+    private fun changeIcon(){
+        // TODO 修改逻辑
+        val newComponentName = getTodayName()
+        packageManager.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.DONT_KILL_APP)
+        packageManager.setComponentEnabledSetting(ComponentName(this, getTodayName()),
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP)
+    }
+
+    private fun getTodayName(): String = packageName + weekItem[DateUtil.getWeek()]
+
+    override fun onBackPressed() {
+        val intent = Intent(Intent.ACTION_MAIN)
+        intent.addCategory(Intent.CATEGORY_HOME)
+        startActivity(intent)
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         appInfoListGet.detachView()
@@ -189,6 +212,10 @@ class MainActivity : BaseActivity(){
     companion object {
         val NET_REQUEST = 2
         val LOCAL_REQUEST = 1
+
+        val weekItem = arrayOf(
+                "", ".Sunday", ".Monday", ".Tuesday", ".Wednesday", ".Thursday", ".Friday", ".Saturday"
+        )
 
         // 打开指定项的方式， 分别为 打开文章 打开链接 打开图片 打开视频
         val TYPE_ARTICLE = "1"
