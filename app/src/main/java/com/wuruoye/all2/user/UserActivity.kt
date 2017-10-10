@@ -18,6 +18,7 @@ import com.wuruoye.all2.base.PhotoActivity
 import com.wuruoye.all2.base.model.Config
 import com.wuruoye.all2.base.model.Listener
 import com.wuruoye.all2.base.util.*
+import com.wuruoye.all2.base.widget.SlideRelativeLayout
 import com.wuruoye.all2.user.model.AppBarStateChangeListener
 import com.wuruoye.all2.user.model.UserCache
 import com.wuruoye.all2.v3.adapter.FragmentVPAdapter
@@ -49,6 +50,26 @@ class UserActivity : PhotoActivity() {
     }
 
     override fun initView() {
+        overridePendingTransition(R.anim.activity_open_right, R.anim.activity_no)
+
+        activity_user.mChildType = SlideRelativeLayout.ChildType.VIEWPAGER
+        activity_user.mSlideType = SlideRelativeLayout.SlideType.HORIZONTAL
+        activity_user.attachViewPager(vp_user)
+        activity_user.setOnSlideListener(object : SlideRelativeLayout.OnSlideListener{
+            override fun onClosePage() {
+                finish()
+            }
+
+            override fun isClosingPage() {
+
+            }
+
+            override fun translatePage(progress: Float) {
+
+            }
+
+        })
+
         initUser()
         setUserVP(mUserName)
 
@@ -258,6 +279,11 @@ class UserActivity : PhotoActivity() {
             ll_user_top.visibility = View.INVISIBLE
             ll_user_center.visibility = View.VISIBLE
         }
+    }
+
+    override fun onBackPressed() {
+        finish()
+        overridePendingTransition(R.anim.activity_no, R.anim.activity_close_right)
     }
 
     companion object {

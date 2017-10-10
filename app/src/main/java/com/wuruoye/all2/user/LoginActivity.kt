@@ -9,6 +9,7 @@ import com.wuruoye.all2.base.model.Config
 import com.wuruoye.all2.base.model.Listener
 import com.wuruoye.all2.base.util.NetUtil
 import com.wuruoye.all2.base.util.toast
+import com.wuruoye.all2.base.widget.SlideRelativeLayout
 import com.wuruoye.all2.user.model.UserCache
 import com.wuruoye.all2.user.presenter.LoginGet
 import com.wuruoye.all2.user.presenter.LoginView
@@ -73,6 +74,25 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
     }
 
     override fun initView() {
+        overridePendingTransition(R.anim.activity_open_right, R.anim.activity_no)
+
+        activity_login.mChildType = SlideRelativeLayout.ChildType.SCROLLVIEW
+        activity_login.mSlideType = SlideRelativeLayout.SlideType.HORIZONTAL
+        activity_login.setOnSlideListener(object : SlideRelativeLayout.OnSlideListener{
+            override fun onClosePage() {
+                finish()
+                overridePendingTransition(R.anim.activity_no, R.anim.activity_no)
+            }
+
+            override fun isClosingPage() {
+
+            }
+
+            override fun translatePage(progress: Float) {
+
+            }
+
+        })
         changeMode()
 
         btn_login_login.setOnClickListener(this)
@@ -127,6 +147,11 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
             tv_login_user.visibility = View.GONE
             btn_login_out.visibility = View.GONE
         }
+    }
+
+    override fun onBackPressed() {
+        finish()
+        overridePendingTransition(R.anim.activity_no, R.anim.activity_close_right)
     }
 
     override fun onDestroy() {

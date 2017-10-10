@@ -1,16 +1,12 @@
 package com.wuruoye.all2.v3
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.support.v4.app.ActivityCompat
-import android.support.v4.app.ActivityOptionsCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Gravity
@@ -29,6 +25,7 @@ import com.wuruoye.all2.base.util.loadImage
 import com.wuruoye.all2.base.util.loadUrl
 import com.wuruoye.all2.base.util.loge
 import com.wuruoye.all2.base.util.toast
+import com.wuruoye.all2.base.widget.SlideRelativeLayout
 import com.wuruoye.all2.user.LoginActivity
 import com.wuruoye.all2.user.UserActivity
 import com.wuruoye.all2.user.model.UserCache
@@ -73,6 +70,8 @@ class ArticleDetailActivity : BaseActivity() {
     private lateinit var commentEditDialog: AlertDialog
     // 包含评论 dialog 的view
     private lateinit var commentEditView: CommentDialogView
+
+    private var isClosing = false
 
     // 使用者未登录是提示框
     private lateinit var loginDialog: AlertDialog
@@ -174,6 +173,24 @@ class ArticleDetailActivity : BaseActivity() {
     }
 
     override fun initView() {
+        overridePendingTransition(R.anim.activity_open_bottom, R.anim.activity_no)
+        // 滑动退出页面监听
+        activity_detail.mChildType = SlideRelativeLayout.ChildType.SCROLLVIEW
+        activity_detail.setOnSlideListener(object : SlideRelativeLayout.OnSlideListener{
+            override fun onClosePage() {
+                finish()
+                overridePendingTransition(R.anim.activity_no, R.anim.activity_no)
+            }
+
+            override fun isClosingPage() {
+                isClosing = true
+            }
+
+            override fun translatePage(progress: Float) {
+                loge("translate progress: $progress")
+            }
+        })
+
         val event = object : Event{
             override fun onEventOccur(position: Int) {
                 sv_article.smoothScrollTo(0, imageViewList[position].y.toInt())
@@ -181,7 +198,11 @@ class ArticleDetailActivity : BaseActivity() {
         }
         EventManager.setListener(event)
 
-        tv_article_original.setOnClickListener { openOriginal() }
+        tv_article_original.setOnClickListener {
+            if (!isClosing) {
+                openOriginal()
+            }
+        }
 
         if (item.content.size > 0){
             //在 ArticleListItem 中已有文章详情的直接设置
@@ -606,7 +627,11 @@ class ArticleDetailActivity : BaseActivity() {
                                     .inflate(R.layout.view_image, null) as ImageView
                             imageViewList.add(view)
                             imageUrlList.add(pair.info)
-                            view.setOnClickListener { onImageClick(view) }
+                            view.setOnClickListener {
+                                if (!isClosing) {
+                                    onImageClick(view)
+                                }
+                            }
                             loadImage(pair.info, view)
                             view
                         }
@@ -661,37 +686,39 @@ class ArticleDetailActivity : BaseActivity() {
 
     //评论项点击监听， 显示dialog
     private fun onItemClick(item: ArticleCommentItem){
-        AlertDialog.Builder(this)
-                .setItems(
-                        if (item.username == mUserCache.userName){
-                            COMMENT_ITEM_M
-                        }else{
-                            COMMENT_ITEM
-                        },
-                        { _, which ->
-                            when (which){
-                                0 -> {      //复制
-                                    val cmb = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                                    cmb.primaryClip = ClipData.newPlainText("all", item.content)
-                                    toast("复制成功")
-                                }
-                                1 -> {      //举报
+        if (!isClosing) {
+            AlertDialog.Builder(this)
+                    .setItems(
+                            if (item.username == mUserCache.userName){
+                                COMMENT_ITEM_M
+                            }else{
+                                COMMENT_ITEM
+                            },
+                            { _, which ->
+                                when (which){
+                                    0 -> {      //复制
+                                        val cmb = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                                        cmb.primaryClip = ClipData.newPlainText("all", item.content)
+                                        toast("复制成功")
+                                    }
+                                    1 -> {      //举报
 
-                                }
-                                2 -> {      //评论
-                                    if (mUserCache.isLogin) {
-                                        showCommentDialog(item.id, item.username + ":\t" + item.content)
-                                    }else{
-                                        loginDialog.show()
+                                    }
+                                    2 -> {      //评论
+                                        if (mUserCache.isLogin) {
+                                            showCommentDialog(item.id, item.username + ":\t" + item.content)
+                                        }else{
+                                            loginDialog.show()
+                                        }
+                                    }
+                                    3 -> {      //删除
+                                        mArticleGet.deleteComment(item.id)
                                     }
                                 }
-                                3 -> {      //删除
-                                    mArticleGet.deleteComment(item.id)
-                                }
                             }
-                        }
-                )
-                .show()
+                    )
+                    .show()
+        }
     }
 
     private fun onImageClick(view: ImageView){
@@ -720,6 +747,11 @@ class ArticleDetailActivity : BaseActivity() {
         super.onDestroy()
 
         mArticleGet.detachView()
+    }
+
+    override fun onBackPressed() {
+        finish()
+        overridePendingTransition(R.anim.activity_no, R.anim.activity_close_bottom)
     }
 
     interface Event{
