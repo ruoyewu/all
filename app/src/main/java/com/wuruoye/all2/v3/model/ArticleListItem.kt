@@ -20,6 +20,7 @@ data class ArticleListItem(
         var original_url: String,
         var type: String,
         var category_id: String,
+        var img_list: ArrayList<String>,
         var other_info: String,
         var open_type: String,
         var content: ArrayList<Pair>
@@ -37,6 +38,7 @@ data class ArticleListItem(
             source.readString(),
             source.readString(),
             source.readString(),
+            source.createStringArrayList(),
             source.readString(),
             source.readString(),
             source.createTypedArrayList(Pair.CREATOR)
@@ -57,6 +59,7 @@ data class ArticleListItem(
         writeString(original_url)
         writeString(type)
         writeString(category_id)
+        writeStringList(img_list)
         writeString(other_info)
         writeString(open_type)
         writeTypedList(content)

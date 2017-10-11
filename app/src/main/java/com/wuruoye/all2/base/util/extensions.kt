@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
 import com.bumptech.glide.Glide
@@ -16,6 +17,10 @@ import com.bumptech.glide.request.transition.Transition
 import com.wuruoye.all2.R
 import com.wuruoye.all2.base.model.Config
 import com.wuruoye.all2.base.model.Listener
+import com.wuruoye.all2.v3.ArticleDetailActivity
+import com.wuruoye.all2.v3.ImageActivity
+import com.wuruoye.all2.v3.MainActivity
+import com.wuruoye.all2.v3.model.ArticleListItem
 
 /**
  * Created by wuruoye on 2017/9/16.
@@ -66,13 +71,49 @@ fun Context.loadUrl(url: String){
     val intent = Intent(Intent.ACTION_VIEW)
     val uri = Uri.parse(url)
     intent.data = uri
-    val chooseIntent = Intent.createChooser(intent, "选择打开软件: ")
+    Intent.createChooser(intent, "选择打开软件: ")
     startActivity(intent)
 }
 
 fun Context.clearGlide(){
     Glide.get(this).clearMemory()
     Thread(Runnable { Glide.get(this).clearDiskCache() }).start()
+}
+
+fun Context.startActivity(item: ArticleListItem, name: String, category: String){
+    when (item.open_type){
+        OPEN_TYPE_ARTICLE -> {
+            if (item.category_id != "0") {
+                val bundle = Bundle()
+                bundle.putParcelable("item", item)
+                bundle.putString("name", name)
+                if (item.category_id != ""){
+                    bundle.putString("category", item.category_id)
+                }else {
+                    bundle.putString("category", category)
+                }
+                val intent = Intent(this, ArticleDetailActivity::class.java)
+                intent.putExtras(bundle)
+                startActivity(intent)
+            }
+        }
+        OPEN_TYPE_URL -> {
+
+        }
+        OPEN_TYPE_IMG -> {
+            val imgList = item.img_list
+            val position = 0
+            val bundle = Bundle()
+            bundle.putStringArrayList("images", imgList)
+            bundle.putInt("position", position)
+            val intent = Intent(this, ImageActivity::class.java)
+            intent.putExtras(bundle)
+            startActivity(intent)
+        }
+        OPEN_TYPE_VIDEO -> {
+
+        }
+    }
 }
 
 fun loge(message: Any){
@@ -102,3 +143,8 @@ fun Int.toUpString(){
 val N2S = arrayOf(
         "", "十", "百", "千", "万", "十", "百", "千"
 )
+
+val OPEN_TYPE_ARTICLE = "1"
+val OPEN_TYPE_URL = "2"
+val OPEN_TYPE_IMG = "3"
+val OPEN_TYPE_VIDEO = "4"

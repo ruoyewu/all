@@ -10,6 +10,7 @@ import com.wuruoye.all2.base.BaseFragment
 import com.wuruoye.all2.base.presenter.AbsPresenter
 import com.wuruoye.all2.base.presenter.AbsView
 import com.wuruoye.all2.base.util.loge
+import com.wuruoye.all2.base.util.startActivity
 import com.wuruoye.all2.base.util.toast
 import com.wuruoye.all2.v3.adapter.AllListRVAdapter
 import com.wuruoye.all2.v3.adapter.HomeListRVAdapter
@@ -58,32 +59,7 @@ class AppListFragment : BaseFragment() {
         }
 
         override fun onItemClick(item: ArticleListItem, name: String, category: String) {
-            when (item.open_type){
-                MainActivity.TYPE_ARTICLE -> {
-                    if (item.category_id != "0") {
-                        val bundle = Bundle()
-                        bundle.putParcelable("item", item)
-                        bundle.putString("name", name)
-                        if (item.category_id != ""){
-                            bundle.putString("category", item.category_id)
-                        }else {
-                            bundle.putString("category", category)
-                        }
-                        val intent = Intent(context, ArticleDetailActivity::class.java)
-                        intent.putExtras(bundle)
-                        startActivity(intent)
-                    }
-                }
-                MainActivity.TYPE_URL -> {
-
-                }
-                MainActivity.TYPE_IMG -> {
-
-                }
-                MainActivity.TYPE_VIDEO -> {
-
-                }
-            }
+            context.startActivity(item, name, category)
         }
 
     }

@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import com.google.gson.Gson
 import com.wuruoye.all2.R
+import com.wuruoye.all2.base.util.startActivity
 import com.wuruoye.all2.base.util.toast
 import com.wuruoye.all2.user.adapter.FavoriteRVAdapter
 import com.wuruoye.all2.user.model.ArticleFavorite
@@ -53,33 +54,8 @@ class UserFavoriteFragment : RefreshFragment(){
             val key = item.key.split("_")
             val name = key[0]
             val category = key[1]
-            val item = Gson().fromJson(item.info, ArticleListItem::class.java)
-            when (item.open_type){
-                MainActivity.TYPE_ARTICLE -> {
-                    if (item.category_id != "0") {
-                        val bundle = Bundle()
-                        bundle.putParcelable("item", item)
-                        bundle.putString("name", name)
-                        if (item.category_id != ""){
-                            bundle.putString("category", item.category_id)
-                        }else {
-                            bundle.putString("category", category)
-                        }
-                        val intent = Intent(context, ArticleDetailActivity::class.java)
-                        intent.putExtras(bundle)
-                        startActivity(intent)
-                    }
-                }
-                MainActivity.TYPE_URL -> {
-
-                }
-                MainActivity.TYPE_IMG -> {
-
-                }
-                MainActivity.TYPE_VIDEO -> {
-
-                }
-            }
+            val newItem = Gson().fromJson(item.info, ArticleListItem::class.java)
+            context.startActivity(newItem, name, category)
         }
 
     }

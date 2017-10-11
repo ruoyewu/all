@@ -14,10 +14,7 @@ import com.wuruoye.all2.R
 import com.wuruoye.all2.base.BaseActivity
 import com.wuruoye.all2.base.presenter.AbsPresenter
 import com.wuruoye.all2.base.presenter.AbsView
-import com.wuruoye.all2.base.util.DateUtil
-import com.wuruoye.all2.base.util.Toast
-import com.wuruoye.all2.base.util.loge
-import com.wuruoye.all2.base.util.toast
+import com.wuruoye.all2.base.util.*
 import com.wuruoye.all2.v3.model.AppInfo
 import com.wuruoye.all2.v3.presenter.AppInfoListGet
 import kotlinx.android.synthetic.main.activity_main.*
@@ -67,32 +64,7 @@ class MainActivity : BaseActivity(){
         }
 
         override fun onItemClick(item: ArticleListItem, name: String, category: String) {
-            when (item.open_type){
-                TYPE_ARTICLE -> {
-                    if (item.category_id != "0") {
-                        val bundle = Bundle()
-                        bundle.putParcelable("item", item)
-                        bundle.putString("name", name)
-                        if (item.category_id != ""){
-                            bundle.putString("category", item.category_id)
-                        }else {
-                            bundle.putString("category", category)
-                        }
-                        val intent = Intent(this@MainActivity, ArticleDetailActivity::class.java)
-                        intent.putExtras(bundle)
-                        startActivity(intent)
-                    }
-                }
-                TYPE_URL -> {
-
-                }
-                TYPE_IMG -> {
-
-                }
-                TYPE_VIDEO -> {
-
-                }
-            }
+            startActivity(item, name, category)
         }
     }
 
@@ -189,7 +161,6 @@ class MainActivity : BaseActivity(){
 
     private fun changeIcon(){
         // TODO 修改逻辑
-        val newComponentName = getTodayName()
         packageManager.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
                 PackageManager.DONT_KILL_APP)
         packageManager.setComponentEnabledSetting(ComponentName(this, getTodayName()),
@@ -216,11 +187,5 @@ class MainActivity : BaseActivity(){
         val weekItem = arrayOf(
                 "", ".Sunday", ".Monday", ".Tuesday", ".Wednesday", ".Thursday", ".Friday", ".Saturday"
         )
-
-        // 打开指定项的方式， 分别为 打开文章 打开链接 打开图片 打开视频
-        val TYPE_ARTICLE = "1"
-        val TYPE_URL = "2"
-        val TYPE_IMG = "3"
-        val TYPE_VIDEO = "4"
     }
 }

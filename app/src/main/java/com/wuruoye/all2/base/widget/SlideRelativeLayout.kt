@@ -156,7 +156,7 @@ class SlideRelativeLayout : RelativeLayout {
                     startX = ev.rawX
                 }
                 MotionEvent.ACTION_MOVE -> {
-                    val offsetX = ev.rawX - startX
+//                    val offsetX = ev.rawX - startX
                     val offsetY = ev.rawY - startY
 //                    loge("offsetX: $offsetX, offsetY: $offsetY")
                     if (mChildType == ChildType.SCROLLVIEW){
@@ -176,7 +176,9 @@ class SlideRelativeLayout : RelativeLayout {
                             val size = mChildViewPager.adapter.count
                             val position = mChildViewPager.currentItem
                             loge("viewpager: size: $size, position: $position")
-                            if (position == 0){
+                            if (size == 1){
+                                checkSlideType(ev)
+                            }else if (position == 0){
                                 checkSlideType(ev, DIRECT_LEFT)
                             }else if (position == size - 1){
                                 checkSlideType(ev, DIRECT_RIGHT)
@@ -330,5 +332,5 @@ class SlideRelativeLayout : RelativeLayout {
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {init()}
 
-//    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {init()}
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {init()}
 }

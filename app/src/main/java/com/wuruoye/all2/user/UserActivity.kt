@@ -58,6 +58,7 @@ class UserActivity : PhotoActivity() {
         activity_user.setOnSlideListener(object : SlideRelativeLayout.OnSlideListener{
             override fun onClosePage() {
                 finish()
+                overridePendingTransition(R.anim.activity_no, R.anim.activity_no)
             }
 
             override fun isClosingPage() {
