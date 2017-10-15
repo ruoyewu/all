@@ -27,11 +27,12 @@ import com.wuruoye.all2.v3.model.ArticleListItem
 class MainActivity : BaseActivity(){
     private val viewFloatList = ArrayList<View>()
     private var isShow = false
+    private lateinit var appInfoCache: AppInfoCache
 
     private var isNetRefresh = false
     private lateinit var appInfoListGet: AppInfoListGet
-    private val mView = object : AbsView<ArrayList<AppInfo>>{
-        override fun setModel(model: ArrayList<AppInfo>) {
+    private val mView = object : AbsView<ArrayList<String>>{
+        override fun setModel(model: ArrayList<String>) {
             runOnUiThread { setRecyclerView(model, isNetRefresh) }
         }
 
@@ -74,6 +75,8 @@ class MainActivity : BaseActivity(){
     override fun initData(bundle: Bundle?) {
         appInfoListGet = AppInfoListGet(applicationContext)
         appInfoListGet.attachView(mView)
+
+        appInfoCache = AppInfoCache(applicationContext)
     }
 
     override fun initView() {
@@ -116,10 +119,10 @@ class MainActivity : BaseActivity(){
         }
     }
 
-    private fun setRecyclerView(list: ArrayList<AppInfo>, isNet: Boolean){
+    private fun setRecyclerView(list: ArrayList<String>, isNet: Boolean){
         isNetRefresh = false
         srl_main.isRefreshing = false
-        val adapter = HomeListRVAdapter(list, onItemClickListener, isNet, rl_main)
+        val adapter = HomeListRVAdapter(appInfoCache.getAlAppList(), list, onItemClickListener, isNet, rl_main)
         rl_main.layoutManager = LinearLayoutManager(this)
         rl_main.adapter = adapter
     }

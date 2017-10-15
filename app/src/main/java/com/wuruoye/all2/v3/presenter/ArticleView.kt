@@ -1,6 +1,5 @@
 package com.wuruoye.all2.v3.presenter
 
-import com.wuruoye.all2.base.presenter.AbsView
 import com.wuruoye.all2.base.presenter.BaseView
 import com.wuruoye.all2.v3.model.ArticleComment
 import com.wuruoye.all2.v3.model.ArticleCommentItem

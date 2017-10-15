@@ -29,7 +29,8 @@ import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator
  * this file is to do
  */
 class HomeListRVAdapter(
-        private val infoList: ArrayList<AppInfo>,
+        private val infoList: HashMap<String, AppInfo>,
+        private val appNameList: ArrayList<String>,
         private val onItemClickListener: OnItemClickListener,
         private val isNetRefresh: Boolean,
         private val rlMain: RecyclerView
@@ -70,7 +71,7 @@ class HomeListRVAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
-        val appInfo = infoList[position]
+        val appInfo = infoList[appNameList[position]]!!
         with(holder!!){
             tvTitle.text = appInfo.title
             itemView.setOnLongClickListener { onItemClickListener.onLongClick(appInfo) }
@@ -95,7 +96,7 @@ class HomeListRVAdapter(
         }
     }
 
-    override fun getItemCount(): Int = infoList.size
+    override fun getItemCount(): Int = appNameList.size
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent!!.context)
@@ -110,7 +111,6 @@ class HomeListRVAdapter(
     private fun showAll(name: String){
         if (rlMaps[name] != null && dataMaps[name] != null && isShowAll[name] != null){
             isShowAll[name] = !isShowAll[name]!!
-//            rlMaps[name]!!.requestFocus()
             val adapter = rlMaps[name]!!.adapter as AllListRVAdapter
             if (isShowAll[name]!!){
                 btnMaps[name]!!.text = "收起更多"
@@ -122,15 +122,6 @@ class HomeListRVAdapter(
                 }
             }else{
                 btnMaps[name]!!.text = "显示更多"
-//                val set = TransitionSet()
-//                        .addTransition(ChangeBounds())
-//                        .addTransition(Scale())
-//                        .addTransition(Fade())
-//                TransitionManager.beginDelayedTransition(rlMaps[name]!!, set)
-//                val dataList = dataMaps[name]!!
-//                val appList = ArticleList(dataList.name, dataList.category, dataList.next, arrayListOf(dataList.list[0]))
-//                adapter.changeData(appList)
-//                rlMain.smoothScrollToPosition(getPosition(name))
                 for (i in dataMaps[name]!!.list.size - 1 downTo 1){
                     adapter.removeItem(i)
                 }
@@ -155,7 +146,7 @@ class HomeListRVAdapter(
 
     private fun getPosition(name: String): Int{
         return (0 until infoList.size)
-                .firstOrNull { name == infoList[it].name }
+                .firstOrNull { name == appNameList[it] }
                 ?: infoList.size - 1
     }
 

@@ -10,15 +10,16 @@ import com.wuruoye.all2.base.util.NetUtil
 import com.wuruoye.all2.v3.model.AppInfo
 import com.wuruoye.all2.v3.model.AppInfoCache
 import org.json.JSONArray
+import org.json.JSONObject
 
 /**
  * Created by wuruoye on 2017/9/16.
  * this file is to do
  */
-class AppInfoListGet(context: Context) : AbsPresenter<AbsView<ArrayList<AppInfo>>>(), Listener<ArrayList<AppInfo>> {
+class AppInfoListGet(context: Context) : AbsPresenter<AbsView<ArrayList<String>>>(), Listener<ArrayList<String>> {
     private val appInfoCache = AppInfoCache(context)
 
-    override fun onSuccess(model: ArrayList<AppInfo>) {
+    override fun onSuccess(model: ArrayList<String>) {
         getView()?.setModel(model)
     }
 
@@ -27,26 +28,20 @@ class AppInfoListGet(context: Context) : AbsPresenter<AbsView<ArrayList<AppInfo>
     }
 
     fun requestAppInfoList(method: Method) {
-        var method = method
-        if (method == Method.LOCAL){
-            val info = appInfoCache.infoList
-            if (info == ""){
-                method = Method.NET
+        var m = method
+        if (m == Method.LOCAL){
+            val info = appInfoCache.getAlAppList()
+            if (info.size == 0){
+                m = Method.NET
             }else{
-                onSuccess(parseData(info))
+                onSuccess(appInfoCache.getAvAppList())
             }
         }
-        if (method == Method.NET){
+        if (m == Method.NET){
             NetUtil.get(Config.APP_LIST_URL, object : Listener<String>{
                 override fun onSuccess(model: String) {
                     val list = parseData(model)
-                    for (i in list){
-                        val name = i.name
-                        val logo = i.icon
-                        appInfoCache.putAppIcon(name, logo)
-                    }
                     this@AppInfoListGet.onSuccess(list)
-                    appInfoCache.infoList = model
                 }
 
                 override fun onFail(message: String) {
@@ -56,12 +51,32 @@ class AppInfoListGet(context: Context) : AbsPresenter<AbsView<ArrayList<AppInfo>
         }
     }
 
-    private fun parseData(data: String): ArrayList<AppInfo>{
-        val list = ArrayList<AppInfo>()
-        val jsonArray = JSONArray(data)
-        (0 until jsonArray.length())
-                .map { jsonArray.getString(it) }
-                .mapTo(list) { Gson().fromJson(it, AppInfo::class.java) }
-        return list
+    private fun parseData(data: String): ArrayList<String>{
+        val json = JSONObject(data)
+
+        // 获取 nameList
+        val avInfoList = json.getJSONArray("list");
+        val string_list = ArrayList<String>()
+        if (appInfoCache.getAvAppList().size == 0){
+            (0 until avInfoList.length())
+                    .map { avInfoList.getString(it) }
+                    .mapTo(string_list) {it}
+            appInfoCache.putAvAppList(string_list)
+        }
+
+        // 保存所有 app 详情
+        val alInfoList = json.getString("info_list");
+        appInfoCache.putAlAppList(alInfoList)
+
+        // 保存 所有 name 对应的 icon
+        val alArray = JSONArray(alInfoList)
+        for (i in 0 until alArray.length()){
+            val obj = alArray.getJSONObject(i)
+            val name = obj.getString("name")
+            val icon = obj.getString("icon")
+            appInfoCache.putAppIcon(name, icon)
+        }
+
+        return appInfoCache.getAvAppList()
     }
 }
