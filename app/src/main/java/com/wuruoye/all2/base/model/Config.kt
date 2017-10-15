@@ -34,7 +34,7 @@ object Config {
 
     val APP_PATH = Environment.getExternalStorageDirectory().absolutePath + "/com.wuruoye.all2/"
     val FILE_PATH = APP_PATH + "file/"
-    val IMAGE_PATH = APP_PATH + "image/"
+    val IMAGE_PATH = Environment.getExternalStorageDirectory().absolutePath + "/DCIM/Camera/"
     val PROVIDER_AUTHORITY = "com.wuruoye.all2.fileprovider"
     val FILE_PERMISSION = arrayOf(
             Manifest.permission.READ_EXTERNAL_STORAGE,

@@ -14,7 +14,8 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true">
         <LinearLayout
-            android:descendantFocusability="blocksDescendants"
+            android:focusableInTouchMode="true"
+            android:focusable="true"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">

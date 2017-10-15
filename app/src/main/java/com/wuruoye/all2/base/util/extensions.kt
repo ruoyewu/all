@@ -1,5 +1,7 @@
 package com.wuruoye.all2.base.util
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -20,6 +22,7 @@ import com.wuruoye.all2.base.model.Listener
 import com.wuruoye.all2.v3.ArticleDetailActivity
 import com.wuruoye.all2.v3.ImageActivity
 import com.wuruoye.all2.v3.MainActivity
+import com.wuruoye.all2.v3.VideoActivity
 import com.wuruoye.all2.v3.model.ArticleListItem
 
 /**
@@ -111,9 +114,20 @@ fun Context.startActivity(item: ArticleListItem, name: String, category: String)
             startActivity(intent)
         }
         OPEN_TYPE_VIDEO -> {
-
+            val bundle = Bundle()
+            bundle.putString("url", item.video)
+            bundle.putString("title", item.title)
+            bundle.putBoolean("isFull", false)
+            val intent = Intent(this, VideoActivity::class.java)
+            intent.putExtras(bundle)
+            startActivity(intent)
         }
     }
+}
+
+fun Context.copyText(text: String){
+    val cmb = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    cmb.primaryClip = ClipData.newPlainText("all", text)
 }
 
 fun loge(message: Any){

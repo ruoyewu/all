@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <VideoView
+        android:id="@+id/vv_video"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true" />
+
+    <com.wuruoye.videoplayer.VideoProgress
+        android:id="@+id/vp_video_center"
+        android:visibility="gone"
+        android:layout_centerInParent="true"
+        android:layout_width="20dp"
+        android:layout_height="100dp" />
+
+    <RelativeLayout
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/tv_video_seek"
+            android:visibility="gone"
+            android:text="00:00 / 11:11"
+            android:textColor="@color/romance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.wuruoye.videoplayer.VideoPlayButton
+            android:id="@+id/vpb_video_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_video_top"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+        <ImageView
+            android:id="@+id/iv_video_back"
+            android:src="@drawable/ic_arrow_back"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp" />
+
+        <ImageView
+            android:id="@+id/iv_video_menu"
+            android:visibility="gone"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp" />
+        <TextView
+            android:id="@+id/tv_video_title"
+            android:text="title"
+            android:textSize="16sp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/iv_video_back"
+            android:layout_toLeftOf="@id/iv_video_menu"
+            android:textColor="@color/romance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_video_bottom"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+        <ImageView
+            android:id="@+id/iv_video_orientation"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_full"
+            android:layout_marginLeft="10dp"
+            android:padding="5dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp" />
+        <TextView
+            android:id="@+id/tv_video_time_f"
+            android:textColor="@color/romance"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/tv_video_time_t"
+            android:textColor="@color/romance"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/iv_video_orientation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <com.wuruoye.videoplayer.VideoProgress
+            android:id="@+id/vp_video_progress"
+            android:layout_toRightOf="@id/tv_video_time_f"
+            android:layout_toLeftOf="@id/tv_video_time_t"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:scrollbarStyle="insideInset"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </RelativeLayout>
+</RelativeLayout>

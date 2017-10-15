@@ -169,12 +169,6 @@ class MainActivity : BaseActivity(){
 
     private fun getTodayName(): String = packageName + weekItem[DateUtil.getWeek()]
 
-    override fun onBackPressed() {
-        val intent = Intent(Intent.ACTION_MAIN)
-        intent.addCategory(Intent.CATEGORY_HOME)
-        startActivity(intent)
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         appInfoListGet.detachView()

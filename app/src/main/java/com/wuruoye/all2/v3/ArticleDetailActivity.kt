@@ -187,7 +187,7 @@ class ArticleDetailActivity : BaseActivity() {
             }
 
             override fun translatePage(progress: Float) {
-                loge("translate progress: $progress")
+//                loge("translate progress: $progress")
             }
         })
 

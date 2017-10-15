@@ -43,6 +43,9 @@
         <activity android:name=".user.UserActivity"/>
         <activity android:name=".user.LoginActivity" />
         <activity android:name=".v3.ImageActivity"/>
+        <activity android:name=".v3.VideoActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@style/AppTheme"/>
 
         <activity-alias
             android:enabled="false"

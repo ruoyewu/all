@@ -175,7 +175,7 @@ class SlideRelativeLayout : RelativeLayout {
                         if (mSlideType == SlideType.HORIZONTAL){
                             val size = mChildViewPager.adapter.count
                             val position = mChildViewPager.currentItem
-                            loge("viewpager: size: $size, position: $position")
+//                            loge("viewpager: size: $size, position: $position")
                             if (size == 1){
                                 checkSlideType(ev)
                             }else if (position == 0){
