@@ -23,7 +23,6 @@ import com.wuruoye.all2.R
 import com.wuruoye.all2.base.BaseActivity
 import com.wuruoye.all2.base.util.loadImage
 import com.wuruoye.all2.base.util.loadUrl
-import com.wuruoye.all2.base.util.loge
 import com.wuruoye.all2.base.util.toast
 import com.wuruoye.all2.base.widget.SlideRelativeLayout
 import com.wuruoye.all2.user.LoginActivity
@@ -175,7 +174,7 @@ class ArticleDetailActivity : BaseActivity() {
     override fun initView() {
         overridePendingTransition(R.anim.activity_open_bottom, R.anim.activity_no)
         // 滑动退出页面监听
-        activity_detail.mChildType = SlideRelativeLayout.ChildType.SCROLLVIEW
+        activity_detail.childType = SlideRelativeLayout.ChildType.SCROLLVIEW
         activity_detail.setOnSlideListener(object : SlideRelativeLayout.OnSlideListener{
             override fun onClosePage() {
                 finish()

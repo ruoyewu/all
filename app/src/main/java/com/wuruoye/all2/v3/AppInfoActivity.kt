@@ -38,8 +38,8 @@ class AppInfoActivity : BaseActivity() {
         vp_app.adapter = adapter
         tl_app.setupWithViewPager(vp_app)
 
-        activity_list.mChildType = SlideRelativeLayout.ChildType.VIEWPAGER
-        activity_list.mSlideType = SlideRelativeLayout.SlideType.HORIZONTAL
+        activity_list.childType = SlideRelativeLayout.ChildType.VIEWPAGER
+        activity_list.slideType = SlideRelativeLayout.SlideType.HORIZONTAL
         activity_list.attachViewPager(vp_app)
         activity_list.setOnSlideListener(object : SlideRelativeLayout.OnSlideListener{
             override fun onClosePage() {

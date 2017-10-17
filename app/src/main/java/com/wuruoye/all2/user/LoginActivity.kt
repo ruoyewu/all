@@ -76,8 +76,8 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
     override fun initView() {
         overridePendingTransition(R.anim.activity_open_right, R.anim.activity_no)
 
-        activity_login.mChildType = SlideRelativeLayout.ChildType.SCROLLVIEW
-        activity_login.mSlideType = SlideRelativeLayout.SlideType.HORIZONTAL
+        activity_login.childType = SlideRelativeLayout.ChildType.SCROLLVIEW
+        activity_login.slideType = SlideRelativeLayout.SlideType.HORIZONTAL
         activity_login.setOnSlideListener(object : SlideRelativeLayout.OnSlideListener{
             override fun onClosePage() {
                 finish()

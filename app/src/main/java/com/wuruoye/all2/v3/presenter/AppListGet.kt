@@ -26,16 +26,16 @@ class AppListGet(context: Context) : AbsPresenter<AbsView<ArticleList>>(), Liste
     }
 
     fun requestArticleList(name: String, category: String, data: String, method: Method) {
-        var method = method
+        var m = method
         val key = name + "_" + category;
-        if (method == Method.LOCAL){
+        if (m == Method.LOCAL){
             if (appInfoCache.getAppInfo(key) == ""){
-                method = Method.NET
+                m = Method.NET
             }else{
                 onSuccess(parseData(appInfoCache.getAppInfo(key)))
             }
         }
-        if (method == Method.NET){
+        if (m == Method.NET){
             NetUtil.get(getUrl(name, category, data), object : Listener<String>{
                 override fun onSuccess(model: String) {
                     this@AppListGet.onSuccess(parseData(model))

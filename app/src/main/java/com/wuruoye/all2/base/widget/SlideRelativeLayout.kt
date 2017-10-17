@@ -3,13 +3,11 @@ package com.wuruoye.all2.base.widget
 import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.content.Context
-import android.support.v4.app.ActivityCompat
 import android.support.v4.view.ViewPager
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.ViewGroup
 import android.widget.RelativeLayout
-import com.wuruoye.all2.R
 import com.wuruoye.all2.base.util.loge
 
 /**
@@ -19,7 +17,6 @@ import com.wuruoye.all2.base.util.loge
 
 class SlideRelativeLayout : RelativeLayout {
     private val maxLength = 300F
-    private val minSlide = 8
     private val DIRECT_NONE = 0
     private val DIRECT_UP = 1
     private val DIRECT_DOWN = 2
@@ -36,20 +33,24 @@ class SlideRelativeLayout : RelativeLayout {
     // 如果为 false 不再执行 返回 动画
     private var isBacking = false
 
+    private var isManager = true
+
     // 当前view 设置的需要滑动方向 (HORIZONTAL, VERTICAL)
-    var mSlideType = SlideType.VERTICAL
+    var slideType = SlideType.VERTICAL
     // 当前view 的子view类型，用于判断不同的滑动冲突方案
-    var mChildType = ChildType.PHOTOVIEW
+    var childType = ChildType.PHOTOVIEW
     // 当前滑动的方向, 手指放开重设为 none， 再根据下一次滑动时 offsetX 与 offsetY 的大小区别
     private var mCurrentSlideType = SlideType.NONE
 
     private lateinit var mChildViewPager: ViewPager
 
+    // 滑动方向
     enum class SlideType{
         NONE,
         HORIZONTAL,
         VERTICAL
     }
+    // 子布局类型，不同子布局执行不同策略
     enum class ChildType{
         PHOTOVIEW,
         SCROLLVIEW,
@@ -63,6 +64,7 @@ class SlideRelativeLayout : RelativeLayout {
     private lateinit var closeAnimatorX: ObjectAnimator
     private lateinit var closeAnimatorY: ObjectAnimator
 
+    // 初始化 各个animator
     private fun init(){
         backAnimatorX = ObjectAnimator()
         backAnimatorX.addUpdateListener { animation ->
@@ -151,37 +153,60 @@ class SlideRelativeLayout : RelativeLayout {
         if (!isClosing) {
             when (ev!!.action){
                 MotionEvent.ACTION_DOWN -> {
+                    isManager = true
                     isBacking = false
                     startY = ev.rawY
                     startX = ev.rawX
                 }
                 MotionEvent.ACTION_MOVE -> {
-//                    val offsetX = ev.rawX - startX
-                    val offsetY = ev.rawY - startY
-//                    loge("offsetX: $offsetX, offsetY: $offsetY")
-                    if (mChildType == ChildType.SCROLLVIEW){
-                        if (mSlideType == SlideType.VERTICAL) {
-                            val child = getChildAt(0) as ViewGroup
-                            val maxScrollY = child.getChildAt(0).height - child.height
-                            val scrollY = child.scrollY
-                            if ((offsetY > 0 && scrollY == 0) || (offsetY < 0 && scrollY == maxScrollY)){
-                                checkSlideType(ev)
-                                return true
+                    if (isManager) {
+                        val offsetX = ev.rawX - startX
+                        val offsetY = ev.rawY - startY
+                        loge("offsetX: $offsetX, offsetY: $offsetY")
+                        if (childType == ChildType.SCROLLVIEW){
+                            if (slideType == SlideType.VERTICAL) {
+                                val child = getChildAt(0) as ViewGroup
+                                val maxScrollY = child.getChildAt(0).height - child.height
+                                val scrollY = child.scrollY
+                                if ((offsetY >= 0 && scrollY == 0) || (offsetY <= 0 && scrollY == maxScrollY)){
+//                                    if (checkSlideType(ev)) {
+//                                        return true
+//                                    }
+                                    return checkSlideType(ev)
+                                }else{
+                                    isManager = false
+                                }
+                            }else if (slideType == SlideType.HORIZONTAL){
+//                                if (checkSlideType(ev)) {
+//                                    return true
+//                                }
+                                return checkSlideType(ev)
+                            }else{
+                                throw IllegalArgumentException("slideType must not be SlideType.NONE")
                             }
-                        }else if (mSlideType == SlideType.HORIZONTAL){
-                            checkSlideType(ev)
-                        }
-                    }else if (mChildType == ChildType.VIEWPAGER){
-                        if (mSlideType == SlideType.HORIZONTAL){
-                            val size = mChildViewPager.adapter.count
-                            val position = mChildViewPager.currentItem
-//                            loge("viewpager: size: $size, position: $position")
-                            if (size == 1){
-                                checkSlideType(ev)
-                            }else if (position == 0){
-                                checkSlideType(ev, DIRECT_LEFT)
-                            }else if (position == size - 1){
-                                checkSlideType(ev, DIRECT_RIGHT)
+                        }else if (childType == ChildType.VIEWPAGER){
+                            if (slideType == SlideType.HORIZONTAL){
+                                val size = mChildViewPager.adapter.count
+                                val position = mChildViewPager.currentItem
+    //                            loge("viewpager: size: $size, position: $position")
+                                if (size == 1){
+//                                    if (checkSlideType(ev)) {
+//                                        return true
+//                                    }
+                                    return checkSlideType(ev)
+                                }else if (position == 0){
+//                                    if (checkSlideType(ev, DIRECT_LEFT)) {
+//                                        return true
+//                                    }
+                                    return checkSlideType(ev, DIRECT_LEFT)
+                                }else if (position == size - 1){
+//                                    if (checkSlideType(ev, DIRECT_RIGHT)) {
+//                                        return true
+//                                    }
+                                    return checkSlideType(ev, DIRECT_RIGHT)
+                                }
+                            }else{
+                                throw IllegalArgumentException("slideType must be SlideType.HORIZONTAL if childType is ChileType.VIEWPAGER")
                             }
                         }
                     }
@@ -199,7 +224,7 @@ class SlideRelativeLayout : RelativeLayout {
 //        loge("intercept")
         when (ev!!.action){
             MotionEvent.ACTION_MOVE -> {
-                if (mChildType == ChildType.PHOTOVIEW && mSlideType == SlideType.VERTICAL){
+                if (childType == ChildType.PHOTOVIEW && slideType == SlideType.VERTICAL){
                     checkSlideType(ev)
                 }
             }
@@ -212,11 +237,12 @@ class SlideRelativeLayout : RelativeLayout {
         return true
     }
 
-    private fun checkSlideType(ev: MotionEvent){
-        checkSlideType(ev, DIRECT_NONE)
+    private fun checkSlideType(ev: MotionEvent): Boolean{
+        return checkSlideType(ev, DIRECT_NONE)
     }
 
-    private fun checkSlideType(ev: MotionEvent, forbidden: Int){
+    private fun checkSlideType(ev: MotionEvent, forbidden: Int): Boolean{
+        var isSlide = false
         val offsetY = ev.rawY - startY
         val offsetX = ev.rawX - startX
         if (mCurrentSlideType == SlideType.NONE){
@@ -228,12 +254,13 @@ class SlideRelativeLayout : RelativeLayout {
                     }
         }
 //        loge("check: offsetX: $offsetX, offsetY: $offsetY, type: $mCurrentSlideType, forbidden: $forbidden")
-        when (mSlideType){
+        when (slideType){
             SlideType.HORIZONTAL -> {
                 if (mCurrentSlideType == SlideType.HORIZONTAL){
                     if ( (offsetX > 0 && forbidden != DIRECT_RIGHT) || (offsetX < 0 && forbidden != DIRECT_LEFT)){
                         translationX = offsetX
                         onSlideListener?.translatePage(offsetX / measuredWidth)
+                        isSlide = true
                     }
                 }
             }
@@ -242,11 +269,13 @@ class SlideRelativeLayout : RelativeLayout {
                     if ( (offsetY > 0 && forbidden != DIRECT_DOWN) || (offsetY < 0 && forbidden != DIRECT_UP)) {
                         translationY = offsetY
                         onSlideListener?.translatePage(offsetY / measuredHeight)
+                        isSlide = true
                     }
                 }
             }
-            else -> {}
+            else -> {isSlide = true}
         }
+        return isSlide
     }
 
     private fun eventUp() {
@@ -255,7 +284,7 @@ class SlideRelativeLayout : RelativeLayout {
 //        loge("end: x: $offsetX, y: $offsetY")
         mCurrentSlideType = SlideType.NONE
         if (!isClosing){
-            when (mSlideType){
+            when (slideType){
                 SlideType.HORIZONTAL -> {
                     if (offsetX > maxLength || offsetX < -maxLength){
                         isClosing = true
@@ -286,7 +315,7 @@ class SlideRelativeLayout : RelativeLayout {
         val height = if (offsetY > 0) measuredHeight else -measuredHeight
         closeAnimatorX.setFloatValues(offsetX, width.toFloat())
         closeAnimatorY.setFloatValues(offsetY, height.toFloat())
-        when (mSlideType){
+        when (slideType){
             SlideType.VERTICAL -> {
                 closeAnimatorY.start()
             }
@@ -303,7 +332,7 @@ class SlideRelativeLayout : RelativeLayout {
         isBacking = true
         backAnimatorX.setFloatValues(offsetX, 0F)
         backAnimatorY.setFloatValues(offsetY, 0F)
-        when (mSlideType){
+        when (slideType){
             SlideType.VERTICAL -> {
                 backAnimatorY.start()
             }

@@ -7,6 +7,7 @@ import java.lang.ref.WeakReference
  * Created by wuruoye on 2017/9/15.
  * this file is to do
  */
+@Suppress("UNCHECKED_CAST")
 abstract class AbsPresenter<out V : BaseView> : BasePresenter {
     private var mViewRef: WeakReference<V>? = null
 

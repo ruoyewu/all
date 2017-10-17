@@ -15,6 +15,7 @@ import com.wuruoye.all2.base.BaseActivity
 import com.wuruoye.all2.base.presenter.AbsPresenter
 import com.wuruoye.all2.base.presenter.AbsView
 import com.wuruoye.all2.base.util.*
+import com.wuruoye.all2.setting.SettingActivity
 import com.wuruoye.all2.v3.model.AppInfo
 import com.wuruoye.all2.v3.presenter.AppInfoListGet
 import kotlinx.android.synthetic.main.activity_main.*
@@ -99,7 +100,8 @@ class MainActivity : BaseActivity(){
             startActivity(intent)
         }
         fab_main_setting.setOnClickListener {
-
+            val intent = Intent(this, SettingActivity::class.java)
+            startActivity(intent)
         }
 
         if (true){

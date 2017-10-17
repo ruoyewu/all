@@ -1,7 +1,6 @@
 package com.wuruoye.all2.user
 
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -52,8 +51,8 @@ class UserActivity : PhotoActivity() {
     override fun initView() {
         overridePendingTransition(R.anim.activity_open_right, R.anim.activity_no)
 
-        activity_user.mChildType = SlideRelativeLayout.ChildType.VIEWPAGER
-        activity_user.mSlideType = SlideRelativeLayout.SlideType.HORIZONTAL
+        activity_user.childType = SlideRelativeLayout.ChildType.VIEWPAGER
+        activity_user.slideType = SlideRelativeLayout.SlideType.HORIZONTAL
         activity_user.attachViewPager(vp_user)
         activity_user.setOnSlideListener(object : SlideRelativeLayout.OnSlideListener{
             override fun onClosePage() {
