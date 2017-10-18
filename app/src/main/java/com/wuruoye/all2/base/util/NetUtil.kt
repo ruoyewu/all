@@ -1,5 +1,7 @@
 package com.wuruoye.all2.base.util
 
+import android.content.Context
+import android.net.ConnectivityManager
 import com.wuruoye.all2.base.model.Config
 import com.wuruoye.all2.base.model.Listener
 import okhttp3.*
@@ -44,9 +46,9 @@ object NetUtil {
 
     /**
      * post 请求
-     * @keyList 请求参数key
-     * @valueList 请求参数值
-     * @worn 必须保证两个list的大小完全一致
+     * @param keyList 请求参数key
+     * @param valueList 请求参数值
+     * 必须保证两个list的大小完全一致
      */
     fun post(url: String, keyList: List<String>, valueList: List<String>, listener: Listener<String>){
         val requestBody = FormBody.Builder()
@@ -119,5 +121,11 @@ object NetUtil {
             }
 
         })
+    }
+
+    fun isNetworkConnected(context: Context): Boolean{
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkInfo = connectivityManager.activeNetworkInfo
+        return networkInfo?.isAvailable ?: false
     }
 }

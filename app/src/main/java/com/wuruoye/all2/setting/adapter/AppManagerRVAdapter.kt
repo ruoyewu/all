@@ -21,7 +21,6 @@ class AppManagerRVAdapter(
 
     private lateinit var mContext: Context
     private lateinit var mAppInfoCache: AppInfoCache
-    private var onLongPressListener: OnLongPressListener? = null
 
     override fun getItemCount(): Int =
             appList.size
@@ -38,10 +37,6 @@ class AppManagerRVAdapter(
             }
             TYPE_NORMAL -> {
                 val viewHolder = holder as AppMangerViewHolder
-                viewHolder.itemView.setOnLongClickListener {
-                    onLongPressListener?.onLongPress(viewHolder)
-                    true
-                }
                 val array = appList[position]
                 mContext.loadImage(array[2], viewHolder.civ)
                 viewHolder.tv.text = array[1]
@@ -88,14 +83,6 @@ class AppManagerRVAdapter(
                 .takeWhile { appList[it][0] != "av" }
                 .mapTo(showList) { appList[it][0] }
         mAppInfoCache.putAvAppList(showList)
-    }
-
-    fun addOnLongPressListener(listener: OnLongPressListener){
-        this.onLongPressListener = listener
-    }
-
-    interface OnLongPressListener{
-        fun onLongPress(viewHolder: RecyclerView.ViewHolder)
     }
 
     companion object {

@@ -1,116 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.wuruoye.all2.base.widget.SlideRelativeLayout xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_detail"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@color/romance"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    tools:ignore="NewApi"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ScrollView
         android:id="@+id/sv_article"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true">
+
         <LinearLayout
-            android:focusableInTouchMode="true"
-            android:focusable="true"
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical">
+
             <LinearLayout
                 android:id="@+id/ll_article_detail"
-                android:padding="16dp"
-                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
                 <TextView
                     android:id="@+id/tv_article_title"
-                    android:textColor="@color/cape_cod"
-                    android:paddingTop="15dp"
-                    android:textIsSelectable="true"
-                    android:paddingBottom="15dp"
-                    android:gravity="center"
-                    android:textSize="20sp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:paddingBottom="15dp"
+                    android:paddingTop="15dp"
+                    android:textColor="@color/cape_cod"
+                    android:textIsSelectable="true"
+                    android:textSize="20sp" />
+
                 <TextView
                     android:id="@+id/tv_article_subtitle"
-                    android:textSize="18sp"
-                    android:textColor="@color/monsoon"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="10dp"
-                    android:textIsSelectable="true"
-                    android:gravity="end"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:paddingBottom="10dp"
+                    android:paddingTop="5dp"
+                    android:textColor="@color/monsoon"
+                    android:textIsSelectable="true"
+                    android:textSize="18sp" />
+
                 <TextView
                     android:id="@+id/tv_article_author"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:textSize="12sp"
+                    android:paddingBottom="10dp"
+                    android:paddingTop="10dp"
                     android:textColor="@color/monsoon"
                     android:textIsSelectable="true"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:textSize="12sp" />
+
                 <TextView
                     android:id="@+id/tv_article_forward"
-                    android:textColor="@color/monsoon"
-                    android:textSize="14sp"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
-                    android:textIsSelectable="true"
-                    android:gravity="center"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:paddingBottom="10dp"
+                    android:paddingTop="10dp"
+                    android:textColor="@color/monsoon"
+                    android:textIsSelectable="true"
+                    android:textSize="14sp" />
+
                 <TextView
                     android:id="@+id/tv_article_date"
-                    android:textColor="@color/monsoon"
-                    android:textSize="11sp"
-                    android:textIsSelectable="true"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
-                    android:gravity="center"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:paddingBottom="10dp"
+                    android:paddingTop="10dp"
+                    android:textColor="@color/monsoon"
+                    android:textIsSelectable="true"
+                    android:textSize="11sp" />
+
                 <LinearLayout
                     android:id="@+id/ll_article_content"
-                    android:orientation="vertical"
-                    android:paddingTop="20dp"
-                    android:paddingBottom="20dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingBottom="20dp"
+                    android:paddingTop="20dp" />
+
                 <TextView
                     android:id="@+id/tv_article_original"
-                    android:visibility="gone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:padding="10dp"
                     android:text="阅读原文"
                     android:textColor="@color/mountain_mist"
                     android:textSize="12sp"
-                    android:padding="10dp"
-                    android:layout_gravity="center"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:visibility="gone" />
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/ll_article_comment"
-                android:visibility="gone"
-                android:paddingLeft="10dp"
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingLeft="10dp"
+                android:visibility="gone">
+
                 <View
-                    android:background="@color/cape_cod"
                     android:layout_width="10dp"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent"
+                    android:background="@color/cape_cod" />
+
                 <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:padding="10dp"
-                    android:textSize="18sp"
                     android:text="文章评论"
                     android:textColor="@color/cape_cod"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:textSize="18sp" />
             </LinearLayout>
 
             <android.support.v7.widget.RecyclerView
@@ -233,5 +246,28 @@
             android:layout_height="wrap_content" />
 
     </LinearLayout>
+    <RelativeLayout
+        android:id="@+id/rl_article_loading"
+        android:layout_centerInParent="true"
+        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <com.wuruoye.all2.base.widget.HeartbeatView
+            android:id="@+id/hv_article_loading"
+            android:layout_centerInParent="true"
+            android:layout_width="40dp"
+            android:layout_height="40dp" />
 
+        <TextView
+            android:id="@+id/tv_article_loading"
+            android:visibility="gone"
+            android:textColor="@color/mountain_mist"
+            android:textSize="13sp"
+            android:gravity="center"
+            android:text="文章详情加载失败，\n点击重试"
+            android:padding="10dp"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
 </com.wuruoye.all2.base.widget.SlideRelativeLayout>

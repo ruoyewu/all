@@ -89,6 +89,11 @@ class ArticleDetailActivity : BaseActivity() {
             runOnUiThread { setDetail(model) }
         }
 
+        override fun onArticleError() {
+            runOnUiThread {
+                changeLoadingView(LOAD_TYPE_ERROR) }
+        }
+
         override fun onArticleInfo(model: ArticleInfo) {
             runOnUiThread { setArticleInfo(model) }
         }
@@ -201,9 +206,11 @@ class ArticleDetailActivity : BaseActivity() {
 
         if (item.content.size > 0){
             //在 ArticleListItem 中已有文章详情的直接设置
+            changeLoadingView(LOAD_TYPE_SUCCESS)
             setData()
         }else {
             //否则 网络请求文章详情
+            changeLoadingView(LOAD_TYPE_START)
             mArticleGet.getArticleDetail(name, category, item.id)
         }
 
@@ -279,6 +286,11 @@ class ArticleDetailActivity : BaseActivity() {
         cv_article_likes.setOnLongClickListener {
             toast("点击查看文章...")
             true
+        }
+
+        tv_article_loading.setOnClickListener {
+            changeLoadingView(LOAD_TYPE_START)
+            mArticleGet.getArticleDetail(name, category, item.id)
         }
 
         initCommentEditDialog()
@@ -459,7 +471,7 @@ class ArticleDetailActivity : BaseActivity() {
 
     //对网络请求得到的 ArticleDetail 做操作
     private fun setDetail(detail: ArticleDetail){
-
+        changeLoadingView(LOAD_TYPE_SUCCESS)
         if (detail.title == ""){
             tv_article_title.text = item.title
         }else{
@@ -722,6 +734,24 @@ class ArticleDetailActivity : BaseActivity() {
         startActivity(intent)
     }
 
+    private fun changeLoadingView(type: Int){
+        when (type){
+            LOAD_TYPE_START -> {
+                rl_article_loading.visibility = View.VISIBLE
+                hv_article_loading.visibility = View.VISIBLE
+                tv_article_loading.visibility = View.GONE
+            }
+            LOAD_TYPE_ERROR -> {
+                rl_article_loading.visibility = View.VISIBLE
+                hv_article_loading.visibility = View.GONE
+                tv_article_loading.visibility = View.VISIBLE
+            }
+            LOAD_TYPE_SUCCESS -> {
+                rl_article_loading.visibility = View.GONE
+            }
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         mStartTime = System.currentTimeMillis()
@@ -735,7 +765,7 @@ class ArticleDetailActivity : BaseActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-
+        EventManager.removeListener()
         mArticleGet.detachView()
     }
 
@@ -749,12 +779,15 @@ class ArticleDetailActivity : BaseActivity() {
     }
 
     object EventManager{
-        lateinit var event: Event
+        private var event: Event? = null
         fun setListener(event: Event){
             this.event = event
         }
         fun sendEvent(position: Int){
-            event.onEventOccur(position)
+            event?.onEventOccur(position)
+        }
+        fun removeListener(){
+            event = null
         }
     }
 
@@ -770,6 +803,10 @@ class ArticleDetailActivity : BaseActivity() {
         val TYPE_TEXT_CEN = "7"
         val TYPE_QUOTE = "8"
         val TYPE_H3 = "9"
+
+        val LOAD_TYPE_START = 1
+        val LOAD_TYPE_ERROR = 2
+        val LOAD_TYPE_SUCCESS = 3
 
         val ANIMATION_DURATION = 300L
         val ANIMATION_DELAY = 50L

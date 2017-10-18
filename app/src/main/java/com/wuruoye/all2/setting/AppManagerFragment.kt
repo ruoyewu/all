@@ -29,12 +29,13 @@ class AppManagerFragment : BaseFragment() {
 
     override fun initView(view: View) {
         val appList = ArrayList<Array<String>>()
-        val alList = mAppInfoCache.getAlAppMap().toList()
+        val alMap = mAppInfoCache.getAlAppMap()
+        val alList = alMap.toList()
         val avs = mAppInfoCache.getAvAppList()
 
         appList.add(arrayOf("av", "首页展示列表", ""))
-        alList.filter { it.first in avs }
-                .mapTo(appList) { arrayOf(it.second.name, it.second.title, it.second.icon) }
+        (0 until avs.size).
+                mapTo(appList) { arrayOf(alMap[avs[it]]!!.name, alMap[avs[it]]!!.title, alMap[avs[it]]!!.icon) }
         appList.add(arrayOf("av", "首页不展示列表", ""))
         alList.filterNot { it.first in avs }
                 .mapTo(appList) { arrayOf(it.second.name, it.second.title, it.second.icon) }
@@ -44,11 +45,5 @@ class AppManagerFragment : BaseFragment() {
         rv_app_manager.adapter = adapter
         val itemTouchHelper = ItemTouchHelper(TouchHelperCallBack(adapter))
         itemTouchHelper.attachToRecyclerView(rv_app_manager)
-//        adapter.addOnLongPressListener(object : AppManagerRVAdapter.OnLongPressListener{
-//            override fun onLongPress(viewHolder: RecyclerView.ViewHolder) {
-//                itemTouchHelper.startDrag(viewHolder)
-//            }
-//
-//        })
     }
 }

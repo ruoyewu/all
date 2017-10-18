@@ -13,6 +13,7 @@ import com.wuruoye.all2.v3.model.ArticleInfo
 
 interface ArticleView : BaseView{
     fun onArticleDetail(model: ArticleDetail)
+    fun onArticleError()
     fun onArticleInfo(model: ArticleInfo)
     fun onCommentGet(model: ArticleComment)
     fun onCommentPut(model: ArticleCommentItem)
