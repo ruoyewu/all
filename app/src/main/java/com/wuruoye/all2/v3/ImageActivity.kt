@@ -47,11 +47,6 @@ class ImageActivity : BaseActivity() {
             override fun translatePage(progress: Float) {
 
             }
-
-            override fun isClosingPage() {
-
-            }
-
             override fun onClosePage() {
                 finish()
                 overridePendingTransition(R.anim.activity_no, R.anim.activity_no)

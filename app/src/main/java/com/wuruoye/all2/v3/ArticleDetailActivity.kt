@@ -25,6 +25,7 @@ import com.wuruoye.all2.base.util.loadImage
 import com.wuruoye.all2.base.util.loadUrl
 import com.wuruoye.all2.base.util.toast
 import com.wuruoye.all2.base.widget.SlideRelativeLayout
+import com.wuruoye.all2.setting.model.SettingCache
 import com.wuruoye.all2.user.LoginActivity
 import com.wuruoye.all2.user.UserActivity
 import com.wuruoye.all2.user.model.UserCache
@@ -44,6 +45,9 @@ import kotlin.collections.ArrayList
  */
 class ArticleDetailActivity : BaseActivity() {
 
+    private lateinit var mUserCache: UserCache
+    private lateinit var settingCache: SettingCache
+
     // 侧边 button 集合， 用于批量管理动画
     private val viewFloatList = ArrayList<View>()
 
@@ -52,7 +56,6 @@ class ArticleDetailActivity : BaseActivity() {
     private lateinit var name: String
     private lateinit var category: String
     private lateinit var articleKey: String
-    private lateinit var mUserCache: UserCache
 
     private val imageViewList = ArrayList<View>()
     private val imageUrlList = ArrayList<String>()
@@ -69,8 +72,6 @@ class ArticleDetailActivity : BaseActivity() {
     private lateinit var commentEditDialog: AlertDialog
     // 包含评论 dialog 的view
     private lateinit var commentEditView: CommentDialogView
-
-    private var isClosing = false
 
     // 使用者未登录是提示框
     private lateinit var loginDialog: AlertDialog
@@ -166,6 +167,7 @@ class ArticleDetailActivity : BaseActivity() {
         articleKey = name + "_" + category + "_" + item.id
 
         mUserCache = UserCache(applicationContext)
+        settingCache = SettingCache(applicationContext)
 
         mArticleGet = ArticleGet()
         mArticleGet.attachView(mArticleView)
@@ -181,10 +183,6 @@ class ArticleDetailActivity : BaseActivity() {
                 overridePendingTransition(R.anim.activity_no, R.anim.activity_no)
             }
 
-            override fun isClosingPage() {
-                isClosing = true
-            }
-
             override fun translatePage(progress: Float) {
 //                loge("translate progress: $progress")
             }
@@ -198,9 +196,7 @@ class ArticleDetailActivity : BaseActivity() {
         EventManager.setListener(event)
 
         tv_article_original.setOnClickListener {
-            if (!isClosing) {
-                openOriginal()
-            }
+            openOriginal()
         }
 
         if (item.content.size > 0){
@@ -570,7 +566,7 @@ class ArticleDetailActivity : BaseActivity() {
         fab_article_drawer.show()
         isClick = true
 
-        if (true){
+        if (settingCache.isAutoDetailButton){
             ll_article_fab.post {
                 isShow = true
                 showFAB()
@@ -627,9 +623,7 @@ class ArticleDetailActivity : BaseActivity() {
                             imageViewList.add(view)
                             imageUrlList.add(pair.info)
                             view.setOnClickListener {
-                                if (!isClosing) {
-                                    onImageClick(view)
-                                }
+                                onImageClick(view)
                             }
                             loadImage(pair.info, view)
                             view
@@ -685,39 +679,36 @@ class ArticleDetailActivity : BaseActivity() {
 
     //评论项点击监听， 显示dialog
     private fun onItemClick(item: ArticleCommentItem){
-        if (!isClosing) {
-            AlertDialog.Builder(this)
-                    .setItems(
-                            if (item.username == mUserCache.userName){
-                                COMMENT_ITEM_M
-                            }else{
-                                COMMENT_ITEM
-                            },
-                            { _, which ->
-                                when (which){
-                                    0 -> {      //复制
-                                        val cmb = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                                        cmb.primaryClip = ClipData.newPlainText("all", item.content)
-                                        toast("复制成功")
-                                    }
-                                    1 -> {      //举报
-
-                                    }
-                                    2 -> {      //评论
-                                        if (mUserCache.isLogin) {
-                                            showCommentDialog(item.id, item.username + ":\t" + item.content)
-                                        }else{
-                                            loginDialog.show()
-                                        }
-                                    }
-                                    3 -> {      //删除
-                                        mArticleGet.deleteComment(item.id)
+        AlertDialog.Builder(this)
+                .setItems(
+                        if (item.username == mUserCache.userName){
+                            COMMENT_ITEM_M
+                        }else{
+                            COMMENT_ITEM
+                        },
+                        { _, which ->
+                            when (which){
+                                0 -> {      //复制
+                                    val cmb = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                                    cmb.primaryClip = ClipData.newPlainText("all", item.content)
+                                    toast("复制成功")
+                                }
+                                1 -> {      //举报
+                                }
+                                2 -> {      //评论
+                                    if (mUserCache.isLogin) {
+                                        showCommentDialog(item.id, item.username + ":\t" + item.content)
+                                    }else{
+                                        loginDialog.show()
                                     }
                                 }
+                                3 -> {      //删除
+                                    mArticleGet.deleteComment(item.id)
+                                }
                             }
-                    )
-                    .show()
-        }
+                        }
+                )
+                .show()
     }
 
     private fun onImageClick(view: ImageView){

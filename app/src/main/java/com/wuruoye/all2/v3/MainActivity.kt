@@ -16,6 +16,7 @@ import com.wuruoye.all2.base.presenter.AbsPresenter
 import com.wuruoye.all2.base.presenter.AbsView
 import com.wuruoye.all2.base.util.*
 import com.wuruoye.all2.setting.SettingActivity
+import com.wuruoye.all2.setting.model.SettingCache
 import com.wuruoye.all2.v3.model.AppInfo
 import com.wuruoye.all2.v3.presenter.AppInfoListGet
 import kotlinx.android.synthetic.main.activity_main.*
@@ -29,6 +30,7 @@ class MainActivity : BaseActivity(){
     private val viewFloatList = ArrayList<View>()
     private var isShow = false
     private lateinit var appInfoCache: AppInfoCache
+    private lateinit var settingCache: SettingCache
 
     private var isNetRefresh = false
     private lateinit var appInfoListGet: AppInfoListGet
@@ -78,6 +80,7 @@ class MainActivity : BaseActivity(){
         appInfoListGet.attachView(mView)
 
         appInfoCache = AppInfoCache(applicationContext)
+        settingCache = SettingCache(applicationContext)
     }
 
     override fun initView() {
@@ -104,7 +107,7 @@ class MainActivity : BaseActivity(){
             startActivity(intent)
         }
 
-        if (true){
+        if (settingCache.isAutoMainButton){
             ll_main_fab.post {
                 isShow = true
                 showFab()
@@ -124,7 +127,7 @@ class MainActivity : BaseActivity(){
     private fun setRecyclerView(list: ArrayList<String>, isNet: Boolean){
         isNetRefresh = false
         srl_main.isRefreshing = false
-        val adapter = HomeListRVAdapter(appInfoCache.getAlAppList(), list, onItemClickListener, isNet, rl_main)
+        val adapter = HomeListRVAdapter(appInfoCache.getAlAppMap(), list, onItemClickListener, isNet, rl_main)
         rl_main.layoutManager = LinearLayoutManager(this)
         rl_main.adapter = adapter
     }

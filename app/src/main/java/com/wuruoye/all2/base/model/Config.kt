@@ -10,7 +10,7 @@ import android.os.RemoteException
  */
 object Config {
     private val REMOTE_HOST = "http://139.199.153.45/"
-    val APP_LIST_URL = "https://raw.githubusercontent.com/ruoyewu/repository/master/all/v3_all.json"
+    val APP_LIST_URL = "https://git.whutdev.com/wuruoye/repository/raw/master/all/app.json"
 
     val USER_LOGIN_URL = REMOTE_HOST + "v3/user/login?"
     val USER_SIGN_URL = REMOTE_HOST + "v3/user/sign?"

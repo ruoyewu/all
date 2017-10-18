@@ -1,13 +1,11 @@
 package com.wuruoye.all2.v3.presenter
 
 import android.content.Context
-import com.google.gson.Gson
 import com.wuruoye.all2.base.model.Config
 import com.wuruoye.all2.base.model.Listener
 import com.wuruoye.all2.base.presenter.AbsPresenter
 import com.wuruoye.all2.base.presenter.AbsView
 import com.wuruoye.all2.base.util.NetUtil
-import com.wuruoye.all2.v3.model.AppInfo
 import com.wuruoye.all2.v3.model.AppInfoCache
 import org.json.JSONArray
 import org.json.JSONObject
@@ -30,7 +28,7 @@ class AppInfoListGet(context: Context) : AbsPresenter<AbsView<ArrayList<String>>
     fun requestAppInfoList(method: Method) {
         var m = method
         if (m == Method.LOCAL){
-            val info = appInfoCache.getAlAppList()
+            val info = appInfoCache.getAlAppMap()
             if (info.size == 0){
                 m = Method.NET
             }else{

@@ -2,12 +2,14 @@ package com.wuruoye.all2.base.widget
 
 import android.animation.Animator
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.support.v4.view.ViewPager
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.ViewGroup
 import android.widget.RelativeLayout
+import android.widget.ScrollView
 import com.wuruoye.all2.base.util.loge
 
 /**
@@ -16,13 +18,6 @@ import com.wuruoye.all2.base.util.loge
  */
 
 class SlideRelativeLayout : RelativeLayout {
-    private val maxLength = 300F
-    private val DIRECT_NONE = 0
-    private val DIRECT_UP = 1
-    private val DIRECT_DOWN = 2
-    private val DIRECT_LEFT = 3
-    private val DIRECT_RIGHT = 4
-
     // 手指按下的初始位置
     private var startY = 0F
     private var startX = 0F
@@ -33,7 +28,7 @@ class SlideRelativeLayout : RelativeLayout {
     // 如果为 false 不再执行 返回 动画
     private var isBacking = false
 
-    private var isManager = true
+    private var isFirstMove = true
 
     // 当前view 设置的需要滑动方向 (HORIZONTAL, VERTICAL)
     var slideType = SlideType.VERTICAL
@@ -148,144 +143,105 @@ class SlideRelativeLayout : RelativeLayout {
         })
     }
 
-    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-//        loge("dispatch")
-        if (!isClosing) {
-            when (ev!!.action){
-                MotionEvent.ACTION_DOWN -> {
-                    isManager = true
-                    isBacking = false
-                    startY = ev.rawY
-                    startX = ev.rawX
-                }
-                MotionEvent.ACTION_MOVE -> {
-                    if (isManager) {
-                        val offsetX = ev.rawX - startX
-                        val offsetY = ev.rawY - startY
-                        loge("offsetX: $offsetX, offsetY: $offsetY")
-                        if (childType == ChildType.SCROLLVIEW){
-                            if (slideType == SlideType.VERTICAL) {
-                                val child = getChildAt(0) as ViewGroup
-                                val maxScrollY = child.getChildAt(0).height - child.height
-                                val scrollY = child.scrollY
-                                if ((offsetY >= 0 && scrollY == 0) || (offsetY <= 0 && scrollY == maxScrollY)){
-//                                    if (checkSlideType(ev)) {
-//                                        return true
-//                                    }
-                                    return checkSlideType(ev)
-                                }else{
-                                    isManager = false
-                                }
-                            }else if (slideType == SlideType.HORIZONTAL){
-//                                if (checkSlideType(ev)) {
-//                                    return true
-//                                }
-                                return checkSlideType(ev)
-                            }else{
-                                throw IllegalArgumentException("slideType must not be SlideType.NONE")
-                            }
-                        }else if (childType == ChildType.VIEWPAGER){
-                            if (slideType == SlideType.HORIZONTAL){
-                                val size = mChildViewPager.adapter.count
-                                val position = mChildViewPager.currentItem
-    //                            loge("viewpager: size: $size, position: $position")
-                                if (size == 1){
-//                                    if (checkSlideType(ev)) {
-//                                        return true
-//                                    }
-                                    return checkSlideType(ev)
-                                }else if (position == 0){
-//                                    if (checkSlideType(ev, DIRECT_LEFT)) {
-//                                        return true
-//                                    }
-                                    return checkSlideType(ev, DIRECT_LEFT)
-                                }else if (position == size - 1){
-//                                    if (checkSlideType(ev, DIRECT_RIGHT)) {
-//                                        return true
-//                                    }
-                                    return checkSlideType(ev, DIRECT_RIGHT)
-                                }
-                            }else{
-                                throw IllegalArgumentException("slideType must be SlideType.HORIZONTAL if childType is ChileType.VIEWPAGER")
-                            }
+    override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
+        var handle = false
+        when (ev!!.action){
+            MotionEvent.ACTION_DOWN -> {
+                startX = ev.rawX
+                startY= ev.rawY
+//                loge("down: $startX , $startY")
+            }
+            MotionEvent.ACTION_MOVE -> {
+                val offsetX = ev.rawX - startX
+                val offsetY = ev.rawY - startY
+//                loge("move: $offsetX , $offsetY")
+                if (childType == ChildType.SCROLLVIEW){
+                    val child = getChildAt(0) as ScrollView
+                    if (slideType == SlideType.VERTICAL){
+                        val maxScrollY = child.getChildAt(0).height - child.height
+                        val scrollY = child.scrollY
+                        loge("scrollView vertical $scrollY , $maxScrollY")
+                        if ((scrollY == 0 && offsetY > 0) || (scrollY == maxScrollY && offsetY < 0)) {
+                            handle = true
                         }
+                    }else if (slideType == SlideType.HORIZONTAL){
+                        loge("scrollView horizontal $offsetX , $offsetY")
+                        if (Math.abs(offsetX) > Math.abs(offsetY)){
+                            handle = true
+                        }
+                    }else {
+                        throw IllegalArgumentException("childType must be SlideType.VERTICAL or SlideType.HORIZONTAL")
+                    }
+                }else if (childType == ChildType.VIEWPAGER){
+                    if (slideType == SlideType.HORIZONTAL) {
+                        loge("viewpager horizontal: $offsetX , $offsetY")
+                        val size = mChildViewPager.childCount
+                        val current = mChildViewPager.currentItem
+                        if (size == 1){
+                            handle = true
+                        }else if (current == 0 && offsetX > 0 && Math.abs(offsetX) > Math.abs(offsetY)){
+                            handle = true
+                        }else if (current == size - 1 && offsetX < 0 && Math.abs(offsetX) > Math.abs(offsetY)){
+                            handle = true
+                        }
+                    }else {
+                        throw IllegalArgumentException("childType must be SlideType.HORIZONTAL")
+                    }
+                }else if (childType == ChildType.PHOTOVIEW){
+                    if (slideType == SlideType.VERTICAL){
+                        if (Math.abs(offsetX) < Math.abs(offsetY)){
+                            handle = true
+                        }
+                    }else {
+                        throw IllegalArgumentException("childType must be SlideType.VERTICAL")
                     }
                 }
-                MotionEvent.ACTION_CANCEL,
-                MotionEvent.ACTION_UP -> {
-                    eventUp()
-                }
+            }
+            MotionEvent.ACTION_UP -> {
+                loge("up")
+                eventUp()
             }
         }
-        return super.dispatchTouchEvent(ev)
-    }
-
-    override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
-//        loge("intercept")
-        when (ev!!.action){
-            MotionEvent.ACTION_MOVE -> {
-                if (childType == ChildType.PHOTOVIEW && slideType == SlideType.VERTICAL){
-                    checkSlideType(ev)
-                }
-            }
+        if (handle){
+            return true
         }
         return super.onInterceptTouchEvent(ev)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
-        loge("on touch")
+        when (event!!.action){
+            MotionEvent.ACTION_MOVE -> {
+                if (isFirstMove){
+                    startX = event.rawX
+                    startY = event.rawY
+                    isFirstMove = false
+                }
+                val offsetX = event.rawX - startX
+                val offsetY = event.rawY - startY
+                loge("touch offset : $offsetX , $offsetY")
+                if (slideType == SlideType.HORIZONTAL){
+                    translationX = offsetX
+                }else if (slideType == SlideType.VERTICAL){
+                    translationY = offsetY
+                }
+            }
+            MotionEvent.ACTION_UP -> {
+                isFirstMove = true
+                eventUp()
+            }
+        }
         return true
-    }
-
-    private fun checkSlideType(ev: MotionEvent): Boolean{
-        return checkSlideType(ev, DIRECT_NONE)
-    }
-
-    private fun checkSlideType(ev: MotionEvent, forbidden: Int): Boolean{
-        var isSlide = false
-        val offsetY = ev.rawY - startY
-        val offsetX = ev.rawX - startX
-        if (mCurrentSlideType == SlideType.NONE){
-            mCurrentSlideType =
-                    when {
-                        Math.abs(offsetX) > Math.abs(offsetY) -> SlideType.HORIZONTAL
-                        Math.abs(offsetY) > Math.abs(offsetX) -> SlideType.VERTICAL
-                        else -> SlideType.NONE
-                    }
-        }
-//        loge("check: offsetX: $offsetX, offsetY: $offsetY, type: $mCurrentSlideType, forbidden: $forbidden")
-        when (slideType){
-            SlideType.HORIZONTAL -> {
-                if (mCurrentSlideType == SlideType.HORIZONTAL){
-                    if ( (offsetX > 0 && forbidden != DIRECT_RIGHT) || (offsetX < 0 && forbidden != DIRECT_LEFT)){
-                        translationX = offsetX
-                        onSlideListener?.translatePage(offsetX / measuredWidth)
-                        isSlide = true
-                    }
-                }
-            }
-            SlideType.VERTICAL -> {
-                if (mCurrentSlideType == SlideType.VERTICAL){
-                    if ( (offsetY > 0 && forbidden != DIRECT_DOWN) || (offsetY < 0 && forbidden != DIRECT_UP)) {
-                        translationY = offsetY
-                        onSlideListener?.translatePage(offsetY / measuredHeight)
-                        isSlide = true
-                    }
-                }
-            }
-            else -> {isSlide = true}
-        }
-        return isSlide
     }
 
     private fun eventUp() {
         val offsetX = translationX
         val offsetY = translationY
-//        loge("end: x: $offsetX, y: $offsetY")
         mCurrentSlideType = SlideType.NONE
         if (!isClosing){
             when (slideType){
                 SlideType.HORIZONTAL -> {
+                    val maxLength = width / 3
                     if (offsetX > maxLength || offsetX < -maxLength){
                         isClosing = true
                         closePage()
@@ -294,6 +250,7 @@ class SlideRelativeLayout : RelativeLayout {
                     }
                 }
                 SlideType.VERTICAL -> {
+                    val maxLength = height / 4
                     if (offsetY > maxLength || offsetY < -maxLength){
                         isClosing = true
                         closePage()
@@ -307,8 +264,6 @@ class SlideRelativeLayout : RelativeLayout {
     }
 
     private fun closePage() {
-        onSlideListener?.isClosingPage()
-
         val offsetX = translationX
         val offsetY = translationY
         val width = if (offsetX > 0) measuredWidth else -measuredWidth
@@ -353,7 +308,6 @@ class SlideRelativeLayout : RelativeLayout {
 
     interface OnSlideListener{
         fun onClosePage()
-        fun isClosingPage()
         fun translatePage(progress: Float)
     }
 
@@ -362,4 +316,12 @@ class SlideRelativeLayout : RelativeLayout {
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {init()}
 
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {init()}
+
+    companion object {
+        val DIRECT_NONE = 0
+        val DIRECT_UP = 1
+        val DIRECT_DOWN = 2
+        val DIRECT_LEFT = 3
+        val DIRECT_RIGHT = 4
+    }
 }

@@ -83,11 +83,6 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
                 finish()
                 overridePendingTransition(R.anim.activity_no, R.anim.activity_no)
             }
-
-            override fun isClosingPage() {
-
-            }
-
             override fun translatePage(progress: Float) {
 
             }

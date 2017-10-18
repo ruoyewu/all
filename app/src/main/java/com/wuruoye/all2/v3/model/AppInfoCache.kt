@@ -46,7 +46,7 @@ class AppInfoCache(context: Context) : BaseCache(context) {
         setString(AL_APP_LIST, data)
     }
 
-    fun getAlAppList(): HashMap<String, AppInfo>{
+    fun getAlAppMap(): HashMap<String, AppInfo>{
         val appMap = HashMap<String, AppInfo>()
         val data = getString(AL_APP_LIST, "[]")
         val array = JSONArray(data)
