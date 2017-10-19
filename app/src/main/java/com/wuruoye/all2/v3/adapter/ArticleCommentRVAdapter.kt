@@ -1,7 +1,6 @@
 package com.wuruoye.all2.v3.adapter
 
 import android.support.v7.widget.RecyclerView
-import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,8 +9,8 @@ import com.wuruoye.all2.base.util.DateUtil
 import com.wuruoye.all2.base.util.loadUserImage
 import com.wuruoye.all2.v3.adapter.viewholder.ArticleCommentViewHolder
 import com.wuruoye.all2.v3.adapter.viewholder.HeartRefreshViewHolder
-import com.wuruoye.all2.v3.model.ArticleComment
-import com.wuruoye.all2.v3.model.ArticleCommentItem
+import com.wuruoye.all2.v3.model.bean.ArticleComment
+import com.wuruoye.all2.v3.model.bean.ArticleCommentItem
 
 /**
  * Created by wuruoye on 2017/9/21.

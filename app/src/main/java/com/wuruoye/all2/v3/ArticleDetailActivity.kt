@@ -31,6 +31,7 @@ import com.wuruoye.all2.user.UserActivity
 import com.wuruoye.all2.user.model.UserCache
 import com.wuruoye.all2.v3.adapter.ArticleCommentRVAdapter
 import com.wuruoye.all2.v3.adapter.viewholder.HeartRefreshViewHolder
+import com.wuruoye.all2.v3.model.bean.*
 import com.wuruoye.all2.v3.model.*
 import com.wuruoye.all2.v3.presenter.ArticleGet
 import com.wuruoye.all2.v3.presenter.ArticleView

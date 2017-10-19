@@ -8,7 +8,7 @@ import com.wuruoye.all2.base.presenter.AbsPresenter
 import com.wuruoye.all2.base.presenter.AbsView
 import com.wuruoye.all2.base.util.NetUtil
 import com.wuruoye.all2.v3.model.AppInfoCache
-import com.wuruoye.all2.v3.model.ArticleList
+import com.wuruoye.all2.v3.model.bean.ArticleList
 
 /**
  * Created by wuruoye on 2017/9/16.

@@ -1,6 +1,5 @@
 package com.wuruoye.all2.v3
 
-import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
@@ -15,9 +14,8 @@ import com.wuruoye.all2.base.util.toast
 import com.wuruoye.all2.v3.adapter.AllListRVAdapter
 import com.wuruoye.all2.v3.adapter.HomeListRVAdapter
 import com.wuruoye.all2.v3.adapter.viewholder.HeartRefreshViewHolder
-import com.wuruoye.all2.v3.model.ArticleList
-import com.wuruoye.all2.v3.model.ArticleListItem
-import com.wuruoye.all2.v3.presenter.AppListGet
+import com.wuruoye.all2.v3.model.bean.ArticleList
+import com.wuruoye.all2.v3.model.bean.ArticleListItem
 import com.wuruoye.all2.v3.presenter.AppListGet2
 import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator
 import kotlinx.android.synthetic.main.fragment_list.*

@@ -1,10 +1,10 @@
 package com.wuruoye.all2.v3.presenter
 
 import com.wuruoye.all2.base.presenter.BaseView
-import com.wuruoye.all2.v3.model.ArticleComment
-import com.wuruoye.all2.v3.model.ArticleCommentItem
-import com.wuruoye.all2.v3.model.ArticleDetail
-import com.wuruoye.all2.v3.model.ArticleInfo
+import com.wuruoye.all2.v3.model.bean.ArticleComment
+import com.wuruoye.all2.v3.model.bean.ArticleCommentItem
+import com.wuruoye.all2.v3.model.bean.ArticleDetail
+import com.wuruoye.all2.v3.model.bean.ArticleInfo
 
 /**
  * Created by wuruoye on 2017/9/23.

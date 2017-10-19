@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import com.google.gson.Gson
 import com.wuruoye.all2.R
 import com.wuruoye.all2.base.util.loadImage
-import com.wuruoye.all2.user.model.ArticleFavorite
-import com.wuruoye.all2.user.model.ArticleFavoriteItem
+import com.wuruoye.all2.user.model.bean.ArticleFavorite
+import com.wuruoye.all2.user.model.bean.ArticleFavoriteItem
 import com.wuruoye.all2.v3.adapter.viewholder.HeartRefreshViewHolder
 import com.wuruoye.all2.v3.model.AppInfoCache
-import com.wuruoye.all2.v3.model.ArticleListItem
+import com.wuruoye.all2.v3.model.bean.ArticleListItem
 
 /**
  * Created by wuruoye on 2017/9/28.

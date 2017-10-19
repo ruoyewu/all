@@ -7,6 +7,8 @@
         <item name="colorPrimaryDark">@color/romance</item>
         <item name="colorAccent">@color/monsoon</item>
         <item name="android:windowLightStatusBar">true</item>
+        <item name="android:typeface">serif</item>
+        <!--<item name="android:fontFamily">@font/longzhao_x</item>-->
     </style>
 
     <style name="FullScreen" parent="AppTheme">
@@ -30,12 +32,5 @@
 
     <style name="FabTheme" parent="AppTheme">
         <item name="colorAccent">@color/white_smoke</item>
-    </style>
-
-    <style name="Dialog" parent="@android:style/Theme.Dialog">
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowNoTitle">true</item>
     </style>
 </resources>

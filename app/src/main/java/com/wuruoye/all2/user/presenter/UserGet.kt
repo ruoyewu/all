@@ -4,12 +4,8 @@ import com.google.gson.Gson
 import com.wuruoye.all2.base.model.Config
 import com.wuruoye.all2.base.model.Listener
 import com.wuruoye.all2.base.presenter.AbsPresenter
-import com.wuruoye.all2.base.presenter.AbsView
 import com.wuruoye.all2.base.util.NetUtil
-import com.wuruoye.all2.base.util.loge
-import com.wuruoye.all2.user.model.ArticleFavorite
-import com.wuruoye.all2.v3.model.ArticleListItem
-import org.json.JSONObject
+import com.wuruoye.all2.user.model.bean.ArticleFavorite
 
 /**
  * Created by wuruoye on 2017/9/24.

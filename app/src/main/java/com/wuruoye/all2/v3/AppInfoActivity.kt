@@ -6,7 +6,7 @@ import com.wuruoye.all2.R
 import com.wuruoye.all2.base.BaseActivity
 import com.wuruoye.all2.base.widget.SlideRelativeLayout
 import com.wuruoye.all2.v3.adapter.FragmentVPAdapter
-import com.wuruoye.all2.v3.model.AppInfo
+import com.wuruoye.all2.v3.model.bean.AppInfo
 import kotlinx.android.synthetic.main.activity_app_info.*
 
 /**

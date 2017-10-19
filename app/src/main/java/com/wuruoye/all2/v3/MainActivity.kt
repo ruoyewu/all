@@ -17,14 +17,14 @@ import com.wuruoye.all2.base.presenter.AbsView
 import com.wuruoye.all2.base.util.*
 import com.wuruoye.all2.setting.SettingActivity
 import com.wuruoye.all2.setting.model.SettingCache
-import com.wuruoye.all2.v3.model.AppInfo
+import com.wuruoye.all2.v3.model.bean.AppInfo
 import com.wuruoye.all2.v3.presenter.AppInfoListGet
 import kotlinx.android.synthetic.main.activity_main.*
 import com.wuruoye.all2.user.UserActivity
 import com.wuruoye.all2.user.model.UserCache
 import com.wuruoye.all2.v3.adapter.HomeListRVAdapter
 import com.wuruoye.all2.v3.model.AppInfoCache
-import com.wuruoye.all2.v3.model.ArticleListItem
+import com.wuruoye.all2.v3.model.bean.ArticleListItem
 
 class MainActivity : BaseActivity(){
     private val viewFloatList = ArrayList<View>()

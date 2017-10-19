@@ -153,7 +153,9 @@
 
 #-----------处理反射类---------------
 
-#-keep class android.graphics.Typeface
+-keepclasseswithmembernames class android.graphics.Typeface{*;}
+-keepclasseswithmembernames class com.wuruoye.all2.v3.model.bean.**{*;}
+-keepclasseswithmembernames class com.wuruoye.all2.user.model.bean.**{*;}
 
 #-----------处理js交互---------------
 
@@ -304,6 +306,14 @@
 -keep class com.android.dingtalk.share.ddsharemodule.** { *; }
 -keepattributes Signature
 
+# Gson
+-keepattributes Signature
+# Gson specific classes
+-keep class sun.misc.Unsafe { *; }
+-keep class com.google.gson.stream.** { *; }
+# Application classes that will be serialized/deserialized over Gson
+-keep class com.google.gson.examples.android.model.** { *; }
+-keep class com.google.gson.** { *;}
 
 #------------------  下方是共性的排除项目         ----------------
 # 方法名中含有“JNI”字符的，认定是Java Native Interface方法，自动排除

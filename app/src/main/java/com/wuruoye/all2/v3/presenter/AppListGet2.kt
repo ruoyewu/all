@@ -9,7 +9,7 @@ import com.wuruoye.all2.base.presenter.AbsView
 import com.wuruoye.all2.base.util.NetUtil
 import com.wuruoye.all2.base.util.loge
 import com.wuruoye.all2.v3.model.AppInfoCache
-import com.wuruoye.all2.v3.model.ArticleList
+import com.wuruoye.all2.v3.model.bean.ArticleList
 import org.json.JSONArray
 
 /**
@@ -45,7 +45,7 @@ class AppListGet2(context: Context) : AbsPresenter<AbsView<ArticleList>>(), List
                 val apiRequestUrl = Config.APP_API_URL + "name=" + name
                 NetUtil.get(apiRequestUrl, object : Listener<String>{
                     override fun onSuccess(model: String) {
-                        loge(model)
+//                        loge(model)
                         val map = parseJson2Map(model)
                         mAppInfoCache.putApi(name, map)
                         requestWithApiMap(map, name, category, page)

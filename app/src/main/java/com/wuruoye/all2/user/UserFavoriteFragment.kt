@@ -1,8 +1,6 @@
 package com.wuruoye.all2.user
 
-import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import com.google.gson.Gson
@@ -10,14 +8,12 @@ import com.wuruoye.all2.R
 import com.wuruoye.all2.base.util.startActivity
 import com.wuruoye.all2.base.util.toast
 import com.wuruoye.all2.user.adapter.FavoriteRVAdapter
-import com.wuruoye.all2.user.model.ArticleFavorite
-import com.wuruoye.all2.user.model.ArticleFavoriteItem
+import com.wuruoye.all2.user.model.bean.ArticleFavorite
+import com.wuruoye.all2.user.model.bean.ArticleFavoriteItem
 import com.wuruoye.all2.user.presenter.UserGet
 import com.wuruoye.all2.user.presenter.UserView
-import com.wuruoye.all2.v3.ArticleDetailActivity
-import com.wuruoye.all2.v3.MainActivity
 import com.wuruoye.all2.v3.adapter.viewholder.HeartRefreshViewHolder
-import com.wuruoye.all2.v3.model.ArticleListItem
+import com.wuruoye.all2.v3.model.bean.ArticleListItem
 import kotlinx.android.synthetic.main.fragment_user_collect.*
 
 /**

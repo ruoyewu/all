@@ -2,6 +2,7 @@ package com.wuruoye.all2.base.widget
 
 import android.animation.Animator
 import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.support.v4.view.ViewPager
@@ -54,14 +55,14 @@ class SlideRelativeLayout : RelativeLayout {
 
     private var onSlideListener: OnSlideListener? = null
 
-    private lateinit var backAnimatorX: ObjectAnimator
-    private lateinit var backAnimatorY: ObjectAnimator
-    private lateinit var closeAnimatorX: ObjectAnimator
-    private lateinit var closeAnimatorY: ObjectAnimator
+    private lateinit var backAnimatorX: ValueAnimator
+    private lateinit var backAnimatorY: ValueAnimator
+    private lateinit var closeAnimatorX: ValueAnimator
+    private lateinit var closeAnimatorY: ValueAnimator
 
     // 初始化 各个animator
     private fun init(){
-        backAnimatorX = ObjectAnimator()
+        backAnimatorX = ValueAnimator()
         backAnimatorX.addUpdateListener { animation ->
             val value = animation!!.animatedValue as Float
             if (isBacking){
@@ -72,7 +73,7 @@ class SlideRelativeLayout : RelativeLayout {
             }
         }
 
-        backAnimatorY = ObjectAnimator()
+        backAnimatorY = ValueAnimator()
         backAnimatorY.addUpdateListener { animation ->
             val value = animation!!.animatedValue as Float
             if (isBacking){
@@ -84,7 +85,7 @@ class SlideRelativeLayout : RelativeLayout {
         }
 
 
-        closeAnimatorX = ObjectAnimator()
+        closeAnimatorX = ValueAnimator()
         closeAnimatorX.addUpdateListener { animation ->
             val value = animation!!.animatedValue as Float
             if (isClosing){
@@ -113,7 +114,7 @@ class SlideRelativeLayout : RelativeLayout {
 
         })
 
-        closeAnimatorY = ObjectAnimator()
+        closeAnimatorY = ValueAnimator()
         closeAnimatorY.addUpdateListener { animation ->
             val value = animation!!.animatedValue as Float
             if (isClosing){
@@ -316,12 +317,4 @@ class SlideRelativeLayout : RelativeLayout {
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {init()}
 
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {init()}
-
-    companion object {
-        val DIRECT_NONE = 0
-        val DIRECT_UP = 1
-        val DIRECT_DOWN = 2
-        val DIRECT_LEFT = 3
-        val DIRECT_RIGHT = 4
-    }
 }

@@ -2,8 +2,8 @@ package com.wuruoye.all2.v3.model
 
 import android.content.Context
 import com.google.gson.Gson
-import com.wuruoye.all2.base.App
 import com.wuruoye.all2.base.model.BaseCache
+import com.wuruoye.all2.v3.model.bean.AppInfo
 import org.json.JSONArray
 
 /**
@@ -54,7 +54,7 @@ class AppInfoCache(context: Context) : BaseCache(context) {
         for (i in 0 until array.length()){
             val obj = array.getJSONObject(i)
             val name = obj.getString("name")
-            appMap.put(name, Gson().fromJson(array.getString(i), AppInfo::class.java))
+            appMap.put(name, Gson().fromJson(obj.toString(), AppInfo::class.java))
         }
         return appMap
     }

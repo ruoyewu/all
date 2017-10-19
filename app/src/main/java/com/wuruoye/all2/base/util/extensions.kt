@@ -9,21 +9,20 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
+import android.widget.Toast
 import com.bumptech.glide.Glide
-import com.bumptech.glide.annotation.GlideModule
-import com.bumptech.glide.annotation.GlideOption
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.wuruoye.all2.R
+import com.wuruoye.all2.base.App
 import com.wuruoye.all2.base.model.Config
 import com.wuruoye.all2.base.model.Listener
 import com.wuruoye.all2.v3.ArticleDetailActivity
 import com.wuruoye.all2.v3.ImageActivity
-import com.wuruoye.all2.v3.MainActivity
 import com.wuruoye.all2.v3.VideoActivity
-import com.wuruoye.all2.v3.model.ArticleListItem
+import com.wuruoye.all2.v3.model.bean.ArticleListItem
 
 /**
  * Created by wuruoye on 2017/9/16.
@@ -31,8 +30,8 @@ import com.wuruoye.all2.v3.model.ArticleListItem
  */
 
 fun toast(message: String){
-//    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-    Toast.show(message)
+    com.wuruoye.all2.base.util.Toast.show(message)
+//    Toast.makeText(App.getApplication(), message, Toast.LENGTH_SHORT).show()
 }
 
 fun Context.loadImage(url: String, imageView: ImageView){

@@ -6,10 +6,10 @@ import com.wuruoye.all2.base.model.Listener
 import com.wuruoye.all2.base.presenter.AbsPresenter
 import com.wuruoye.all2.base.util.NetUtil
 import com.wuruoye.all2.base.util.loge
-import com.wuruoye.all2.v3.model.ArticleComment
-import com.wuruoye.all2.v3.model.ArticleCommentItem
-import com.wuruoye.all2.v3.model.ArticleDetail
-import com.wuruoye.all2.v3.model.ArticleInfo
+import com.wuruoye.all2.v3.model.bean.ArticleComment
+import com.wuruoye.all2.v3.model.bean.ArticleCommentItem
+import com.wuruoye.all2.v3.model.bean.ArticleDetail
+import com.wuruoye.all2.v3.model.bean.ArticleInfo
 import org.json.JSONObject
 
 /**

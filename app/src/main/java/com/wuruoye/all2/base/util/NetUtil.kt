@@ -30,7 +30,7 @@ object NetUtil {
                 .build()
         client.newCall(request).enqueue(object : Callback{
             override fun onFailure(call: Call?, e: IOException?) {
-                listener.onFail(e!!.message!!)
+                listener.onFail(e?.message!!)
             }
 
             override fun onResponse(call: Call?, response: Response?) {
