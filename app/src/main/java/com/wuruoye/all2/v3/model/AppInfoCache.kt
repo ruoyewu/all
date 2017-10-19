@@ -2,6 +2,7 @@ package com.wuruoye.all2.v3.model
 
 import android.content.Context
 import com.google.gson.Gson
+import com.wuruoye.all2.base.App
 import com.wuruoye.all2.base.model.BaseCache
 import org.json.JSONArray
 
@@ -58,6 +59,22 @@ class AppInfoCache(context: Context) : BaseCache(context) {
         return appMap
     }
 
+    fun putApi(name: String, map: HashMap<String, String>){
+        val key = APP_API + name
+        val string = Gson().toJson(map)
+        setString(key, string)
+    }
+
+    fun getApi(name: String): HashMap<String, String>?{
+        val key = APP_API + name
+        val string = getString(key, "")
+        return if (string == ""){
+            null
+        }else{
+            Gson().fromJson(string, HashMap<String, String>()::class.java)
+        }
+    }
+
     companion object {
         val INFO_APP = "info_app_"
         val INFO_APP_DEFAULT = ""
@@ -65,5 +82,6 @@ class AppInfoCache(context: Context) : BaseCache(context) {
 
         val AV_APP_LIST = "av_app_list"
         val AL_APP_LIST = "al_app_list"
+        val APP_API = "app_api_"
     }
 }

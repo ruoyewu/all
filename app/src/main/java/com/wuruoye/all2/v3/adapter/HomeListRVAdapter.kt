@@ -21,6 +21,7 @@ import com.wuruoye.all2.v3.model.AppInfo
 import com.wuruoye.all2.v3.model.ArticleList
 import com.wuruoye.all2.v3.model.ArticleListItem
 import com.wuruoye.all2.v3.presenter.AppListGet
+import com.wuruoye.all2.v3.presenter.AppListGet2
 import de.hdodenhof.circleimageview.CircleImageView
 import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator
 
@@ -43,7 +44,8 @@ class HomeListRVAdapter(
     private val btnMaps = HashMap<String, Button>()
     private val isShowAll = HashMap<String, Boolean>()
 
-    private lateinit var appListGet: AppListGet
+//    private lateinit var appListGet: AppListGet
+    private lateinit var appListGet2: AppListGet2
     private val mView = object : AbsView<ArticleList>{
         override fun setModel(model: ArticleList) {
             (context as Activity).runOnUiThread {
@@ -89,9 +91,9 @@ class HomeListRVAdapter(
             btnMaps.put(appInfo.name, btnMore)
             isShowAll.put(appInfo.name, false)
             if (!isNetRefresh) {
-                appListGet.requestArticleList(appInfo.name, appInfo.category_name[0], "0", AbsPresenter.Method.LOCAL)
+                appListGet2.requestArticleList(appInfo.name, appInfo.category_name[0], "0", AbsPresenter.Method.LOCAL)
             }else{
-                appListGet.requestArticleList(appInfo.name, appInfo.category_name[0], "0", AbsPresenter.Method.NET)
+                appListGet2.requestArticleList(appInfo.name, appInfo.category_name[0], "0", AbsPresenter.Method.NET)
             }
         }
     }
@@ -102,8 +104,10 @@ class HomeListRVAdapter(
         val view = LayoutInflater.from(parent!!.context)
                 .inflate(R.layout.item_home_app, parent, false)
         context = parent.context
-        appListGet = AppListGet(context)
-        appListGet.attachView(mView)
+//        appListGet = AppListGet(context)
+//        appListGet.attachView(mView)
+        appListGet2 = AppListGet2(context)
+        appListGet2.attachView(mView)
 
         return ViewHolder(view)
     }

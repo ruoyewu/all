@@ -18,6 +18,7 @@ import com.wuruoye.all2.v3.adapter.viewholder.HeartRefreshViewHolder
 import com.wuruoye.all2.v3.model.ArticleList
 import com.wuruoye.all2.v3.model.ArticleListItem
 import com.wuruoye.all2.v3.presenter.AppListGet
+import com.wuruoye.all2.v3.presenter.AppListGet2
 import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator
 import kotlinx.android.synthetic.main.fragment_list.*
 
@@ -33,7 +34,8 @@ class AppListFragment : BaseFragment() {
     private var isLoadMore = false
     private lateinit var refreshVH: HeartRefreshViewHolder
 
-    private lateinit var appListGet: AppListGet
+//    private lateinit var appListGet: AppListGet
+    private lateinit var appListGet2: AppListGet2
     private val mView = object : AbsView<ArticleList>{
         override fun setModel(model: ArticleList) {
             activity.runOnUiThread{
@@ -72,8 +74,10 @@ class AppListFragment : BaseFragment() {
         mCategory = bundle.getString("category")
         mNext = "0"
 
-        appListGet = AppListGet(context)
-        appListGet.attachView(mView)
+//        appListGet = AppListGet(context)
+//        appListGet.attachView(mView)
+        appListGet2 = AppListGet2(context)
+        appListGet2.attachView(mView)
     }
 
     override fun initView(view: View) {
@@ -89,9 +93,11 @@ class AppListFragment : BaseFragment() {
 
     private fun requestData(method: Int){
         if (method == METHOD_LOCAL){
-            appListGet.requestArticleList(mName, mCategory, mNext, AbsPresenter.Method.LOCAL)
+//            appListGet.requestArticleList(mName, mCategory, mNext, AbsPresenter.Method.LOCAL)
+            appListGet2.requestArticleList(mName, mCategory, mNext, AbsPresenter.Method.LOCAL)
         }else{
-            appListGet.requestArticleList(mName, mCategory, mNext, AbsPresenter.Method.NET)
+//            appListGet.requestArticleList(mName, mCategory, mNext, AbsPresenter.Method.NET)
+            appListGet2.requestArticleList(mName, mCategory, mNext, AbsPresenter.Method.NET)
         }
     }
 
@@ -122,14 +128,10 @@ class AppListFragment : BaseFragment() {
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        appListGet.detachView()
-    }
-
     override fun onDestroy() {
         super.onDestroy()
-        appListGet.detachView()
+//        appListGet.detachView()
+        appListGet2.detachView()
     }
 
     companion object {

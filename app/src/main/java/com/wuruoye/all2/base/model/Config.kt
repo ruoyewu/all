@@ -12,11 +12,14 @@ object Config {
     private val REMOTE_HOST = "http://139.199.153.45/"
     val APP_LIST_URL = "https://git.whutdev.com/wuruoye/repository/raw/master/all/app.json"
 
+    val APP_API_URL = REMOTE_HOST + "v3/app/api?"
+
     val USER_LOGIN_URL = REMOTE_HOST + "v3/user/login?"
     val USER_SIGN_URL = REMOTE_HOST + "v3/user/sign?"
     val USER_AVATAR_URL = REMOTE_HOST + "v3/user/avatar"
 
     val ARTICLE_LIST_URL = REMOTE_HOST + "v3/article/list?"
+    val ARTICLE_LIST_POST = REMOTE_HOST + "v3/article/list2?"
     val ARTICLE_DETAIL_URL = REMOTE_HOST + "v3/article/detail?"
     val ARTICLE_INFO_URL = REMOTE_HOST + "v3/article/info?"
 

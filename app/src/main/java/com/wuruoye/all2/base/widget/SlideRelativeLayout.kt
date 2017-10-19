@@ -165,7 +165,7 @@ class SlideRelativeLayout : RelativeLayout {
                             handle = true
                         }
                     }else if (slideType == SlideType.HORIZONTAL){
-                        loge("scrollView horizontal $offsetX , $offsetY")
+//                        loge("scrollView horizontal $offsetX , $offsetY")
                         if (Math.abs(offsetX) > Math.abs(offsetY)){
                             handle = true
                         }
@@ -174,10 +174,10 @@ class SlideRelativeLayout : RelativeLayout {
                     }
                 }else if (childType == ChildType.VIEWPAGER){
                     if (slideType == SlideType.HORIZONTAL) {
-                        loge("viewpager horizontal: $offsetX , $offsetY")
+//                        loge("viewpager horizontal: $offsetX , $offsetY")
                         val size = mChildViewPager.childCount
                         val current = mChildViewPager.currentItem
-                        if (size == 1){
+                        if (size == 1 && Math.abs(offsetX) > Math.abs(offsetY)){
                             handle = true
                         }else if (current == 0 && offsetX > 0 && Math.abs(offsetX) > Math.abs(offsetY)){
                             handle = true
@@ -219,7 +219,7 @@ class SlideRelativeLayout : RelativeLayout {
                 }
                 val offsetX = event.rawX - startX
                 val offsetY = event.rawY - startY
-                loge("touch offset : $offsetX , $offsetY")
+//                loge("touch offset : $offsetX , $offsetY")
                 if (slideType == SlideType.HORIZONTAL){
                     translationX = offsetX
                 }else if (slideType == SlideType.VERTICAL){
