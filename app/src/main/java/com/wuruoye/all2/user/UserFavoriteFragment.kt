@@ -21,10 +21,14 @@ import kotlinx.android.synthetic.main.fragment_user_collect.*
  * this file is to do
  */
 class UserFavoriteFragment : RefreshFragment(){
-    private lateinit var mUserName: String
+    private var mUserId = 0
 
     private lateinit var mUserGet: UserGet
     private val mUserView = object : UserView{
+        override fun onAvatarUpload(result: Boolean) {
+
+        }
+
         override fun onFavoriteGet(model: ArticleFavorite) {
             activity.runOnUiThread {
                 setRecyclerView(model)
@@ -60,7 +64,7 @@ class UserFavoriteFragment : RefreshFragment(){
         get() = R.layout.fragment_user_collect
 
     override fun initData(bundle: Bundle?) {
-        mUserName = bundle!!.getString("username")
+        mUserId = bundle!!.getInt("userid")
 
         mUserGet = UserGet()
         mUserGet.attachView(mUserView)
@@ -81,7 +85,7 @@ class UserFavoriteFragment : RefreshFragment(){
     }
 
     private fun loadMore(next: Long){
-        mUserGet.getFavorite(mUserName, next)
+        mUserGet.getFavorite(mUserId, next)
     }
 
     private fun setRecyclerView(data: ArticleFavorite){

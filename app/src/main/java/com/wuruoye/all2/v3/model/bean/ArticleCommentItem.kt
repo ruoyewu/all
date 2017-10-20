@@ -10,6 +10,7 @@ import android.os.Parcelable
 data class ArticleCommentItem(
         var id: Int,
         var time: Long,
+        val userid: Int,
         var username: String,
         var content: String,
         var key: String,

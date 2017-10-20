@@ -111,7 +111,7 @@ class ArticleDetailActivity : BaseActivity() {
             runOnUiThread {
                 if (model){
                     initComment()
-                    mArticleGet.getArticleInfo(articleKey, mUserCache.userName)
+                    mArticleGet.getArticleInfo(articleKey, mUserCache.userId)
                 }else{
                     toast("删除评论失败")
                 }
@@ -157,6 +157,7 @@ class ArticleDetailActivity : BaseActivity() {
         override fun onUserClick(item: ArticleCommentItem) {
             val bundle = Bundle()
             bundle.putString("username", item.username)
+            bundle.putInt("userid", item.userid)
             val intent = Intent(this@ArticleDetailActivity, UserActivity::class.java)
             intent.putExtras(bundle)
             startActivity(intent)
@@ -315,6 +316,7 @@ class ArticleDetailActivity : BaseActivity() {
     }
 
     //初始化添加评论时的 dialog
+    @SuppressLint("InflateParams")
     private fun initCommentEditDialog(){
         val view = LayoutInflater.from(this)
                 .inflate(R.layout.dialog_article_comment, null)
@@ -360,24 +362,21 @@ class ArticleDetailActivity : BaseActivity() {
     }
 
     //提交评论
-    private fun publishComment(){
-        if (commentEditView.et.text.toString() == ""){
-            toast("评论内容不能为空...")
-        }else{
-            val time = System.currentTimeMillis()
-            val username = mUserCache.userName
-            val content = commentEditView.et.text.toString()
-            //根据 tvParent 控件是否显示 判断 是否是对某个评论的评论
-            val parent =
-                    if (commentEditView.tvParent.visibility == View.VISIBLE){
-                        commentEditView.tvParent.tag as Int
-                    }else{
-                        0
-                    }
-            commentEditView.et.setText("")
-            mArticleGet.putComment(time, username, content,articleKey, parent)
-            commentEditDialog.cancel()
-        }
+    private fun publishComment() = if (commentEditView.et.text.toString() == ""){
+        toast("评论内容不能为空...")
+    }else{
+        val time = System.currentTimeMillis()
+        val content = commentEditView.et.text.toString()
+        //根据 tvParent 控件是否显示 判断 是否是对某个评论的评论
+        val parent =
+                if (commentEditView.tvParent.visibility == View.VISIBLE){
+                    commentEditView.tvParent.tag as Int
+                }else{
+                    0
+                }
+        commentEditView.et.setText("")
+        mArticleGet.putComment(time, mUserCache.userId, content,articleKey, parent)
+        commentEditDialog.cancel()
     }
 
     //侧边 button 的显示与隐藏动画
@@ -575,7 +574,7 @@ class ArticleDetailActivity : BaseActivity() {
     //获取文章详情成功时 进行的下一步操作
     private fun buttonValuable(){
         initComment()
-        mArticleGet.getArticleInfo(articleKey, mUserCache.userName)
+        mArticleGet.getArticleInfo(articleKey, mUserCache.userId)
         fab_article_drawer.show()
         isClick = true
 
@@ -591,7 +590,7 @@ class ArticleDetailActivity : BaseActivity() {
     private fun setLove(love: Boolean, isPut: Boolean){
         isLove = love
         if (isPut) {
-            mArticleGet.putLove(articleKey, mUserCache.userName, isLove)
+            mArticleGet.putLove(articleKey, mUserCache.userId, isLove)
         }
         if (love){
             fab_article_like.setImageResource(R.drawable.ic_heart_on)
@@ -607,7 +606,7 @@ class ArticleDetailActivity : BaseActivity() {
     private fun setFavorite(favorite: Boolean, isPut: Boolean){
         isFavorite = favorite
         if (isPut){
-            mArticleGet.putFavorite(articleKey, mUserCache.userName, Gson().toJson(item), System.currentTimeMillis(), isFavorite)
+            mArticleGet.putFavorite(articleKey, mUserCache.userId, Gson().toJson(item), System.currentTimeMillis(), isFavorite)
         }
         if (favorite){
             fab_article_favorite.setImageResource(R.drawable.ic_favorite_on)

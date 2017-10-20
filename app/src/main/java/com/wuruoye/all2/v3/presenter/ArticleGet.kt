@@ -37,8 +37,8 @@ class ArticleGet : AbsPresenter<ArticleView>() {
         })
     }
 
-    fun getArticleInfo(key: String, username: String){
-        val url = Config.ARTICLE_INFO_URL + "key=" + key + "&username=" + username
+    fun getArticleInfo(key: String, userid: Int){
+        val url = Config.ARTICLE_INFO_URL + "key=" + key + "&userid=" + userid
         NetUtil.get(url, object : Listener<String>{
             override fun onSuccess(model: String) {
                 getView()?.onArticleInfo(
@@ -72,10 +72,10 @@ class ArticleGet : AbsPresenter<ArticleView>() {
         })
     }
 
-    fun putComment(time: Long, username: String, content: String, key: String, parent: Int){
+    fun putComment(time: Long, userid: Int, content: String, key: String, parent: Int){
         val url = Config.COMMENT_PUT_URL
-        val keyList = arrayListOf("time", "username", "content", "key", "parent")
-        val valueList = arrayListOf(time.toString(), username, content, key, parent.toString())
+        val keyList = arrayListOf("time", "userid", "content", "key", "parent")
+        val valueList = arrayListOf(time.toString(), userid.toString(), content, key, parent.toString())
         NetUtil.post(url, keyList, valueList, object : Listener<String>{
             override fun onSuccess(model: String) {
                 val jsonObject = JSONObject(model)
@@ -112,8 +112,8 @@ class ArticleGet : AbsPresenter<ArticleView>() {
         })
     }
 
-    fun putLove(key: String, username: String, love: Boolean){
-        val url = Config.ARTICLE_LOVE_URL + "key=" + key + "&username=" + username + "&love=" +
+    fun putLove(key: String, userid: Int, love: Boolean){
+        val url = Config.ARTICLE_LOVE_URL + "key=" + key + "&userid=" + userid + "&love=" +
                 if (love){
                     1
                 }else{
@@ -133,10 +133,10 @@ class ArticleGet : AbsPresenter<ArticleView>() {
         })
     }
 
-    fun putFavorite(key: String, username: String, info: String, time: Long, favorite: Boolean){
+    fun putFavorite(key: String, userid: Int, info: String, time: Long, favorite: Boolean){
         val url = Config.FAVORITE_PUT_URL
-        val keyList = arrayListOf("key", "username", "info", "time", "favorite")
-        val valueList = arrayListOf(key, username, info, time.toString(), if (favorite) "1" else "0")
+        val keyList = arrayListOf("key", "userid", "info", "time", "favorite")
+        val valueList = arrayListOf(key, userid.toString(), info, time.toString(), if (favorite) "1" else "0")
         loge(info)
 
         NetUtil.post(url, keyList, valueList, object : Listener<String>{

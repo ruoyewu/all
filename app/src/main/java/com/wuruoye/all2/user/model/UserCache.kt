@@ -26,20 +26,27 @@ class UserCache(context: Context) : BaseCache(context) {
         get() = getString(USER_DESC, "")
         set(value) = setString(USER_DESC, value)
 
+    var userId: Int
+        get() = getInt(USER_ID, 0)
+        set(value) = setInt(USER_ID, value)
+
     fun cancelUser(){
         isLogin = false
+        userId = 0
         userName = ""
         userAvatar = ""
     }
 
-    fun loginUser(name: String){
+    fun loginUser(id: Int, name: String){
         isLogin = true
+        userId = id
         userName = name
         userAvatar = Config.APP_PATH + "file/avatar.jpg"
     }
 
-    fun signUser(name: String){
+    fun signUser(id: Int, name: String){
         isLogin = true
+        userId = id
         userName = name
     }
 
@@ -58,5 +65,6 @@ class UserCache(context: Context) : BaseCache(context) {
         val USER_LOGIN = "user_login"
         val USER_DESC = "user_desc"
         val READ_TIME = "read_time"
+        val USER_ID = "user_id"
     }
 }

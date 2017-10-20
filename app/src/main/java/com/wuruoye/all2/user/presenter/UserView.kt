@@ -10,5 +10,7 @@ import com.wuruoye.all2.user.model.bean.ArticleFavorite
 interface UserView : BaseView {
     fun onFavoriteGet(model: ArticleFavorite)
 
+    fun onAvatarUpload(result: Boolean)
+
     fun setWorn(message: String)
 }

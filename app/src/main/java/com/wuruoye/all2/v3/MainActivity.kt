@@ -98,6 +98,7 @@ class MainActivity : BaseActivity(){
         fab_main_user.setOnClickListener {
             val bundle = Bundle()
             bundle.putString("username", UserCache(this).userName)
+            bundle.putInt("userid", UserCache(this).userId)
             val intent = Intent(this, UserActivity::class.java)
             intent.putExtras(bundle)
             startActivity(intent)

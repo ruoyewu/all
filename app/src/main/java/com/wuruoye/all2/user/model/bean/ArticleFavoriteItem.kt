@@ -8,7 +8,7 @@ import android.os.Parcelable
  * this file is to do
  */
 data class ArticleFavoriteItem(
-        var username: String,
+        var userid: Int,
         var info: String,
         var time: Long,
         var key: String

@@ -20,6 +20,9 @@ import com.wuruoye.all2.base.util.*
 import com.wuruoye.all2.base.widget.SlideRelativeLayout
 import com.wuruoye.all2.user.model.AppBarStateChangeListener
 import com.wuruoye.all2.user.model.UserCache
+import com.wuruoye.all2.user.model.bean.ArticleFavorite
+import com.wuruoye.all2.user.presenter.UserGet
+import com.wuruoye.all2.user.presenter.UserView
 import com.wuruoye.all2.v3.adapter.FragmentVPAdapter
 import kotlinx.android.synthetic.main.activity_user.*
 
@@ -29,12 +32,34 @@ import kotlinx.android.synthetic.main.activity_user.*
  */
 
 class UserActivity : PhotoActivity() {
-
+    private lateinit var mUserGet: UserGet
     private lateinit var mUserCache: UserCache
+    private var mUserId = 0
     private lateinit var mUserName: String
     private var isRefresh = false
     private var currentItem = 0
     private var isCurrentUser = false
+
+    private val mUserView = object : UserView{
+        override fun onFavoriteGet(model: ArticleFavorite) {
+
+        }
+
+        override fun onAvatarUpload(result: Boolean) {
+            runOnUiThread {
+                if (result){
+                    toast("头像上传成功")
+                }else{
+                    toast("头像上传失败")
+                }
+            }
+        }
+
+        override fun setWorn(message: String) {
+
+        }
+
+    }
 
     private val mFragmentList = ArrayList<Fragment>()
 
@@ -42,8 +67,12 @@ class UserActivity : PhotoActivity() {
         get() = R.layout.activity_user
 
     override fun initData(bundle: Bundle?) {
-        mUserName = bundle!!.getString("username")
+        mUserId = bundle!!.getInt("userid")
+        mUserName = bundle.getString("username")
         mUserCache = UserCache(applicationContext)
+
+        mUserGet = UserGet()
+        mUserGet.attachView(mUserView)
 
         isCurrentUser = mUserCache.userName == mUserName
     }
@@ -66,7 +95,7 @@ class UserActivity : PhotoActivity() {
         })
 
         initUser()
-        setUserVP(mUserName)
+        setUserVP(mUserId)
 
         al_user.addOnOffsetChangedListener(object : AppBarStateChangeListener(){
             override fun onStateChanged(appBarLayout: AppBarLayout?, state: State) {
@@ -113,8 +142,9 @@ class UserActivity : PhotoActivity() {
         loge("result: " + requestCode)
         if (requestCode == LOGIN){
             mUserName = mUserCache.userName
+            mUserId = mUserCache.userId
             initUser()
-            setUserVP(mUserName)
+            setUserVP(mUserId)
         }
     }
 
@@ -126,21 +156,9 @@ class UserActivity : PhotoActivity() {
         iv_user_head.setImageBitmap(
                 BlurUtil.blurBitmap(applicationContext, bitmap)
         )
-        NetUtil.postFile(Config.USER_AVATAR_URL, photoPath, mUserCache.userName, object : Listener<String>{
-            override fun onSuccess(model: String) {
-                runOnUiThread {
-                    mUserCache.userAvatar = photoPath
-                    toast("头像上传成功")
-                }
-                }
 
-            override fun onFail(message: String) {
-                runOnUiThread {
-                    toast("头像上传失败")
-                }
-            }
-
-        })
+        mUserGet.uploadAvatar(mUserId, photoPath)
+        mUserCache.userAvatar = photoPath
     }
 
     private fun onAvatarClick(){
@@ -152,8 +170,9 @@ class UserActivity : PhotoActivity() {
                                 0 -> {      // 注销登录
                                     mUserCache.cancelUser()
                                     mUserName = ""
+                                    mUserId = 0
                                     initUser()
-                                    setUserVP(mUserName)
+                                    setUserVP(mUserId)
                                 }
                                 1 -> {      //相册
                                     choosePhoto("avatar.jpg", 1, 1, 500, 500)
@@ -173,7 +192,7 @@ class UserActivity : PhotoActivity() {
     }
 
     private fun initUser(){
-        if (mUserName != ""){
+        if (mUserId != 0 && mUserName != ""){
             if (mUserName == mUserCache.userName && mUserCache.isLogin){
                 //自己的详情页面
                 setUserInfo(mUserName, mUserCache.userAvatar)
@@ -181,10 +200,10 @@ class UserActivity : PhotoActivity() {
                 //别人的详情页面
                 tv_user_name1.text = mUserName
                 tv_user_name2.text = mUserName
-                loadUserImage(mUserName, civ_user_avatar1)
-                loadUserImage(mUserName, civ_user_avatar2)
+                loadUserImage(mUserId.toString(), civ_user_avatar1)
+                loadUserImage(mUserId.toString(), civ_user_avatar2)
 
-                getImageBitmap(Config.USER_AVATAR_URL + "/" + mUserName, object : Listener<Bitmap>{
+                getImageBitmap(Config.USER_AVATAR_URL + "/" + mUserId, object : Listener<Bitmap>{
                     override fun onSuccess(model: Bitmap) {
                         runOnUiThread {
                             iv_user_head.setImageBitmap(BlurUtil.blurBitmap(applicationContext, model))
@@ -225,11 +244,11 @@ class UserActivity : PhotoActivity() {
         }
     }
 
-    private fun setUserVP(userName: String){
+    private fun setUserVP(userId: Int){
         mFragmentList.clear()
-        if (userName != "") {
+        if (userId != 0) {
             val bundle = Bundle()
-            bundle.putString("username", userName)
+            bundle.putInt("userid", userId)
 
             val userFavoriteFragment = UserFavoriteFragment()
             userFavoriteFragment.arguments = bundle
@@ -279,6 +298,11 @@ class UserActivity : PhotoActivity() {
     override fun onBackPressed() {
         finish()
         overridePendingTransition(R.anim.activity_no, R.anim.activity_close_right)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mUserGet.detachView()
     }
 
     companion object {

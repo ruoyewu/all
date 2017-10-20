@@ -32,7 +32,7 @@ class ArticleCommentRVAdapter(
                 itemView.setOnClickListener { onItemClickListener.onItemClick(item) }
                 ivUser.setOnClickListener { onItemClickListener.onUserClick(item) }
 
-                itemView.context.loadUserImage(item.username, ivUser)
+                itemView.context.loadUserImage(item.userid.toString(), ivUser)
                 tvUser.text = item.username
                 tvTime.text = DateUtil.getDateString(item.time)
                 tvContent.text = item.content

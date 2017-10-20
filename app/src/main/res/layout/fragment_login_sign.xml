@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/til_sign_name"
+                android:textAlignment="center"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:id="@+id/et_sign_name"
+                    android:background="@null"
+                    android:gravity="center"
+                    android:hint="用户名"
+                    android:textSize="15sp"
+                    android:textColor="@color/cape_cod"
+                    android:textColorHint="@color/mountain_mist"
+                    android:inputType="textPersonName"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/til_sign_pass"
+                android:textAlignment="center"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:id="@+id/et_sign_pass"
+                    android:background="@null"
+                    android:gravity="center"
+                    android:hint="密码"
+                    android:textSize="15sp"
+                    android:textColor="@color/cape_cod"
+                    android:textColorHint="@color/mountain_mist"
+                    android:inputType="numberPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp" />
+            </android.support.design.widget.TextInputLayout>
+
+            <Button
+                android:id="@+id/btn_sign_sign"
+                android:text="注册"
+                android:textColor="@color/monsoon"
+                android:background="@drawable/btn_border"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                android:layout_marginTop="20dp"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                tools:ignore="NewApi" />
+
+            <TextView
+                android:id="@+id/tv_sign_worn"
+                android:gravity="center"
+                android:textColor="@color/carnation"
+                android:layout_marginTop="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

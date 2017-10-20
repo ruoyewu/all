@@ -76,18 +76,50 @@ object NetUtil {
         })
     }
 
-    fun postFile(url: String, filePath: String, username: String, listener: Listener<String>){
+    fun postFile(url: String, filePath: String, userid: Int, listener: Listener<String>){
         val file = File(filePath)
 
         val requestBody = MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("image", file.name, RequestBody.create(MediaType.parse("image/*"), file))
-                .addFormDataPart("username", username)
+                .addFormDataPart("userid", userid.toString())
                 .build()
 
         val request = Request.Builder()
                 .url(url)
                 .post(requestBody)
+                .build()
+
+        client.newCall(request).enqueue(object : Callback{
+            override fun onFailure(call: Call?, e: IOException?) {
+                listener.onFail(e!!.message!!)
+            }
+
+            override fun onResponse(call: Call?, response: Response?) {
+                if (response!!.isSuccessful){
+                    listener.onSuccess(response.body()!!.string())
+                }else{
+                    listener.onFail(response.message())
+                }
+            }
+
+        })
+    }
+
+    fun postFile(url: String, filePath: String, fileType: String, keyList: List<String>, valueList: List<String>, listener: Listener<String>){
+        val file = File(filePath)
+        val requestBody = MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("file", file.name, RequestBody.create(MediaType.parse(fileType), file))
+        for (i in 0 until keyList.size){
+            val key = keyList[i]
+            val value = valueList[i]
+            requestBody.addFormDataPart(key, value)
+        }
+
+        val request = Request.Builder()
+                .url(url)
+                .post(requestBody.build())
                 .build()
 
         client.newCall(request).enqueue(object : Callback{
