@@ -43,7 +43,8 @@
         <activity android:name=".v3.AppInfoActivity"/>
         <activity android:name=".user.UserActivity"/>
         <activity android:name=".user.LoginActivity" />
-        <activity android:name=".v3.ImageActivity"/>
+        <activity android:name=".v3.ImageActivity"
+            android:theme="@style/ImageTheme"/>
         <activity android:name=".v3.VideoActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@style/AppTheme"/>

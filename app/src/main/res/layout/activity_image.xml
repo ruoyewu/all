@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.wuruoye.all2.base.widget.SlideRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_image"
     android:background="@color/black"
@@ -11,6 +11,28 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <RelativeLayout
+        android:id="@+id/rl_image_top"
+        android:padding="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageButton
+            android:id="@+id/iv_image_back"
+            android:src="@drawable/ic_arrow_back"
+            android:background="@null"
+            android:layout_width="25dp"
+            android:layout_height="25dp" />
+
+        <ImageButton
+            android:id="@+id/iv_image_menu"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ic_menu"
+            android:background="@null"
+            android:layout_width="25dp"
+            android:layout_height="25dp" />
+    </RelativeLayout>
+
     <TextView
         android:id="@+id/tv_image_num"
         android:layout_alignParentBottom="true"
@@ -21,4 +43,4 @@
         android:textSize="14sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
-</com.wuruoye.all2.base.widget.SlideRelativeLayout>
+</RelativeLayout>

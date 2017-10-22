@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.wuruoye.all2.base.widget.SlideRelativeLayout xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_detail"
-    android:background="@color/romance"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/romance"
     tools:ignore="NewApi"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -209,9 +209,9 @@
             android:id="@+id/fab_article_favorite"
             android:visibility="invisible"
             android:src="@drawable/ic_favorite_off"
-            android:layout_marginBottom="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginLeft="16dp"
+            android:layout_marginBottom="@dimen/fab_margin"
+            android:layout_marginRight="@dimen/fab_margin"
+            android:layout_marginLeft="@dimen/fab_margin"
             app:theme="@style/FabTheme"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -219,9 +219,9 @@
             android:id="@+id/fab_article_like"
             android:visibility="invisible"
             android:src="@drawable/ic_heart_off"
-            android:layout_marginBottom="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="@dimen/fab_margin"
+            android:layout_marginStart="@dimen/fab_margin"
+            android:layout_marginEnd="@dimen/fab_margin"
             app:theme="@style/FabTheme"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -230,18 +230,18 @@
             android:visibility="invisible"
             android:src="@drawable/ic_edit"
             app:theme="@style/FabTheme"
-            android:layout_marginBottom="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="@dimen/fab_margin"
+            android:layout_marginStart="@dimen/fab_margin"
+            android:layout_marginEnd="@dimen/fab_margin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_article_drawer"
             android:src="@drawable/ic_add"
             app:theme="@style/FabTheme"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginStart="@dimen/fab_margin"
+            android:layout_marginEnd="@dimen/fab_margin"
+            android:layout_marginBottom="@dimen/fab_margin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -270,4 +270,4 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </RelativeLayout>
-</com.wuruoye.all2.base.widget.SlideRelativeLayout>
+</RelativeLayout>

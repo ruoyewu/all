@@ -20,11 +20,11 @@ import com.google.gson.Gson
 import com.transitionseverywhere.*
 import com.transitionseverywhere.extra.Scale
 import com.wuruoye.all2.R
-import com.wuruoye.all2.base.BaseActivity
+import com.wuruoye.all2.base.BaseSlideActivity
 import com.wuruoye.all2.base.util.loadImage
 import com.wuruoye.all2.base.util.loadUrl
 import com.wuruoye.all2.base.util.toast
-import com.wuruoye.all2.base.widget.SlideRelativeLayout
+import com.wuruoye.all2.base.widget.SlideLayout
 import com.wuruoye.all2.setting.model.SettingCache
 import com.wuruoye.all2.user.LoginActivity
 import com.wuruoye.all2.user.UserActivity
@@ -44,7 +44,7 @@ import kotlin.collections.ArrayList
  * Created by wuruoye on 2017/9/16.
  * this file is to do
  */
-class ArticleDetailActivity : BaseActivity() {
+class ArticleDetailActivity : BaseSlideActivity() {
 
     private lateinit var mUserCache: UserCache
     private lateinit var settingCache: SettingCache
@@ -167,6 +167,15 @@ class ArticleDetailActivity : BaseActivity() {
     override val contentView: Int
         get() = R.layout.activity_article
 
+    override val childType: SlideLayout.ChildType
+        get() = SlideLayout.ChildType.SCROLLVIEW
+
+    override val slideType: SlideLayout.SlideType
+        get() = SlideLayout.SlideType.VERTICAL
+
+    override val initAfterOpen: Boolean
+        get() = true
+
     override fun initData(bundle: Bundle?) {
         item = bundle!!.getParcelable("item")
         name = bundle.getString("name")
@@ -181,26 +190,7 @@ class ArticleDetailActivity : BaseActivity() {
     }
 
     override fun initView() {
-        overridePendingTransition(R.anim.activity_open_bottom, R.anim.activity_no)
-        // 滑动退出页面监听
-        activity_detail.childType = SlideRelativeLayout.ChildType.SCROLLVIEW
-        activity_detail.setOnSlideListener(object : SlideRelativeLayout.OnSlideListener{
-            override fun onClosePage() {
-                finish()
-                overridePendingTransition(R.anim.activity_no, R.anim.activity_no)
-            }
-
-            override fun translatePage(progress: Float) {
-//                loge("translate progress: $progress")
-            }
-        })
-
-        val event = object : Event{
-            override fun onEventOccur(position: Int) {
-                sv_article.smoothScrollTo(0, imageViewList[position].y.toInt())
-            }
-        }
-        EventManager.setListener(event)
+        getSlideLayout()?.attachScrollView(sv_article)
 
         tv_article_original.setOnClickListener {
             openOriginal()
@@ -765,30 +755,7 @@ class ArticleDetailActivity : BaseActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        EventManager.removeListener()
         mArticleGet.detachView()
-    }
-
-    override fun onBackPressed() {
-        finish()
-        overridePendingTransition(R.anim.activity_no, R.anim.activity_close_bottom)
-    }
-
-    interface Event{
-        fun onEventOccur(position: Int)
-    }
-
-    object EventManager{
-        private var event: Event? = null
-        fun setListener(event: Event){
-            this.event = event
-        }
-        fun sendEvent(position: Int){
-            event?.onEventOccur(position)
-        }
-        fun removeListener(){
-            event = null
-        }
     }
 
     companion object {

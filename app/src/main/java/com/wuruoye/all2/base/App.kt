@@ -14,6 +14,8 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         mContext = this
+
+        FontUtil.changeFont(this, "fonts/longzhao.ttf")
     }
 
     companion object {

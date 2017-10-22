@@ -58,6 +58,55 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
+
+        <TextView
+            android:textSize="10sp"
+            android:text="页面:"
+            android:padding="10dp"
+            android:textColor="@color/mountain_mist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="手势切换页面"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:textColor="@color/monsoon"
+                android:layout_height="wrap_content" />
+
+            <Switch
+                android:id="@+id/switch_setting_change_page"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv_setting_black_edge"
+                android:text="显示渐变黑边"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:textColor="@color/monsoon"
+                android:layout_height="wrap_content" />
+
+            <Switch
+                android:id="@+id/switch_setting_black_edge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
     </LinearLayout>
 
 </ScrollView>

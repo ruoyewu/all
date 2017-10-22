@@ -28,7 +28,7 @@ class AppListGet2(context: Context) : AbsPresenter<AbsView<ArticleList>>(), List
     private val mAppInfoCache = AppInfoCache(context)
 
     fun requestArticleList(name: String, category: String, page: String, method: Method){
-//        loge("requestArticleList: $name, $category, $page, $method")
+        log("requestArticleList: $name, $category, $page, $method")
         var m = method
         val key = name + "_" + category
         if (m == Method.LOCAL){
@@ -45,7 +45,6 @@ class AppListGet2(context: Context) : AbsPresenter<AbsView<ArticleList>>(), List
                 val apiRequestUrl = Config.APP_API_URL + "name=" + name
                 NetUtil.get(apiRequestUrl, object : Listener<String>{
                     override fun onSuccess(model: String) {
-//                        loge(model)
                         val map = parseJson2Map(model)
                         mAppInfoCache.putApi(name, map)
                         requestWithApiMap(map, name, category, page)
@@ -64,21 +63,21 @@ class AppListGet2(context: Context) : AbsPresenter<AbsView<ArticleList>>(), List
 
     private fun requestWithApiMap(apiMap: HashMap<String, String>, name: String, category: String, page: String){
         val url = getUrl(apiMap, name, category, page)
-//        loge(url)
+        log(url)
         val key = name + "_" + category
         NetUtil.get(url, object : Listener<String>{
             override fun onSuccess(model: String) {
-//                loge(model)
                 val keyList = arrayListOf<String>("name", "category", "page", "content")
                 val valueList = arrayListOf<String>(name, category, page, model)
+                log("get article: $name, $category")
                 NetUtil.post(Config.ARTICLE_LIST_POST, keyList, valueList, object : Listener<String>{
                     override fun onSuccess(model: String) {
-//                        loge(model)
                         val articleList = Gson().fromJson(model, ArticleList::class.java)
                         onSuccess(articleList)
                         if (page == "0"){
                             mAppInfoCache.setAppInfo(model, key)
                         }
+                        log("get article: success")
                     }
 
                     override fun onFail(message: String) {
@@ -108,7 +107,7 @@ class AppListGet2(context: Context) : AbsPresenter<AbsView<ArticleList>>(), List
     }
 
     private fun getUrl(apiMap: HashMap<String, String>, name: String, category: String, page: String): String{
-//        loge("get url: $name, $category, $page")
+        log("get url: $name, $category, $page")
         val regex = Regex("@page")
         var p = page
         if (p == "0"){
@@ -128,5 +127,10 @@ class AppListGet2(context: Context) : AbsPresenter<AbsView<ArticleList>>(), List
         }else{
             apiMap[category]!!.replace(regex, p)
         }
+
+    }
+
+    private fun log(message: String){
+//        loge("appListGet: " + message)
     }
 }

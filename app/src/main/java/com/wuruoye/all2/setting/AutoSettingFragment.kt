@@ -1,6 +1,7 @@
 package com.wuruoye.all2.setting
 
 import android.os.Bundle
+import android.support.v4.app.ActivityCompat
 import android.view.View
 import android.widget.CompoundButton
 import com.wuruoye.all2.R
@@ -25,9 +26,17 @@ class AutoSettingFragment : BaseFragment(), CompoundButton.OnCheckedChangeListen
     override fun initView(view: View) {
         switch_setting_auto_main.isChecked = mSettingCache.isAutoMainButton
         switch_setting_auto_detail.isChecked = mSettingCache.isAutoDetailButton
+        switch_setting_change_page.isChecked = mSettingCache.isSlideBack
+        switch_setting_black_edge.isChecked = mSettingCache.isBlackEdge
+        if (!mSettingCache.isSlideBack){
+            tv_setting_black_edge.setTextColor(ActivityCompat.getColor(context, R.color.mountain_mist))
+            switch_setting_black_edge.isClickable = false
+        }
 
         switch_setting_auto_main.setOnCheckedChangeListener(this)
         switch_setting_auto_detail.setOnCheckedChangeListener(this)
+        switch_setting_change_page.setOnCheckedChangeListener(this)
+        switch_setting_black_edge.setOnCheckedChangeListener(this)
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
@@ -37,6 +46,19 @@ class AutoSettingFragment : BaseFragment(), CompoundButton.OnCheckedChangeListen
             }
             R.id.switch_setting_auto_detail -> {
                 mSettingCache.isAutoDetailButton = isChecked
+            }
+            R.id.switch_setting_change_page -> {
+                mSettingCache.isSlideBack = isChecked
+                if (!isChecked){
+                    tv_setting_black_edge.setTextColor(ActivityCompat.getColor(context, R.color.mountain_mist))
+                    switch_setting_black_edge.isClickable = false
+                }else{
+                    tv_setting_black_edge.setTextColor(ActivityCompat.getColor(context, R.color.monsoon))
+                    switch_setting_black_edge.isClickable = true
+                }
+            }
+            R.id.switch_setting_black_edge -> {
+                mSettingCache.isBlackEdge = isChecked
             }
         }
     }

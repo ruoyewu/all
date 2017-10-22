@@ -17,7 +17,7 @@ import com.wuruoye.all2.base.PhotoActivity
 import com.wuruoye.all2.base.model.Config
 import com.wuruoye.all2.base.model.Listener
 import com.wuruoye.all2.base.util.*
-import com.wuruoye.all2.base.widget.SlideRelativeLayout
+import com.wuruoye.all2.base.widget.SlideLayout
 import com.wuruoye.all2.user.model.AppBarStateChangeListener
 import com.wuruoye.all2.user.model.UserCache
 import com.wuruoye.all2.user.model.bean.ArticleFavorite
@@ -66,6 +66,15 @@ class UserActivity : PhotoActivity() {
     override val contentView: Int
         get() = R.layout.activity_user
 
+    override val childType: SlideLayout.ChildType
+        get() = SlideLayout.ChildType.VIEWPAGER
+
+    override val slideType: SlideLayout.SlideType
+        get() = SlideLayout.SlideType.HORIZONTAL
+
+    override val initAfterOpen: Boolean
+        get() = false
+
     override fun initData(bundle: Bundle?) {
         mUserId = bundle!!.getInt("userid")
         mUserName = bundle.getString("username")
@@ -78,21 +87,7 @@ class UserActivity : PhotoActivity() {
     }
 
     override fun initView() {
-        overridePendingTransition(R.anim.activity_open_right, R.anim.activity_no)
-
-        activity_user.childType = SlideRelativeLayout.ChildType.VIEWPAGER
-        activity_user.slideType = SlideRelativeLayout.SlideType.HORIZONTAL
-        activity_user.attachViewPager(vp_user)
-        activity_user.setOnSlideListener(object : SlideRelativeLayout.OnSlideListener{
-            override fun onClosePage() {
-                finish()
-                overridePendingTransition(R.anim.activity_no, R.anim.activity_no)
-            }
-            override fun translatePage(progress: Float) {
-
-            }
-
-        })
+        getSlideLayout()?.attachViewPager(vp_user)
 
         initUser()
         setUserVP(mUserId)
@@ -293,11 +288,6 @@ class UserActivity : PhotoActivity() {
             ll_user_top.visibility = View.INVISIBLE
             ll_user_center.visibility = View.VISIBLE
         }
-    }
-
-    override fun onBackPressed() {
-        finish()
-        overridePendingTransition(R.anim.activity_no, R.anim.activity_close_right)
     }
 
     override fun onDestroy() {

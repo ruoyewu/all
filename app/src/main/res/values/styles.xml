@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/romance</item>
         <item name="colorPrimaryDark">@color/romance</item>
         <item name="colorAccent">@color/monsoon</item>
-        <!--<item name="android:typeface">serif</item>-->
+        <item name="android:typeface">serif</item>
         <!--<item name="android:fontFamily">@font/longzhao_x</item>-->
     </style>
 
@@ -20,7 +20,7 @@
         <item name="android:windowNoTitle">true</item>
     </style>
 
-    <style name="ImageTheme" parent="AppTheme">
+    <style name="ImageTheme" parent="TransparentTheme">
         <item name="colorPrimaryDark">@color/black</item>
     </style>
 

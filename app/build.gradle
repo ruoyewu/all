@@ -3,14 +3,6 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    signingConfigs {
-        config {
-            keyAlias 'default'
-            keyPassword 'ruoyetian'
-            storeFile file('/Users/wuruoye/Documents/Android/All2/app/keystore.jks')
-            storePassword 'ruoyetian'
-        }
-    }
     compileSdkVersion 26
     buildToolsVersion "26.0.2"
     defaultConfig {
@@ -23,12 +15,24 @@ android {
         renderscriptTargetApi 22
         renderscriptSupportModeEnabled true
     }
+
+    signingConfigs {
+        config {
+            keyAlias 'default'
+            keyPassword 'ruoyetian'
+            storeFile file('/Users/wuruoye/Documents/Android/All2/app/keystore.jks')
+            storePassword 'ruoyetian'
+        }
+    }
+
     buildTypes {
-        release {
-            debuggable true
-            jniDebuggable true
+        debug{
             signingConfig signingConfigs.config
-            renderscriptDebuggable true
+        }
+
+        release {
+            debuggable false
+            signingConfig signingConfigs.config
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }

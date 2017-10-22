@@ -19,7 +19,7 @@ import java.io.File
  * Created by wuruoye on 2017/9/26.
  * this file is to do
  */
-abstract class PhotoActivity : BaseActivity(){
+abstract class PhotoActivity : BaseSlideActivity(){
     /**
      * 继承此类的时候需要实现的方法
      * 调用函数 choosePhoto(), takePhoto(), cropPhoto，执行成功时调用此函数

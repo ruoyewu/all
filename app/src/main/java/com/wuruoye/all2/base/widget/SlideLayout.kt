@@ -5,12 +5,16 @@ import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
+import android.support.v4.app.ActivityCompat
 import android.support.v4.view.ViewPager
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import android.widget.ScrollView
+import android.widget.Scroller
+import com.wuruoye.all2.R
 import com.wuruoye.all2.base.util.loge
 
 /**
@@ -18,13 +22,14 @@ import com.wuruoye.all2.base.util.loge
  * this file is to do
  */
 
-class SlideRelativeLayout : RelativeLayout {
+class SlideLayout : FrameLayout {
     // 手指按下的初始位置
     private var startY = 0F
     private var startX = 0F
     // 是否正在执行关闭页面的动画
     // 如果为 true 不接受其他手势
     private var isClosing = false
+    private var isOpening = false
     // 是否正在执行返回初始位置动画， 手指触摸时强制改为 false
     // 如果为 false 不再执行 返回 动画
     private var isBacking = false
@@ -39,6 +44,7 @@ class SlideRelativeLayout : RelativeLayout {
     private var mCurrentSlideType = SlideType.NONE
 
     private lateinit var mChildViewPager: ViewPager
+    private lateinit var mChildScrollView: ScrollView
 
     // 滑动方向
     enum class SlideType{
@@ -67,7 +73,7 @@ class SlideRelativeLayout : RelativeLayout {
             val value = animation!!.animatedValue as Float
             if (isBacking){
                 translationX = value
-                onSlideListener?.translatePage(value / measuredWidth)
+                onSlideListener?.translatePage(Math.abs(value) / measuredWidth)
             }else{
                 backAnimatorX.cancel()
             }
@@ -78,7 +84,7 @@ class SlideRelativeLayout : RelativeLayout {
             val value = animation!!.animatedValue as Float
             if (isBacking){
                 translationY = value
-                onSlideListener?.translatePage(value / measuredHeight)
+                onSlideListener?.translatePage(Math.abs(value) / measuredHeight)
             }else{
                 backAnimatorY.cancel()
             }
@@ -88,9 +94,9 @@ class SlideRelativeLayout : RelativeLayout {
         closeAnimatorX = ValueAnimator()
         closeAnimatorX.addUpdateListener { animation ->
             val value = animation!!.animatedValue as Float
-            if (isClosing){
+            if (isClosing || isOpening){
                 translationX = value
-                onSlideListener?.translatePage(value / measuredWidth)
+                onSlideListener?.translatePage(Math.abs(value) / measuredWidth)
             }else{
                 closeAnimatorX.cancel()
             }
@@ -101,7 +107,12 @@ class SlideRelativeLayout : RelativeLayout {
             }
 
             override fun onAnimationEnd(animation: Animator?) {
-                onSlideListener?.onClosePage()
+                if (isClosing) {
+                    onSlideListener?.onClosePage()
+                }else{
+                    onSlideListener?.onOpen()
+                    isOpening = false
+                }
             }
 
             override fun onAnimationCancel(animation: Animator?) {
@@ -117,9 +128,9 @@ class SlideRelativeLayout : RelativeLayout {
         closeAnimatorY = ValueAnimator()
         closeAnimatorY.addUpdateListener { animation ->
             val value = animation!!.animatedValue as Float
-            if (isClosing){
+            if (isClosing || isOpening){
                 translationY = value
-                onSlideListener?.translatePage(value / measuredHeight)
+                onSlideListener?.translatePage(Math.abs(value) / measuredHeight)
             }else{
                 closeAnimatorY.cancel()
             }
@@ -130,7 +141,12 @@ class SlideRelativeLayout : RelativeLayout {
             }
 
             override fun onAnimationEnd(animation: Animator?) {
-                onSlideListener?.onClosePage()
+                if (isClosing) {
+                    onSlideListener?.onClosePage()
+                }else{
+                    onSlideListener?.onOpen()
+                    isOpening = false
+                }
             }
 
             override fun onAnimationCancel(animation: Animator?) {
@@ -157,11 +173,10 @@ class SlideRelativeLayout : RelativeLayout {
                 val offsetY = ev.rawY - startY
 //                loge("move: $offsetX , $offsetY")
                 if (childType == ChildType.SCROLLVIEW){
-                    val child = getChildAt(0) as ScrollView
                     if (slideType == SlideType.VERTICAL){
-                        val maxScrollY = child.getChildAt(0).height - child.height
-                        val scrollY = child.scrollY
-                        loge("scrollView vertical $scrollY , $maxScrollY")
+                        val maxScrollY = mChildScrollView.getChildAt(0).height - mChildScrollView.height
+                        val scrollY = mChildScrollView.scrollY
+//                        loge("scrollView vertical $scrollY , $maxScrollY")
                         if ((scrollY == 0 && offsetY > 0) || (scrollY == maxScrollY && offsetY < 0)) {
                             handle = true
                         }
@@ -175,9 +190,9 @@ class SlideRelativeLayout : RelativeLayout {
                     }
                 }else if (childType == ChildType.VIEWPAGER){
                     if (slideType == SlideType.HORIZONTAL) {
-//                        loge("viewpager horizontal: $offsetX , $offsetY")
-                        val size = mChildViewPager.childCount
+                        val size = mChildViewPager.adapter.count
                         val current = mChildViewPager.currentItem
+//                        loge("viewpager horizontal: $offsetX , $offsetY , $size , $current")
                         if (size == 1 && Math.abs(offsetX) > Math.abs(offsetY)){
                             handle = true
                         }else if (current == 0 && offsetX > 0 && Math.abs(offsetX) > Math.abs(offsetY)){
@@ -223,8 +238,10 @@ class SlideRelativeLayout : RelativeLayout {
 //                loge("touch offset : $offsetX , $offsetY")
                 if (slideType == SlideType.HORIZONTAL){
                     translationX = offsetX
+                    onSlideListener?.translatePage(Math.abs(offsetX) / measuredWidth)
                 }else if (slideType == SlideType.VERTICAL){
                     translationY = offsetY
+                    onSlideListener?.translatePage(Math.abs(offsetY) / measuredHeight)
                 }
             }
             MotionEvent.ACTION_UP -> {
@@ -239,12 +256,11 @@ class SlideRelativeLayout : RelativeLayout {
         val offsetX = translationX
         val offsetY = translationY
         mCurrentSlideType = SlideType.NONE
-        if (!isClosing){
+        if (!isClosing && !isOpening){
             when (slideType){
                 SlideType.HORIZONTAL -> {
                     val maxLength = width / 3
                     if (offsetX > maxLength || offsetX < -maxLength){
-                        isClosing = true
                         closePage()
                     }else{
                         backToStart()
@@ -253,7 +269,6 @@ class SlideRelativeLayout : RelativeLayout {
                 SlideType.VERTICAL -> {
                     val maxLength = height / 4
                     if (offsetY > maxLength || offsetY < -maxLength){
-                        isClosing = true
                         closePage()
                     }else{
                         backToStart()
@@ -264,18 +279,36 @@ class SlideRelativeLayout : RelativeLayout {
         }
     }
 
-    private fun closePage() {
+    fun openPage(){
+        isOpening = true
+//        loge("openPage : width: $measuredWidth, height: $measuredHeight")
+        when (slideType){
+            SlideType.HORIZONTAL -> {
+                closeAnimatorX.setFloatValues(measuredWidth.toFloat(), 0F)
+                closeAnimatorX.start()
+            }
+            SlideType.VERTICAL -> {
+                closeAnimatorY.setFloatValues(measuredHeight.toFloat(), 0F)
+                closeAnimatorY.start()
+            }
+            else -> {}
+        }
+    }
+
+    fun closePage() {
+        isClosing = true
         val offsetX = translationX
         val offsetY = translationY
-        val width = if (offsetX > 0) measuredWidth else -measuredWidth
-        val height = if (offsetY > 0) measuredHeight else -measuredHeight
-        closeAnimatorX.setFloatValues(offsetX, width.toFloat())
-        closeAnimatorY.setFloatValues(offsetY, height.toFloat())
+        val width = if (offsetX >= 0) measuredWidth else -measuredWidth
+        val height = if (offsetY >= 0) measuredHeight else -measuredHeight
+//        loge("SlideLayout: closePage : offset: $offsetX, $offsetY, width: $width, height: $height, slideType: $slideType")
         when (slideType){
             SlideType.VERTICAL -> {
+                closeAnimatorY.setFloatValues(offsetY, height.toFloat())
                 closeAnimatorY.start()
             }
             SlideType.HORIZONTAL -> {
+                closeAnimatorX.setFloatValues(offsetX, width.toFloat())
                 closeAnimatorX.start()
             }
             else -> {}
@@ -307,8 +340,13 @@ class SlideRelativeLayout : RelativeLayout {
         this.mChildViewPager = viewPager
     }
 
+    fun attachScrollView(scrollView: ScrollView){
+        this.mChildScrollView = scrollView
+    }
+
     interface OnSlideListener{
         fun onClosePage()
+        fun onOpen()
         fun translatePage(progress: Float)
     }
 
