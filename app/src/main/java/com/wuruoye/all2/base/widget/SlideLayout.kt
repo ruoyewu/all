@@ -1,20 +1,14 @@
 package com.wuruoye.all2.base.widget
 
 import android.animation.Animator
-import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
-import android.support.v4.app.ActivityCompat
 import android.support.v4.view.ViewPager
 import android.util.AttributeSet
 import android.view.MotionEvent
-import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.RelativeLayout
 import android.widget.ScrollView
-import android.widget.Scroller
-import com.wuruoye.all2.R
 import com.wuruoye.all2.base.util.loge
 
 /**

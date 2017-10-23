@@ -48,6 +48,7 @@ class UserActivity : PhotoActivity() {
         override fun onAvatarUpload(result: Boolean) {
             runOnUiThread {
                 if (result){
+                    mUserCache.isAvatarUpload = true
                     toast("头像上传成功")
                 }else{
                     toast("头像上传失败")
@@ -152,6 +153,7 @@ class UserActivity : PhotoActivity() {
                 BlurUtil.blurBitmap(applicationContext, bitmap)
         )
 
+        mUserCache.isAvatarUpload = false
         mUserGet.uploadAvatar(mUserId, photoPath)
         mUserCache.userAvatar = photoPath
     }
@@ -233,6 +235,9 @@ class UserActivity : PhotoActivity() {
                 iv_user_head.setImageBitmap(
                         BlurUtil.blurBitmap(applicationContext, avatarBitmap)
                 )
+                if (!mUserCache.isAvatarUpload) {
+                    mUserGet.uploadAvatar(mUserId, avatarPath)
+                }
             } catch (e: Exception) {
                 toast("加载头像失败，请重新选择头像...")
             }

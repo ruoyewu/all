@@ -104,6 +104,7 @@ class MainActivity : BaseActivity(){
             startActivity(intent)
         }
         fab_main_setting.setOnClickListener {
+            val bundle = Bundle()
             val intent = Intent(this, SettingActivity::class.java)
             startActivity(intent)
         }

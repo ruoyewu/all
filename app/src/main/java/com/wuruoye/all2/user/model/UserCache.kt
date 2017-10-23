@@ -22,6 +22,10 @@ class UserCache(context: Context) : BaseCache(context) {
         get() = getString(USER_AVATAR, "")
         set(value) = setString(USER_AVATAR, value)
 
+    var isAvatarUpload: Boolean
+        get() = getBoolean(USER_AVATAR_UPLOAD, true)
+        set(value) = setBoolean(USER_AVATAR_UPLOAD, value)
+
     var userDesc: String
         get() = getString(USER_DESC, "")
         set(value) = setString(USER_DESC, value)
@@ -62,6 +66,7 @@ class UserCache(context: Context) : BaseCache(context) {
     companion object {
         val USER_NAME = "user_name"
         val USER_AVATAR = "user_avatar"
+        val USER_AVATAR_UPLOAD = "user_avatar_upload"
         val USER_LOGIN = "user_login"
         val USER_DESC = "user_desc"
         val READ_TIME = "read_time"
