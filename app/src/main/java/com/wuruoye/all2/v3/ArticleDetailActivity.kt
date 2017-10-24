@@ -246,6 +246,7 @@ class ArticleDetailActivity : BaseSlideActivity() {
         fab_article_favorite.setOnClickListener {
             if (mUserCache.isLogin){
                 setFavorite(!isFavorite, true)
+                mUserCache.isFavoriteChange = true
             }else{
                 loginDialog.show()
             }

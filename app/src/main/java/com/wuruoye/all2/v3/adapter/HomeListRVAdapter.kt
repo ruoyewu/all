@@ -188,6 +188,6 @@ class HomeListRVAdapter(
     }
 
     private fun log(message: String){
-        loge("HomeListRVAdapter: $message")
+//        loge("HomeListRVAdapter: $message")
     }
 }

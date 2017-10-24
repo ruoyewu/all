@@ -81,7 +81,7 @@ class UserActivity : PhotoActivity() {
         mUserName = bundle.getString("username")
         mUserCache = UserCache(applicationContext)
 
-        mUserGet = UserGet()
+        mUserGet = UserGet(this)
         mUserGet.attachView(mUserView)
 
         isCurrentUser = mUserCache.userName == mUserName

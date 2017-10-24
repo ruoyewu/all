@@ -7,6 +7,7 @@ import android.content.Context
 import android.support.v4.view.ViewPager
 import android.util.AttributeSet
 import android.view.MotionEvent
+import android.view.View
 import android.widget.FrameLayout
 import android.widget.ScrollView
 import com.wuruoye.all2.base.util.loge
@@ -67,7 +68,7 @@ class SlideLayout : FrameLayout {
             val value = animation!!.animatedValue as Float
             if (isBacking){
                 translationX = value
-                onSlideListener?.translatePage(Math.abs(value) / measuredWidth)
+                onSlideProgress(value / measuredWidth)
             }else{
                 backAnimatorX.cancel()
             }
@@ -78,7 +79,7 @@ class SlideLayout : FrameLayout {
             val value = animation!!.animatedValue as Float
             if (isBacking){
                 translationY = value
-                onSlideListener?.translatePage(Math.abs(value) / measuredHeight)
+                onSlideProgress(value / measuredHeight)
             }else{
                 backAnimatorY.cancel()
             }
@@ -90,7 +91,7 @@ class SlideLayout : FrameLayout {
             val value = animation!!.animatedValue as Float
             if (isClosing || isOpening){
                 translationX = value
-                onSlideListener?.translatePage(Math.abs(value) / measuredWidth)
+                onSlideProgress(value / measuredWidth)
             }else{
                 closeAnimatorX.cancel()
             }
@@ -124,7 +125,7 @@ class SlideLayout : FrameLayout {
             val value = animation!!.animatedValue as Float
             if (isClosing || isOpening){
                 translationY = value
-                onSlideListener?.translatePage(Math.abs(value) / measuredHeight)
+                onSlideProgress(value / measuredHeight)
             }else{
                 closeAnimatorY.cancel()
             }
@@ -163,52 +164,55 @@ class SlideLayout : FrameLayout {
 //                loge("down: $startX , $startY")
             }
             MotionEvent.ACTION_MOVE -> {
-                val offsetX = ev.rawX - startX
-                val offsetY = ev.rawY - startY
+                try {
+                    val offsetX = ev.rawX - startX
+                    val offsetY = ev.rawY - startY
 //                loge("move: $offsetX , $offsetY")
-                if (childType == ChildType.SCROLLVIEW){
-                    if (slideType == SlideType.VERTICAL){
-                        val maxScrollY = mChildScrollView.getChildAt(0).height - mChildScrollView.height
-                        val scrollY = mChildScrollView.scrollY
-//                        loge("scrollView vertical $scrollY , $maxScrollY")
-                        if ((scrollY == 0 && offsetY > 0) || (scrollY == maxScrollY && offsetY < 0)) {
-                            handle = true
+                    if (childType == ChildType.SCROLLVIEW){
+                        if (slideType == SlideType.VERTICAL){
+                            val maxScrollY = mChildScrollView.getChildAt(0).height - mChildScrollView.height
+                            val scrollY = mChildScrollView.scrollY
+    //                        loge("scrollView vertical $scrollY , $maxScrollY")
+                            if ((scrollY == 0 && offsetY > 0) || (scrollY == maxScrollY && offsetY < 0)) {
+                                handle = true
+                            }
+                        }else if (slideType == SlideType.HORIZONTAL){
+    //                        loge("scrollView horizontal $offsetX , $offsetY")
+                            if (Math.abs(offsetX) > Math.abs(offsetY)){
+                                handle = true
+                            }
+                        }else {
+                            throw IllegalArgumentException("childType must be SlideType.VERTICAL or SlideType.HORIZONTAL")
                         }
-                    }else if (slideType == SlideType.HORIZONTAL){
-//                        loge("scrollView horizontal $offsetX , $offsetY")
-                        if (Math.abs(offsetX) > Math.abs(offsetY)){
-                            handle = true
+                    }else if (childType == ChildType.VIEWPAGER){
+                        if (slideType == SlideType.HORIZONTAL) {
+                            val size = mChildViewPager.adapter.count
+                            val current = mChildViewPager.currentItem
+    //                        loge("viewpager horizontal: $offsetX , $offsetY , $size , $current")
+                            if (size == 1 && Math.abs(offsetX) > Math.abs(offsetY)){
+                                handle = true
+                            }else if (current == 0 && offsetX > 0 && Math.abs(offsetX) > Math.abs(offsetY)){
+                                handle = true
+                            }else if (current == size - 1 && offsetX < 0 && Math.abs(offsetX) > Math.abs(offsetY)){
+                                handle = true
+                            }
+                        }else {
+                            throw IllegalArgumentException("childType must be SlideType.HORIZONTAL")
                         }
-                    }else {
-                        throw IllegalArgumentException("childType must be SlideType.VERTICAL or SlideType.HORIZONTAL")
+                    }else if (childType == ChildType.PHOTOVIEW){
+                        if (slideType == SlideType.VERTICAL){
+                            if (Math.abs(offsetX) < Math.abs(offsetY)){
+                                handle = true
+                            }
+                        }else {
+                            throw IllegalArgumentException("childType must be SlideType.VERTICAL")
+                        }
                     }
-                }else if (childType == ChildType.VIEWPAGER){
-                    if (slideType == SlideType.HORIZONTAL) {
-                        val size = mChildViewPager.adapter.count
-                        val current = mChildViewPager.currentItem
-//                        loge("viewpager horizontal: $offsetX , $offsetY , $size , $current")
-                        if (size == 1 && Math.abs(offsetX) > Math.abs(offsetY)){
-                            handle = true
-                        }else if (current == 0 && offsetX > 0 && Math.abs(offsetX) > Math.abs(offsetY)){
-                            handle = true
-                        }else if (current == size - 1 && offsetX < 0 && Math.abs(offsetX) > Math.abs(offsetY)){
-                            handle = true
-                        }
-                    }else {
-                        throw IllegalArgumentException("childType must be SlideType.HORIZONTAL")
-                    }
-                }else if (childType == ChildType.PHOTOVIEW){
-                    if (slideType == SlideType.VERTICAL){
-                        if (Math.abs(offsetX) < Math.abs(offsetY)){
-                            handle = true
-                        }
-                    }else {
-                        throw IllegalArgumentException("childType must be SlideType.VERTICAL")
-                    }
+                } catch (e: UninitializedPropertyAccessException) {
                 }
             }
             MotionEvent.ACTION_UP -> {
-                loge("up")
+                log("up")
                 eventUp()
             }
         }
@@ -232,10 +236,10 @@ class SlideLayout : FrameLayout {
 //                loge("touch offset : $offsetX , $offsetY")
                 if (slideType == SlideType.HORIZONTAL){
                     translationX = offsetX
-                    onSlideListener?.translatePage(Math.abs(offsetX) / measuredWidth)
+                    onSlideProgress(offsetX / measuredWidth)
                 }else if (slideType == SlideType.VERTICAL){
                     translationY = offsetY
-                    onSlideListener?.translatePage(Math.abs(offsetY) / measuredHeight)
+                    onSlideProgress(offsetY / measuredHeight)
                 }
             }
             MotionEvent.ACTION_UP -> {
@@ -326,6 +330,10 @@ class SlideLayout : FrameLayout {
         }
      }
 
+    private fun onSlideProgress(progress: Float){
+        onSlideListener?.translatePage(progress)
+    }
+
     fun setOnSlideListener(listener: OnSlideListener){
         this.onSlideListener = listener
     }
@@ -349,4 +357,8 @@ class SlideLayout : FrameLayout {
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {init()}
 
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {init()}
+
+    private fun log(message: String){
+//        loge("slideLayout: $message")
+    }
 }

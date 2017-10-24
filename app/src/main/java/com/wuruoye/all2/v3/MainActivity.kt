@@ -12,9 +12,11 @@ import com.transitionseverywhere.*
 import com.transitionseverywhere.extra.Scale
 import com.wuruoye.all2.R
 import com.wuruoye.all2.base.BaseActivity
+import com.wuruoye.all2.base.BaseSlideActivity
 import com.wuruoye.all2.base.presenter.AbsPresenter
 import com.wuruoye.all2.base.presenter.AbsView
 import com.wuruoye.all2.base.util.*
+import com.wuruoye.all2.base.widget.SlideLayout
 import com.wuruoye.all2.setting.SettingActivity
 import com.wuruoye.all2.setting.model.SettingCache
 import com.wuruoye.all2.v3.model.bean.AppInfo
@@ -26,7 +28,7 @@ import com.wuruoye.all2.v3.adapter.HomeListRVAdapter
 import com.wuruoye.all2.v3.model.AppInfoCache
 import com.wuruoye.all2.v3.model.bean.ArticleListItem
 
-class MainActivity : BaseActivity(){
+class MainActivity : BaseSlideActivity(){
     private val viewFloatList = ArrayList<View>()
     private var isShow = false
     private lateinit var appInfoCache: AppInfoCache
@@ -74,6 +76,15 @@ class MainActivity : BaseActivity(){
 
     override val contentView: Int
         get() = R.layout.activity_main
+
+    override val childType: SlideLayout.ChildType
+        get() = SlideLayout.ChildType.VIEWPAGER
+
+    override val initAfterOpen: Boolean
+        get() = false
+
+    override val slideType: SlideLayout.SlideType
+        get() = SlideLayout.SlideType.HORIZONTAL
 
     override fun initData(bundle: Bundle?) {
         appInfoListGet = AppInfoListGet(applicationContext)

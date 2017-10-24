@@ -34,6 +34,14 @@ class UserCache(context: Context) : BaseCache(context) {
         get() = getInt(USER_ID, 0)
         set(value) = setInt(USER_ID, value)
 
+    var isFavoriteChange: Boolean
+        get() = getBoolean(USER_FAVORITE_CHANGE, true)
+        set(value) = setBoolean(USER_FAVORITE_CHANGE, value)
+
+    var userFavoriteList: String
+        get() = getString(USER_FAVORITE_LIST, "")
+        set(value) = setString(USER_FAVORITE_LIST, value)
+
     fun cancelUser(){
         isLogin = false
         userId = 0
@@ -46,6 +54,7 @@ class UserCache(context: Context) : BaseCache(context) {
         userId = id
         userName = name
         userAvatar = Config.APP_PATH + "file/avatar.jpg"
+        isFavoriteChange = true
     }
 
     fun signUser(id: Int, name: String){
@@ -71,5 +80,7 @@ class UserCache(context: Context) : BaseCache(context) {
         val USER_DESC = "user_desc"
         val READ_TIME = "read_time"
         val USER_ID = "user_id"
+        val USER_FAVORITE_CHANGE = "user_favorite_change"
+        val USER_FAVORITE_LIST = "user_favorite_list"
     }
 }

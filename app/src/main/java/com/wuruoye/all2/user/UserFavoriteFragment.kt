@@ -8,6 +8,7 @@ import com.wuruoye.all2.R
 import com.wuruoye.all2.base.util.startActivity
 import com.wuruoye.all2.base.util.toast
 import com.wuruoye.all2.user.adapter.FavoriteRVAdapter
+import com.wuruoye.all2.user.model.UserCache
 import com.wuruoye.all2.user.model.bean.ArticleFavorite
 import com.wuruoye.all2.user.model.bean.ArticleFavoriteItem
 import com.wuruoye.all2.user.presenter.UserGet
@@ -22,6 +23,8 @@ import kotlinx.android.synthetic.main.fragment_user_collect.*
  */
 class UserFavoriteFragment : RefreshFragment(){
     private var mUserId = 0
+    private var isMore = true
+    private var isFirst = true
 
     private lateinit var mUserGet: UserGet
     private val mUserView = object : UserView{
@@ -65,39 +68,49 @@ class UserFavoriteFragment : RefreshFragment(){
 
     override fun initData(bundle: Bundle?) {
         mUserId = bundle!!.getInt("userid")
-
-        mUserGet = UserGet()
+        mUserGet = UserGet(context)
         mUserGet.attachView(mUserView)
     }
 
     override fun initView(view: View) {
-        initRecyclerView()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        isFirst = true
+        isMore = true
+        loadMore(0L)
     }
 
     override fun refresh() {
 
     }
 
-    private fun initRecyclerView(){
-        val adapter = FavoriteRVAdapter(context, ArticleFavorite(), onItemClickListener)
-        rl_favorite.layoutManager = LinearLayoutManager(context)
-        rl_favorite.adapter = adapter
-    }
-
     private fun loadMore(next: Long){
-        mUserGet.getFavorite(mUserId, next)
-    }
-
-    private fun setRecyclerView(data: ArticleFavorite){
-        if (data.info.size > 0) {
-            val adapter = rl_favorite.adapter as FavoriteRVAdapter
-            adapter.setNext(data.next)
-            adapter.addItems(data.info)
-        }else{
+        if (isMore){
+            mUserGet.getFavorite(mUserId, next)
+        }else {
             refreshVH.hv.visibility = View.GONE
             refreshVH.tv.visibility = View.VISIBLE
         }
+    }
 
+    private fun setRecyclerView(data: ArticleFavorite){
+        if (isFirst){
+            val adapter = FavoriteRVAdapter(context, data, onItemClickListener)
+            rl_favorite.adapter = adapter
+            rl_favorite.layoutManager = LinearLayoutManager(context)
+            isFirst = false
+        }else {
+            if (data.info.size > 0) {
+                val adapter = rl_favorite.adapter as FavoriteRVAdapter
+                adapter.setNext(data.next)
+                adapter.addItems(data.info)
+            }
+        }
+        if (data.info.size < 10){
+            isMore = false
+        }
     }
 
     override fun onDestroy() {
