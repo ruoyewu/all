@@ -15,6 +15,7 @@ object FontUtil {
             field.isAccessible = true
             field.set(null, typeface)
         } catch (e: Exception) {
+            loge(e)
         }
     }
 }

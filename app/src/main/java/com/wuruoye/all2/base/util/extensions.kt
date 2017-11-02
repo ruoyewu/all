@@ -42,6 +42,13 @@ fun Context.loadImage(url: String, imageView: ImageView){
             .into(imageView)
 }
 
+fun Context.loadVideoImage(url: String, imageView: ImageView){
+    Glide.with(this)
+            .asBitmap()
+            .load(url)
+            .into(imageView)
+}
+
 fun Context.loadUserImage(userName: String, imageView: ImageView){
     val url = Config.USER_AVATAR_URL + "/" + userName
     val option = RequestOptions()
@@ -123,6 +130,8 @@ fun Context.startActivity(item: ArticleListItem, name: String, category: String)
         }
     }
 }
+
+fun dp2px(context: Context, dp: Float): Float = dp * context.resources.displayMetrics.density
 
 fun Context.copyText(text: String){
     val cmb = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager

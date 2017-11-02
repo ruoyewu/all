@@ -29,6 +29,7 @@ class SlideLayout : FrameLayout {
     // 如果为 false 不再执行 返回 动画
     private var isBacking = false
 
+    //在调用onTouch方法的时候，利用isFirstMove来确定第一次move响应的时候当前手指位置
     private var isFirstMove = true
 
     // 当前view 设置的需要滑动方向 (HORIZONTAL, VERTICAL)
@@ -47,7 +48,7 @@ class SlideLayout : FrameLayout {
         HORIZONTAL,
         VERTICAL
     }
-    // 子布局类型，不同子布局执行不同策略
+    // 子布局类型，不同子布局执行不同intercept策略
     enum class ChildType{
         PHOTOVIEW,
         SCROLLVIEW,

@@ -14,6 +14,8 @@ data class ArticleCommentItem(
         var username: String,
         var content: String,
         var key: String,
-        var parent: String
+        var parent: String,
+        var love: Int,
+        var is_love: Boolean
 ) {
 }

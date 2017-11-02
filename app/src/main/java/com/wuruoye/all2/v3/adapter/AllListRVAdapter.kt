@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.wuruoye.all2.R
 import com.wuruoye.all2.base.util.loadImage
+import com.wuruoye.all2.setting.model.SettingCache
 import com.wuruoye.all2.v3.adapter.viewholder.AllListViewHolder
 import com.wuruoye.all2.v3.adapter.viewholder.HeartRefreshViewHolder
 import com.wuruoye.all2.v3.adapter.viewholder.OneHeadViewHolder
@@ -23,6 +24,7 @@ class AllListRVAdapter(
         private var data: ArticleList,
         private val onItemClickListener: AllListRVAdapter.OnItemClickListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+    private var isShowImage: Boolean = true
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
@@ -64,7 +66,7 @@ class AllListRVAdapter(
                         tvAuthor.visibility = View.VISIBLE
                         tvAuthor.text = "-\t" + item.author
                     }
-                    if (item.image == ""){
+                    if (item.image == "" || !isShowImage){
                         ivImg.visibility = View.GONE
                     }else{
                         ivImg.visibility = View.VISIBLE
@@ -108,33 +110,36 @@ class AllListRVAdapter(
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder =
-            when (viewType){
-                TYPE_NORMAL -> {
-                    AllListViewHolder(
-                            LayoutInflater.from(parent!!.context)
-                                    .inflate(R.layout.item_all_list, null, false)
-                    )
-                }
-                TYPE_ONE_HEAD -> {
-                    OneHeadViewHolder(
-                            LayoutInflater.from(parent!!.context)
-                                    .inflate(R.layout.item_one_head, null, false)
-                    )
-                }
-                TYPE_REFRESH -> {
-                    HeartRefreshViewHolder(
-                            LayoutInflater.from(parent!!.context)
-                                    .inflate(R.layout.item_heart_refresh, null, false)
-                    )
-                }
-                else -> {
-                    AllListViewHolder(
-                            LayoutInflater.from(parent!!.context)
-                                    .inflate(R.layout.item_all_list, null, false)
-                    )
-                }
+    @SuppressLint("InflateParams")
+    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
+        isShowImage = SettingCache(parent!!.context).isAutoImage
+        return when (viewType) {
+            TYPE_NORMAL -> {
+                AllListViewHolder(
+                        LayoutInflater.from(parent.context)
+                                .inflate(R.layout.item_all_list, null, false)
+                )
             }
+            TYPE_ONE_HEAD -> {
+                OneHeadViewHolder(
+                        LayoutInflater.from(parent.context)
+                                .inflate(R.layout.item_one_head, null, false)
+                )
+            }
+            TYPE_REFRESH -> {
+                HeartRefreshViewHolder(
+                        LayoutInflater.from(parent.context)
+                                .inflate(R.layout.item_heart_refresh, null, false)
+                )
+            }
+            else -> {
+                AllListViewHolder(
+                        LayoutInflater.from(parent.context)
+                                .inflate(R.layout.item_all_list, null, false)
+                )
+            }
+        }
+    }
 
     override fun getItemViewType(position: Int): Int =
             if (position >= data.list.size){

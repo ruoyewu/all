@@ -13,17 +13,13 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.OvershootInterpolator
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import com.google.gson.Gson
 import com.transitionseverywhere.*
 import com.transitionseverywhere.extra.Scale
 import com.wuruoye.all2.R
 import com.wuruoye.all2.base.BaseSlideActivity
-import com.wuruoye.all2.base.util.loadImage
-import com.wuruoye.all2.base.util.loadUrl
-import com.wuruoye.all2.base.util.toast
+import com.wuruoye.all2.base.util.*
 import com.wuruoye.all2.base.widget.SlideLayout
 import com.wuruoye.all2.setting.model.SettingCache
 import com.wuruoye.all2.user.LoginActivity
@@ -45,9 +41,8 @@ import kotlin.collections.ArrayList
  * this file is to do
  */
 class ArticleDetailActivity : BaseSlideActivity() {
-
     private lateinit var mUserCache: UserCache
-    private lateinit var settingCache: SettingCache
+    private lateinit var mSettingCache: SettingCache
 
     // 侧边 button 集合， 用于批量管理动画
     private val viewFloatList = ArrayList<View>()
@@ -59,8 +54,10 @@ class ArticleDetailActivity : BaseSlideActivity() {
     private lateinit var articleKey: String
 
     private val imageViewList = ArrayList<View>()
+    private val imageTextList = ArrayList<View>()
     private val imageUrlList = ArrayList<String>()
 
+    private var isShowImage = true
     private var mStartTime = 0L
 
     // 侧边 button 是否在显示状态
@@ -122,6 +119,10 @@ class ArticleDetailActivity : BaseSlideActivity() {
             runOnUiThread {  }
         }
 
+        override fun onCommentLovePut(model: Boolean) {
+
+        }
+
         override fun onLovePut(model: Boolean) {
             // 如果提交结果 与 当前状态 不相同， 则认定为提交错误，并
             runOnUiThread {
@@ -162,6 +163,16 @@ class ArticleDetailActivity : BaseSlideActivity() {
             intent.putExtras(bundle)
             startActivity(intent)
         }
+
+        override fun onLoveClick(item: ArticleCommentItem, iv: ImageView, tv: TextView) =
+                if (mUserCache.isLogin){
+                    item.is_love = !item.is_love
+                    iv.setImageResource(if (item.is_love) {R.drawable.ic_heart_on} else {R.drawable.ic_heart_off})
+                    tv.text = if (item.is_love) {(tv.text.toString().toInt() + 1).toString()} else {(tv.text.toString().toInt() - 1).toString()}
+                    mArticleGet.putCommentLove(item.id, mUserCache.userId, item.is_love)
+                }else {
+                    loginDialog.show()
+                }
     }
 
     override val contentView: Int
@@ -183,7 +194,9 @@ class ArticleDetailActivity : BaseSlideActivity() {
         articleKey = name + "_" + category + "_" + item.id
 
         mUserCache = UserCache(applicationContext)
-        settingCache = SettingCache(applicationContext)
+        mSettingCache = SettingCache(applicationContext)
+
+        isShowImage = mSettingCache.isAutoImage
 
         mArticleGet = ArticleGet()
         mArticleGet.attachView(mArticleView)
@@ -457,7 +470,12 @@ class ArticleDetailActivity : BaseSlideActivity() {
 
     //请求文章评论
     private fun requestComment(next: Long){
-        mArticleGet.getCommentList(articleKey, next)
+        val userid = if (mUserCache.isLogin){
+            mUserCache.userId
+        }else {
+            -1
+        }
+        mArticleGet.getCommentList(articleKey, next, userid)
     }
 
     //对网络请求得到的 ArticleDetail 做操作
@@ -569,7 +587,7 @@ class ArticleDetailActivity : BaseSlideActivity() {
         fab_article_drawer.show()
         isClick = true
 
-        if (settingCache.isAutoDetailButton){
+        if (mSettingCache.isAutoDetailButton){
             ll_article_fab.post {
                 isShow = true
                 showFAB()
@@ -622,13 +640,39 @@ class ArticleDetailActivity : BaseSlideActivity() {
                         }
                         TYPE_IMG -> {
                             val view = LayoutInflater.from(this)
-                                    .inflate(R.layout.view_image, null) as ImageView
-                            imageViewList.add(view)
+                                    .inflate(R.layout.view_image_text, null) as LinearLayout
+                            val iv = view.findViewById<ImageView>(R.id.view_image_img)
+                            val tv = view.findViewById<Button>(R.id.view_image_text)
+                            tv.text = "【 点击查看图片 】"
+                            imageTextList.add(tv)
+                            imageViewList.add(iv)
                             imageUrlList.add(pair.info)
-                            view.setOnClickListener {
-                                onImageClick(view)
+                            iv.setOnClickListener {
+                                onImageClick(iv)
                             }
-                            loadImage(pair.info, view)
+                            tv.setOnClickListener {
+                                onImageTextClick(tv)
+                            }
+                            if (isShowImage) {
+                                iv.visibility = View.VISIBLE
+                                tv.visibility = View.GONE
+                                loadImage(pair.info, iv)
+                            }else {
+                                iv.visibility = View.GONE
+                                tv.visibility = View.VISIBLE
+                                tv.requestFocus()
+                            }
+                            view
+                        }
+                        TYPE_VIDEO -> {
+                            val view = LayoutInflater.from(this)
+                                    .inflate(R.layout.view_video, null) as RelativeLayout
+                            val iv = view.findViewById<ImageView>(R.id.view_video_img)
+                            val ib = view.findViewById<ImageButton>(R.id.view_video_play)
+                            loadVideoImage(pair.info, iv)
+                            ib.setOnClickListener {
+                                onVideoPlayClick(pair.info)
+                            }
                             view
                         }
                         TYPE_TEXT_CEN -> {
@@ -725,6 +769,30 @@ class ArticleDetailActivity : BaseSlideActivity() {
         startActivity(intent)
     }
 
+    private fun onImageTextClick(view: View){
+        log("onTextClick")
+        val position = imageTextList.indexOf(view)
+
+        imageTextList[position].visibility = View.GONE
+        imageViewList[position].visibility = View.VISIBLE
+        loadImage(imageUrlList[position], imageViewList[position] as ImageView)
+    }
+
+    private fun onVideoPlayClick(url: String){
+        if (name != "ifanr") {
+            val bundle = Bundle()
+            bundle.putString("url", url)
+            bundle.putString("title", item.title)
+            bundle.putBoolean("isFull", false)
+
+            val intent = Intent(this, VideoActivity::class.java)
+            intent.putExtras(bundle)
+            startActivity(intent)
+        }else {
+            loadUrl(url)
+        }
+    }
+
     private fun changeLoadingView(type: Int){
         when (type){
             LOAD_TYPE_START -> {
@@ -757,6 +825,10 @@ class ArticleDetailActivity : BaseSlideActivity() {
     override fun onDestroy() {
         super.onDestroy()
         mArticleGet.detachView()
+    }
+
+    private fun log(message: String){
+        loge("ArticleDetailActivity: $message")
     }
 
     companion object {

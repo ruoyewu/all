@@ -33,6 +33,7 @@ class LoginSignFragment : BaseFragment(), View.OnClickListener {
                     et_sign_name.setText("")
                     et_sign_pass.setText("")
                     toast("注册成功")
+                    mUserCache.isFavoriteChange = true
                     val activity = activity as LoginActivity
                     activity.onSignOk()
                 }else {

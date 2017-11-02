@@ -69,7 +69,7 @@ class AppListGet2(context: Context) : AbsPresenter<AbsView<ArticleList>>(), List
             override fun onSuccess(model: String) {
                 val keyList = arrayListOf<String>("name", "category", "page", "content")
                 val valueList = arrayListOf<String>(name, category, page, model)
-                log("get article: $name, $category")
+                log("get article: $name, $category, $model")
                 NetUtil.post(Config.ARTICLE_LIST_POST, keyList, valueList, object : Listener<String>{
                     override fun onSuccess(model: String) {
                         val articleList = Gson().fromJson(model, ArticleList::class.java)

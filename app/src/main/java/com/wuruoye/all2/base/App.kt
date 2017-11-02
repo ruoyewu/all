@@ -15,7 +15,7 @@ class App : Application() {
         super.onCreate()
         mContext = this
 
-        FontUtil.changeFont(this, "fonts/longzhao.ttf")
+//        FontUtil.changeFont(this, "fonts/longzhao.ttf")
     }
 
     companion object {

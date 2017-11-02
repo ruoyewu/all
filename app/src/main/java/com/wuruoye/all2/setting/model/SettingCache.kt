@@ -29,11 +29,16 @@ class SettingCache(context: Context) : BaseCache(context) {
         get() = getBoolean(SETTING_PRE_SLIDE, true)
         set(value) = setBoolean(SETTING_PRE_SLIDE, value)
 
+    var isAutoImage: Boolean
+        get() = getBoolean(SETTING_AUTO_IMAGE, true)
+        set(value) = setBoolean(SETTING_AUTO_IMAGE, value)
+
     companion object {
         val SETTING_MAIN_BUTTON = "main_button"
         val SETTING_DETAIL_BUTTON = "detail_button"
         val SETTING_SLIDE_BACK = "slide_back"
         val SETTING_BLACK_EDGE = "black_edge"
         val SETTING_PRE_SLIDE = "pre_slide"
+        val SETTING_AUTO_IMAGE = "auto_image"
     }
 }

@@ -53,8 +53,8 @@ class ArticleGet : AbsPresenter<ArticleView>() {
         })
     }
 
-    fun getCommentList(key: String, time: Long){
-        val url = Config.COMMENT_GET_URL + "key=" + key + "&time=" + time
+    fun getCommentList(key: String, time: Long, userid: Int){
+        val url = Config.COMMENT_GET_URL + "key=" + key + "&time=" + time + "&userid=" + userid
         NetUtil.get(url, object : Listener<String>{
             override fun onSuccess(model: String) {
                 val commentResult = Gson().fromJson(model, ArticleComment::class.java)
@@ -124,6 +124,24 @@ class ArticleGet : AbsPresenter<ArticleView>() {
                 val jsonObject = JSONObject(model)
                 val result = jsonObject.getBoolean("result")
                 getView()?.onLovePut(result)
+            }
+
+            override fun onFail(message: String) {
+                getView()?.setWorn(message)
+            }
+
+        })
+    }
+
+    fun putCommentLove(commentId: Int, userid: Int, love: Boolean){
+        val url = Config.COMMENT_LOVE_URL
+        val keyList = arrayListOf("id", "userid", "love")
+        val valueList = arrayListOf(commentId.toString(), userid.toString(), if (love){"1"}else{"0"})
+        NetUtil.post(url, keyList, valueList, object : Listener<String>{
+            override fun onSuccess(model: String) {
+                val jsonObject = JSONObject(model)
+                val result = jsonObject.getBoolean("result")
+                getView()?.onCommentLovePut(result)
             }
 
             override fun onFail(message: String) {

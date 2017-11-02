@@ -9,7 +9,8 @@ import android.os.RemoteException
  * this file is to do
  */
 object Config {
-    private val REMOTE_HOST = "http://139.199.153.45/"
+    private val REMOTE_HOST = "https://all.wuruoye.com/"
+//    private val REMOTE_HOST = "http://192.168.31.48:3421/"
     val APP_LIST_URL = "https://git.whutdev.com/wuruoye/repository/raw/master/all/app.json"
 
     val APP_API_URL = REMOTE_HOST + "v3/app/api?"
@@ -29,6 +30,7 @@ object Config {
     val COMMENT_GET_URL = REMOTE_HOST + "v3/comment/get?"
     val COMMENT_PUT_URL = REMOTE_HOST + "v3/comment/add"
     val COMMENT_DELETE_URL = REMOTE_HOST + "v3/comment/delete?"
+    val COMMENT_LOVE_URL = REMOTE_HOST + "v3/comment/love?"
 
     val ARTICLE_LOVE_URL = REMOTE_HOST + "v3/article/love?"
 

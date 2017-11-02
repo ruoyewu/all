@@ -24,18 +24,19 @@ class AutoSettingFragment : BaseFragment(), CompoundButton.OnCheckedChangeListen
     }
 
     override fun initView(view: View) {
-
         switch_setting_auto_main.setOnCheckedChangeListener(this)
         switch_setting_auto_detail.setOnCheckedChangeListener(this)
         switch_setting_change_page.setOnCheckedChangeListener(this)
         switch_setting_black_edge.setOnCheckedChangeListener(this)
         switch_setting_pre_slide.setOnCheckedChangeListener(this)
+        switch_setting_auto_image.setOnCheckedChangeListener(this)
 
         switch_setting_auto_main.isChecked = mSettingCache.isAutoMainButton
         switch_setting_auto_detail.isChecked = mSettingCache.isAutoDetailButton
         switch_setting_change_page.isChecked = mSettingCache.isSlideBack
         switch_setting_black_edge.isChecked = mSettingCache.isBlackEdge
         switch_setting_pre_slide.isChecked = mSettingCache.isPreSlide
+        switch_setting_auto_image.isChecked = mSettingCache.isAutoImage
 
         if (!mSettingCache.isSlideBack){
             val unableColor = ActivityCompat.getColor(context, R.color.mountain_mist)
@@ -53,6 +54,9 @@ class AutoSettingFragment : BaseFragment(), CompoundButton.OnCheckedChangeListen
             }
             R.id.switch_setting_auto_detail -> {
                 mSettingCache.isAutoDetailButton = isChecked
+            }
+            R.id.switch_setting_auto_image -> {
+                mSettingCache.isAutoImage = isChecked
             }
             R.id.switch_setting_change_page -> {
                 mSettingCache.isSlideBack = isChecked

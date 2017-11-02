@@ -4,6 +4,8 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import com.wuruoye.all2.R
 import com.wuruoye.all2.base.util.DateUtil
 import com.wuruoye.all2.base.util.loadUserImage
@@ -31,11 +33,18 @@ class ArticleCommentRVAdapter(
             with(viewHolder){
                 itemView.setOnClickListener { onItemClickListener.onItemClick(item) }
                 ivUser.setOnClickListener { onItemClickListener.onUserClick(item) }
+                llLove.setOnClickListener { onItemClickListener.onLoveClick(item, ivLove, tvLove) }
 
                 itemView.context.loadUserImage(item.userid.toString(), ivUser)
                 tvUser.text = item.username
                 tvTime.text = DateUtil.getDateString(item.time)
                 tvContent.text = item.content
+                tvLove.text = item.love.toString()
+                if (item.is_love){
+                    ivLove.setImageResource(R.drawable.ic_heart_on)
+                }else {
+                    ivLove.setImageResource(R.drawable.ic_heart_off)
+                }
                 if (item.parent == ""){
                     tvParent.visibility = View.GONE
                 }else{
@@ -91,6 +100,7 @@ class ArticleCommentRVAdapter(
         fun onLoadMore(next: Long, hv: HeartRefreshViewHolder)
         fun onItemClick(item: ArticleCommentItem)
         fun onUserClick(item: ArticleCommentItem)
+        fun onLoveClick(item: ArticleCommentItem, iv: ImageView, tv: TextView)
     }
 
     companion object {

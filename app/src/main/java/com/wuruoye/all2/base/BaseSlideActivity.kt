@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.wuruoye.all2.R
+import com.wuruoye.all2.base.util.loge
 import com.wuruoye.all2.base.widget.SlideHelper
 import com.wuruoye.all2.base.widget.SlideLayout
 import com.wuruoye.all2.setting.model.SettingCache
@@ -26,7 +27,7 @@ abstract class BaseSlideActivity : AppCompatActivity() {
     private var mSlideLayout: SlideLayout? = null
     private lateinit var mBackgroundView: View
     private lateinit var mPreView: View
-    private val maxAlpha = 255
+    private val maxAlpha = 200
 
     private var isSlideBack = true
     private var isBlackEdge = true
@@ -135,11 +136,18 @@ abstract class BaseSlideActivity : AppCompatActivity() {
                 offset = - (progress / absProgress) * (mPreView.width / 2) * (1 - absProgress)
                 mPreView.translationX = offset
             }else if (slideType == SlideLayout.SlideType.VERTICAL){
-                offset = - (progress / absProgress) * (mPreView.width / 2) * (1 - absProgress)
+                offset = - (progress / absProgress) * (mPreView.height / 2) * (1 - absProgress)
                 mPreView.translationY = offset
+            }else {
+                offset = 0F
             }
+            log("back offset : $offset, $progress, ${mPreView.height}")
         }
     }
 
     fun getSlideLayout(): SlideLayout? = mSlideLayout
+
+    private fun log(message: String){
+//        loge("BaseSlideActivity: $message")
+    }
 }

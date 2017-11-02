@@ -61,14 +61,44 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <TextView
-            android:id="@+id/tv_comment_content"
-            android:layout_marginTop="10dp"
-            android:textColor="@color/monsoon"
-            android:textSize="13sp"
-            android:maxLines="10"
-            android:lineSpacingExtra="10sp"
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv_comment_content"
+                android:layout_marginTop="10dp"
+                android:textColor="@color/monsoon"
+                android:textSize="13sp"
+                android:maxLines="10"
+                android:lineSpacingExtra="10sp"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:id="@+id/ll_comment_love"
+                android:orientation="horizontal"
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/iv_comment_love"
+                    android:layout_marginLeft="10dp"
+                    android:src="@drawable/ic_heart_off"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp" />
+
+                <TextView
+                    android:id="@+id/tv_comment_love"
+                    android:layout_marginLeft="5dp"
+                    android:text="0"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="12sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>
