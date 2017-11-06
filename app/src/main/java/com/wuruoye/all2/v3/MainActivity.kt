@@ -57,7 +57,7 @@ class MainActivity : BaseSlideActivity(){
             bundle.putParcelable("info", item)
             val intent = Intent(this@MainActivity, AppInfoActivity::class.java)
             intent.putExtras(bundle)
-            startActivity(intent)
+            startThisActivity(intent)
         }
 
         override fun onError(message: String) {
@@ -70,21 +70,15 @@ class MainActivity : BaseSlideActivity(){
         }
 
         override fun onItemClick(item: ArticleListItem, name: String, category: String) {
-            startActivity(item, name, category)
+            val intent = getIntent(item, name, category)
+            if (intent != null){
+                startThisActivity(intent)
+            }
         }
     }
 
     override val contentView: Int
         get() = R.layout.activity_main
-
-    override val childType: SlideLayout.ChildType
-        get() = SlideLayout.ChildType.VIEWPAGER
-
-    override val initAfterOpen: Boolean
-        get() = false
-
-    override val slideType: SlideLayout.SlideType
-        get() = SlideLayout.SlideType.HORIZONTAL
 
     override fun initData(bundle: Bundle?) {
         appInfoListGet = AppInfoListGet(applicationContext)
@@ -92,6 +86,9 @@ class MainActivity : BaseSlideActivity(){
 
         appInfoCache = AppInfoCache(applicationContext)
         settingCache = SettingCache(applicationContext)
+
+        isSlideBack = false
+        isCircleOpe = false
     }
 
     override fun initView() {
@@ -112,12 +109,12 @@ class MainActivity : BaseSlideActivity(){
             bundle.putInt("userid", UserCache(this).userId)
             val intent = Intent(this, UserActivity::class.java)
             intent.putExtras(bundle)
-            startActivity(intent)
+            startThisActivity(intent)
         }
         fab_main_setting.setOnClickListener {
             val bundle = Bundle()
             val intent = Intent(this, SettingActivity::class.java)
-            startActivity(intent)
+            startThisActivity(intent)
         }
 
         if (settingCache.isAutoMainButton){

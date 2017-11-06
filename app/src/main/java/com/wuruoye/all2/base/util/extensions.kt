@@ -89,8 +89,8 @@ fun Context.clearGlide(){
     Thread(Runnable { Glide.get(this).clearDiskCache() }).start()
 }
 
-fun Context.startActivity(item: ArticleListItem, name: String, category: String){
-    when (item.open_type){
+fun Context.getIntent(item: ArticleListItem, name: String, category: String): Intent?{
+    return when (item.open_type){
         OPEN_TYPE_ARTICLE -> {
             if (item.category_id != "0") {
                 val bundle = Bundle()
@@ -103,11 +103,13 @@ fun Context.startActivity(item: ArticleListItem, name: String, category: String)
                 }
                 val intent = Intent(this, ArticleDetailActivity::class.java)
                 intent.putExtras(bundle)
-                startActivity(intent)
+                intent
+            }else {
+                null
             }
         }
         OPEN_TYPE_URL -> {
-
+            null
         }
         OPEN_TYPE_IMG -> {
             val imgList = item.img_list
@@ -117,7 +119,7 @@ fun Context.startActivity(item: ArticleListItem, name: String, category: String)
             bundle.putInt("position", position)
             val intent = Intent(this, ImageActivity::class.java)
             intent.putExtras(bundle)
-            startActivity(intent)
+            intent
         }
         OPEN_TYPE_VIDEO -> {
             val bundle = Bundle()
@@ -126,7 +128,10 @@ fun Context.startActivity(item: ArticleListItem, name: String, category: String)
             bundle.putBoolean("isFull", false)
             val intent = Intent(this, VideoActivity::class.java)
             intent.putExtras(bundle)
-            startActivity(intent)
+            intent
+        }
+        else -> {
+            null
         }
     }
 }

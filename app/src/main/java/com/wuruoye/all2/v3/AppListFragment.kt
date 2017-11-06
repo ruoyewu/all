@@ -8,8 +8,8 @@ import com.wuruoye.all2.R
 import com.wuruoye.all2.base.BaseFragment
 import com.wuruoye.all2.base.presenter.AbsPresenter
 import com.wuruoye.all2.base.presenter.AbsView
+import com.wuruoye.all2.base.util.getIntent
 import com.wuruoye.all2.base.util.loge
-import com.wuruoye.all2.base.util.startActivity
 import com.wuruoye.all2.base.util.toast
 import com.wuruoye.all2.v3.adapter.AllListRVAdapter
 import com.wuruoye.all2.v3.adapter.HomeListRVAdapter
@@ -59,7 +59,11 @@ class AppListFragment : BaseFragment() {
         }
 
         override fun onItemClick(item: ArticleListItem, name: String, category: String) {
-            context.startActivity(item, name, category)
+            val intent = context.getIntent(item, name, category)
+            if (intent != null){
+                val activity = activity as AppInfoActivity
+                activity.startThisActivity(intent)
+            }
         }
 
     }

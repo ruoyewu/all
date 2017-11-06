@@ -23,9 +23,6 @@ class UserInfoFragment : RefreshFragment() {
     }
 
     override fun refresh() {
-        Handler().postDelayed({
-            val activity = activity as UserActivity
-            activity.stopRefresh()
-        }, 1000)
+
     }
 }

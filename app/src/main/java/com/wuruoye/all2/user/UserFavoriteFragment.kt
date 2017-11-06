@@ -5,17 +5,16 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import com.google.gson.Gson
 import com.wuruoye.all2.R
-import com.wuruoye.all2.base.util.startActivity
+import com.wuruoye.all2.base.util.getIntent
 import com.wuruoye.all2.base.util.toast
 import com.wuruoye.all2.user.adapter.FavoriteRVAdapter
-import com.wuruoye.all2.user.model.UserCache
 import com.wuruoye.all2.user.model.bean.ArticleFavorite
 import com.wuruoye.all2.user.model.bean.ArticleFavoriteItem
 import com.wuruoye.all2.user.presenter.UserGet
 import com.wuruoye.all2.user.presenter.UserView
 import com.wuruoye.all2.v3.adapter.viewholder.HeartRefreshViewHolder
 import com.wuruoye.all2.v3.model.bean.ArticleListItem
-import kotlinx.android.synthetic.main.fragment_user_collect.*
+import kotlinx.android.synthetic.main.fragment_user_favorite.*
 
 /**
  * Created by wuruoye on 2017/9/24.
@@ -43,7 +42,6 @@ class UserFavoriteFragment : RefreshFragment(){
                 toast(message)
             }
         }
-
     }
 
     private lateinit var refreshVH: HeartRefreshViewHolder
@@ -58,13 +56,17 @@ class UserFavoriteFragment : RefreshFragment(){
             val name = key[0]
             val category = key[1]
             val newItem = Gson().fromJson(item.info, ArticleListItem::class.java)
-            context.startActivity(newItem, name, category)
+            val intent = context.getIntent(newItem, name, category)
+            val activity = activity as UserActivity
+            if (intent != null){
+                activity.startThisActivity(intent)
+            }
         }
 
     }
 
     override val contentView: Int
-        get() = R.layout.fragment_user_collect
+        get() = R.layout.fragment_user_favorite
 
     override fun initData(bundle: Bundle?) {
         mUserId = bundle!!.getInt("userid")

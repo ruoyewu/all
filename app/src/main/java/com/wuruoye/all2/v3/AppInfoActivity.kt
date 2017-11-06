@@ -21,17 +21,12 @@ class AppInfoActivity : BaseSlideActivity() {
     override val contentView: Int
         get() = R.layout.activity_app_info
 
-    override val childType: SlideLayout.ChildType
-        get() = SlideLayout.ChildType.VIEWPAGER
-
-    override val slideType: SlideLayout.SlideType
-        get() = SlideLayout.SlideType.HORIZONTAL
-
-    override val initAfterOpen: Boolean
-        get() = false
-
     override fun initData(bundle: Bundle?) {
         mAppInfo = bundle!!.getParcelable("info")
+
+        mChildType = SlideLayout.ChildType.VIEWPAGER
+        mSlideType = SlideLayout.SlideType.HORIZONTAL
+        isInitAfterOpen = false
     }
 
     override fun initView() {

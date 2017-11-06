@@ -1,11 +1,13 @@
 package com.wuruoye.all2.base
 
+import android.animation.Animator
+import android.content.Intent
 import android.graphics.Color
+import android.graphics.Point
+import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import com.wuruoye.all2.R
 import com.wuruoye.all2.base.util.loge
 import com.wuruoye.all2.base.widget.SlideHelper
@@ -20,63 +22,61 @@ abstract class BaseSlideActivity : AppCompatActivity() {
     abstract val contentView: Int
     abstract fun initData(bundle: Bundle?)
     abstract fun initView()
-    abstract val slideType: SlideLayout.SlideType
-    abstract val childType: SlideLayout.ChildType
-    abstract val initAfterOpen: Boolean
 
     private var mSlideLayout: SlideLayout? = null
     private lateinit var mBackgroundView: View
+    private lateinit var mContentView: View
     private lateinit var mPreView: View
     private val maxAlpha = 200
 
-    private var isSlideBack = true
-    private var isBlackEdge = true
-    private var isPreSlide = true
+    lateinit var mSlideType: SlideLayout.SlideType
+    lateinit var mChildType: SlideLayout.ChildType
+    var isInitAfterOpen: Boolean = false
+    var isSlideBack = false
+    private var isBlackEdge = false
+    private var isPreSlide = false
+
+    var isCircleOpe = false
+    private val mPoint = Point()
+    private val mPress = Point()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val mSettingCache = SettingCache(this)
-        isSlideBack = mSettingCache.isSlideBack
-        isBlackEdge = mSettingCache.isBlackEdge
-        isPreSlide = mSettingCache.isPreSlide
+        initThisData(intent.extras)
 
         SlideHelper.addActivity(this)
-        if (SlideHelper.activityList.size < 2){
-            isSlideBack = false
-        }
 
-        val view = LayoutInflater.from(this)
-                .inflate(contentView, null)
-
-        if (isSlideBack) {
-            initSlideLayout(view)
-            setContentView(mSlideLayout)
-            overridePendingTransition(R.anim.activity_no, R.anim.activity_no)
-        }else {
-            setContentView(view)
-        }
-
-        initData(intent.extras)
-
-        if (isSlideBack && initAfterOpen){
-            mSlideLayout!!.post {
-                mSlideLayout!!.openPage()
-                mSlideLayout!!.visibility = View.VISIBLE
-            }
-        }else {
-            if (isSlideBack){
-                mSlideLayout!!.post {
-                    mSlideLayout!!.openPage()
-                    mSlideLayout!!.visibility = View.VISIBLE
-                }
-            }
-            initView()
-        }
+        initThisView()
     }
 
     override fun onBackPressed() {
         if (isSlideBack) {
             mSlideLayout!!.closePage()
+        }else if (isCircleOpe && Build.VERSION.SDK_INT >= 21){
+            val animator = ViewAnimationUtils.createCircularReveal(mContentView, mPoint.x, mPoint.y,
+                    if (mContentView.height > mContentView.width) {mContentView.height.toFloat()} else {mContentView.width.toFloat()}, 0F)
+            animator.duration = 500
+            animator.addListener(object : Animator.AnimatorListener{
+                override fun onAnimationRepeat(animation: Animator?) {
+
+                }
+
+                override fun onAnimationEnd(animation: Animator?) {
+                    mContentView.visibility = View.GONE
+                    finish()
+                    overridePendingTransition(R.anim.activity_no, R.anim.activity_no)
+                }
+
+                override fun onAnimationCancel(animation: Animator?) {
+                    finish()
+                    overridePendingTransition(R.anim.activity_no, R.anim.activity_no)
+                }
+
+                override fun onAnimationStart(animation: Animator?) {
+
+                }
+            })
+            animator.start()
         }else {
             super.onBackPressed()
         }
@@ -87,14 +87,79 @@ abstract class BaseSlideActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
+    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
+        mPress.set(event!!.x.toInt(), event.y.toInt())
+        return super.dispatchTouchEvent(event)
+    }
+
+    fun startThisActivity(intent: Intent){
+        val bundle = if (intent.extras == null){
+            Bundle()
+        }else {
+            intent.extras
+        }
+        bundle.putParcelable("point", mPress)
+        intent.putExtras(bundle)
+        startActivity(intent)
+    }
+
+    private fun initThisData(bundle: Bundle?){
+        val mSettingCache = SettingCache(this)
+        isSlideBack = mSettingCache.isSlideBack
+//        isSlideBack = false
+        isBlackEdge = mSettingCache.isBlackEdge
+        isPreSlide = mSettingCache.isPreSlide
+        isCircleOpe = mSettingCache.isCircleOpen
+//        isCircleOpe = true
+
+        try {
+            val point = bundle!!.getParcelable<Point>("point")
+            mPoint.set(point.x, point.y)
+        } catch (e: Exception) {
+        }
+
+        initData(intent.extras)
+    }
+
+    private fun initThisView(){
+        mContentView = LayoutInflater.from(this)
+                .inflate(contentView, null)
+
+        if (isSlideBack) {
+            initSlideLayout(mContentView)
+            setContentView(mSlideLayout)
+            overridePendingTransition(R.anim.activity_no, R.anim.activity_no)
+            mSlideLayout!!.post {
+                mSlideLayout!!.openPage()
+                mSlideLayout!!.visibility = View.VISIBLE
+            }
+            if (!isInitAfterOpen){
+                initView()
+            }
+        }else if (isCircleOpe && Build.VERSION.SDK_INT >= 21){
+            setContentView(mContentView)
+            initView()
+            overridePendingTransition(R.anim.activity_no, R.anim.activity_no)
+            mContentView.post {
+                val animator = ViewAnimationUtils.createCircularReveal(mContentView, mPoint.x, mPoint.y, 0F,
+                        if (mContentView.height > mContentView.width) {mContentView.height.toFloat()} else {mContentView.width.toFloat()})
+                animator.duration = 500
+                animator.start()
+            }
+        }else {
+            setContentView(mContentView)
+            initView()
+        }
+    }
+
     private fun initSlideLayout(view: View){
         mBackgroundView = window.decorView
         mPreView = SlideHelper.getPreActivityView()
 
         mSlideLayout = SlideLayout(this)
         mSlideLayout!!.visibility = View.INVISIBLE
-        mSlideLayout!!.childType = childType
-        mSlideLayout!!.slideType = slideType
+        mSlideLayout!!.childType = mChildType
+        mSlideLayout!!.slideType = mSlideType
 
         val layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         view.layoutParams = layoutParams
@@ -110,7 +175,7 @@ abstract class BaseSlideActivity : AppCompatActivity() {
             }
 
             override fun onOpen() {
-                if (initAfterOpen) {
+                if (isInitAfterOpen) {
                     initView()
                 }
             }
@@ -132,10 +197,10 @@ abstract class BaseSlideActivity : AppCompatActivity() {
         //背景联动
         if (isPreSlide) {
             val offset: Float
-            if (slideType == SlideLayout.SlideType.HORIZONTAL){
+            if (mSlideType == SlideLayout.SlideType.HORIZONTAL){
                 offset = - (progress / absProgress) * (mPreView.width / 2) * (1 - absProgress)
                 mPreView.translationX = offset
-            }else if (slideType == SlideLayout.SlideType.VERTICAL){
+            }else if (mSlideType == SlideLayout.SlideType.VERTICAL){
                 offset = - (progress / absProgress) * (mPreView.height / 2) * (1 - absProgress)
                 mPreView.translationY = offset
             }else {

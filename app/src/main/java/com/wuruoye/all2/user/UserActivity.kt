@@ -67,15 +67,6 @@ class UserActivity : PhotoActivity() {
     override val contentView: Int
         get() = R.layout.activity_user
 
-    override val childType: SlideLayout.ChildType
-        get() = SlideLayout.ChildType.VIEWPAGER
-
-    override val slideType: SlideLayout.SlideType
-        get() = SlideLayout.SlideType.HORIZONTAL
-
-    override val initAfterOpen: Boolean
-        get() = false
-
     override fun initData(bundle: Bundle?) {
         mUserId = bundle!!.getInt("userid")
         mUserName = bundle.getString("username")
@@ -85,6 +76,10 @@ class UserActivity : PhotoActivity() {
         mUserGet.attachView(mUserView)
 
         isCurrentUser = mUserCache.userName == mUserName
+
+        mChildType = SlideLayout.ChildType.VIEWPAGER
+        mSlideType = SlideLayout.SlideType.HORIZONTAL
+        isInitAfterOpen = false
     }
 
     override fun initView() {

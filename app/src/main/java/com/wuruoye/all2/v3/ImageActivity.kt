@@ -37,18 +37,12 @@ class ImageActivity : BaseSlideActivity() {
     override val contentView: Int
         get() = R.layout.activity_image
 
-    override val childType: SlideLayout.ChildType
-        get() = SlideLayout.ChildType.PHOTOVIEW
-
-    override val slideType: SlideLayout.SlideType
-        get() = SlideLayout.SlideType.VERTICAL
-
-    override val initAfterOpen: Boolean
-        get() = false
-
     override fun initData(bundle: Bundle?) {
         imageList = bundle!!.getStringArrayList("images")
         position = bundle.getInt("position")
+
+        mChildType = SlideLayout.ChildType.PHOTOVIEW
+        mSlideType = SlideLayout.SlideType.VERTICAL
     }
 
     override fun initView() {

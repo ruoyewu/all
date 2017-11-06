@@ -64,13 +64,17 @@ class UserCache(context: Context) : BaseCache(context) {
     }
 
     fun addReadTime(time: Long){
-        var last = getLong(READ_TIME, 0L)
+        var last = getLong(USER_READ_TIME, 0L)
         last += time
-        setLong(READ_TIME, last)
+        setLong(USER_READ_TIME, last)
     }
 
     val readTime: Long
-        get() = getLong(READ_TIME, 0L)
+        get() = getLong(USER_READ_TIME, 0L)
+
+    var lastRead: String
+        get() = getString(USER_LAST_READ, "")
+        set(value) = setString(USER_LAST_READ, value)
 
     companion object {
         val USER_NAME = "user_name"
@@ -78,9 +82,10 @@ class UserCache(context: Context) : BaseCache(context) {
         val USER_AVATAR_UPLOAD = "user_avatar_upload"
         val USER_LOGIN = "user_login"
         val USER_DESC = "user_desc"
-        val READ_TIME = "read_time"
+        val USER_READ_TIME = "read_time"
         val USER_ID = "user_id"
         val USER_FAVORITE_CHANGE = "user_favorite_change"
         val USER_FAVORITE_LIST = "user_favorite_list"
+        val USER_LAST_READ = "user_last_read"
     }
 }

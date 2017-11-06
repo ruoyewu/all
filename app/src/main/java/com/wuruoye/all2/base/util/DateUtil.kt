@@ -56,10 +56,10 @@ object DateUtil {
         val day = hour / 24
         val year = day / 365
         return when {
-            year > 0 -> "$year 年 $day 天 $hour 小时"
-            day > 0 -> "$day 天 $hour 小时 $minute 分钟"
-            hour > 0 -> "$hour 小时 $minute 分钟 $second 秒"
-            minute > 0 -> "$minute 分钟 $second 秒"
+            year > 0 -> "$year 年 ${day - year * 365} 天 ${hour - day * 24} 小时"
+            day > 0 -> "$day 天 ${hour - day * 24} 小时 ${minute - hour * 60} 分钟"
+            hour > 0 -> "$hour 小时 ${minute - hour * 60} 分钟 ${second - minute * 60} 秒"
+            minute > 0 -> "$minute 分钟 ${second - minute * 60} 秒"
             else -> "$second 秒"
         }
     }

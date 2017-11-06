@@ -96,6 +96,27 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:id="@+id/tv_setting_circle_open"
+                android:text="动效切换页面"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:textColor="@color/monsoon"
+                android:layout_height="wrap_content" />
+
+            <Switch
+                android:id="@+id/switch_setting_circle_open"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
                 android:id="@+id/textView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

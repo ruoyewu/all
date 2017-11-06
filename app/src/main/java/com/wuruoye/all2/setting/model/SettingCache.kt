@@ -33,12 +33,17 @@ class SettingCache(context: Context) : BaseCache(context) {
         get() = getBoolean(SETTING_AUTO_IMAGE, true)
         set(value) = setBoolean(SETTING_AUTO_IMAGE, value)
 
+    var isCircleOpen: Boolean
+        get() = getBoolean(SETTING_CIRCLE_OPEN, false)
+        set(value) = setBoolean(SETTING_CIRCLE_OPEN, value)
+
     companion object {
-        val SETTING_MAIN_BUTTON = "main_button"
-        val SETTING_DETAIL_BUTTON = "detail_button"
-        val SETTING_SLIDE_BACK = "slide_back"
-        val SETTING_BLACK_EDGE = "black_edge"
-        val SETTING_PRE_SLIDE = "pre_slide"
-        val SETTING_AUTO_IMAGE = "auto_image"
+        val SETTING_MAIN_BUTTON = "setting_main_button"
+        val SETTING_DETAIL_BUTTON = "setting_detail_button"
+        val SETTING_SLIDE_BACK = "setting_slide_back"
+        val SETTING_BLACK_EDGE = "setting_black_edge"
+        val SETTING_PRE_SLIDE = "setting_pre_slide"
+        val SETTING_CIRCLE_OPEN = "setting_circle_open"
+        val SETTING_AUTO_IMAGE = "setting_auto_image"
     }
 }

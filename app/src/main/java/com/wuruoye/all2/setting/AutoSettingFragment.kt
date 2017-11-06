@@ -30,6 +30,7 @@ class AutoSettingFragment : BaseFragment(), CompoundButton.OnCheckedChangeListen
         switch_setting_black_edge.setOnCheckedChangeListener(this)
         switch_setting_pre_slide.setOnCheckedChangeListener(this)
         switch_setting_auto_image.setOnCheckedChangeListener(this)
+        switch_setting_circle_open.setOnCheckedChangeListener(this)
 
         switch_setting_auto_main.isChecked = mSettingCache.isAutoMainButton
         switch_setting_auto_detail.isChecked = mSettingCache.isAutoDetailButton
@@ -37,6 +38,7 @@ class AutoSettingFragment : BaseFragment(), CompoundButton.OnCheckedChangeListen
         switch_setting_black_edge.isChecked = mSettingCache.isBlackEdge
         switch_setting_pre_slide.isChecked = mSettingCache.isPreSlide
         switch_setting_auto_image.isChecked = mSettingCache.isAutoImage
+        switch_setting_circle_open.isChecked = mSettingCache.isCircleOpen
 
         if (!mSettingCache.isSlideBack){
             val unableColor = ActivityCompat.getColor(context, R.color.mountain_mist)
@@ -71,6 +73,8 @@ class AutoSettingFragment : BaseFragment(), CompoundButton.OnCheckedChangeListen
                     tv_setting_black_edge.setTextColor(enableColor)
                     switch_setting_black_edge.isClickable = true
                     switch_setting_pre_slide.isClickable = true
+
+                    switch_setting_circle_open.isChecked = false
                 }
             }
             R.id.switch_setting_black_edge -> {
@@ -78,6 +82,12 @@ class AutoSettingFragment : BaseFragment(), CompoundButton.OnCheckedChangeListen
             }
             R.id.switch_setting_pre_slide -> {
                 mSettingCache.isPreSlide = isChecked
+            }
+            R.id.switch_setting_circle_open -> {
+                mSettingCache.isCircleOpen = isChecked
+                if (isChecked){
+                    switch_setting_change_page.isChecked = false
+                }
             }
         }
     }

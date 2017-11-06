@@ -5,6 +5,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AlertDialog
@@ -12,6 +13,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewAnimationUtils
 import android.view.animation.OvershootInterpolator
 import android.widget.*
 import com.google.gson.Gson
@@ -161,7 +163,7 @@ class ArticleDetailActivity : BaseSlideActivity() {
             bundle.putInt("userid", item.userid)
             val intent = Intent(this@ArticleDetailActivity, UserActivity::class.java)
             intent.putExtras(bundle)
-            startActivity(intent)
+            startThisActivity(intent)
         }
 
         override fun onLoveClick(item: ArticleCommentItem, iv: ImageView, tv: TextView) =
@@ -178,15 +180,6 @@ class ArticleDetailActivity : BaseSlideActivity() {
     override val contentView: Int
         get() = R.layout.activity_article
 
-    override val childType: SlideLayout.ChildType
-        get() = SlideLayout.ChildType.SCROLLVIEW
-
-    override val slideType: SlideLayout.SlideType
-        get() = SlideLayout.SlideType.VERTICAL
-
-    override val initAfterOpen: Boolean
-        get() = true
-
     override fun initData(bundle: Bundle?) {
         item = bundle!!.getParcelable("item")
         name = bundle.getString("name")
@@ -200,9 +193,16 @@ class ArticleDetailActivity : BaseSlideActivity() {
 
         mArticleGet = ArticleGet()
         mArticleGet.attachView(mArticleView)
+
+        mChildType = SlideLayout.ChildType.SCROLLVIEW
+        mSlideType = SlideLayout.SlideType.VERTICAL
+        isInitAfterOpen = true
     }
 
     override fun initView() {
+        mUserCache.lastRead = Gson().toJson(item)
+        SQLiteUtil.addArticle(this, item, mUserCache.userId)
+
         getSlideLayout()?.attachScrollView(sv_article)
 
         tv_article_original.setOnClickListener {
@@ -337,7 +337,7 @@ class ArticleDetailActivity : BaseSlideActivity() {
         loginDialog = AlertDialog.Builder(this)
                 .setTitle("您还未登录\n是否前去登录？")
                 .setPositiveButton("是", { _, _ ->
-                    startActivity(Intent(this, LoginActivity::class.java))
+                    startThisActivity(Intent(this, LoginActivity::class.java))
                 })
                 .setNegativeButton("否", { _, _ -> })
                 .create()
@@ -766,7 +766,7 @@ class ArticleDetailActivity : BaseSlideActivity() {
         bundle.putStringArrayList("images", imageUrlList)
         val intent = Intent(this, ImageActivity::class.java)
         intent.putExtras(bundle)
-        startActivity(intent)
+        startThisActivity(intent)
     }
 
     private fun onImageTextClick(view: View){

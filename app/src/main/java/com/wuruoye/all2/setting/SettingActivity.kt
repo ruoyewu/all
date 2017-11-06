@@ -17,17 +17,10 @@ class SettingActivity : BaseSlideActivity() {
     override val contentView: Int
         get() = R.layout.activity_setting
 
-    override val childType: SlideLayout.ChildType
-        get() = SlideLayout.ChildType.VIEWPAGER
-
-    override val slideType: SlideLayout.SlideType
-        get() = SlideLayout.SlideType.HORIZONTAL
-
-    override val initAfterOpen: Boolean
-        get() = false
-
     override fun initData(bundle: Bundle?) {
-
+        mChildType = SlideLayout.ChildType.VIEWPAGER
+        mSlideType = SlideLayout.SlideType.HORIZONTAL
+        isInitAfterOpen = false
     }
 
     override fun initView() {
