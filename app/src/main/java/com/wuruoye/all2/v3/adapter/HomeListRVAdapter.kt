@@ -15,13 +15,12 @@ import com.bumptech.glide.Glide
 import com.wuruoye.all2.R
 import com.wuruoye.all2.base.presenter.AbsPresenter
 import com.wuruoye.all2.base.presenter.AbsView
-import com.wuruoye.all2.base.util.loge
 import com.wuruoye.all2.base.util.toast
 import com.wuruoye.all2.v3.adapter.viewholder.HeartRefreshViewHolder
 import com.wuruoye.all2.v3.model.bean.AppInfo
 import com.wuruoye.all2.v3.model.bean.ArticleList
 import com.wuruoye.all2.v3.model.bean.ArticleListItem
-import com.wuruoye.all2.v3.presenter.AppListGet2
+import com.wuruoye.all2.v3.presenter.AppListGet
 import de.hdodenhof.circleimageview.CircleImageView
 import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator
 
@@ -44,7 +43,7 @@ class HomeListRVAdapter(
     private val btnMaps = HashMap<String, Button>()
     private val isShowAll = HashMap<String, Boolean>()
 
-    private lateinit var appListGet2: AppListGet2
+    private lateinit var appListGet2: AppListGet
     private val mView = object : AbsView<ArticleList>{
         override fun setModel(model: ArticleList) {
             (context as Activity).runOnUiThread {
@@ -111,7 +110,7 @@ class HomeListRVAdapter(
         val view = LayoutInflater.from(parent!!.context)
                 .inflate(R.layout.item_home_app, parent, false)
         context = parent.context
-        appListGet2 = AppListGet2(context)
+        appListGet2 = AppListGet(context)
         appListGet2.attachView(mView)
 
         return ViewHolder(view)

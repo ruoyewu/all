@@ -5,6 +5,7 @@ import android.net.ConnectivityManager
 import com.wuruoye.all2.base.model.Config
 import com.wuruoye.all2.base.model.Listener
 import okhttp3.*
+import org.json.JSONObject
 import java.io.File
 import java.io.IOException
 import java.util.concurrent.TimeUnit
@@ -55,6 +56,7 @@ object NetUtil {
         for (i in 0 until keyList.size){
             requestBody.add(keyList[i], valueList[i])
         }
+        requestBody.add("secret", SecretUtil.getPublicSecret((System.currentTimeMillis()/1000).toString()))
         val request = Request.Builder()
                 .url(url)
                 .post(requestBody.build())
@@ -116,6 +118,7 @@ object NetUtil {
             val value = valueList[i]
             requestBody.addFormDataPart(key, value)
         }
+        requestBody.addFormDataPart("secret", SecretUtil.getPublicSecret((System.currentTimeMillis()/1000).toString()))
 
         val request = Request.Builder()
                 .url(url)

@@ -10,29 +10,30 @@ import android.os.RemoteException
  */
 object Config {
     private val REMOTE_HOST = "https://all.wuruoye.com/"
-//    private val REMOTE_HOST = "http://192.168.31.48:3421/"
+//    private val REMOTE_HOST = "http://139.199.153.45:3422/"
     val APP_LIST_URL = "https://git.whutdev.com/wuruoye/repository/raw/master/all/app.json"
 
-    val APP_API_URL = REMOTE_HOST + "v3/app/api?"
+    val APP_API_URL = REMOTE_HOST + "v3/app_api?"
 
-    val USER_LOGIN_URL = REMOTE_HOST + "v3/user/login?"
-    val USER_SIGN_URL = REMOTE_HOST + "v3/user/sign?"
+    val USER_LOGIN_URL = REMOTE_HOST + "v3/user_login?"
+    val USER_SIGN_URL = REMOTE_HOST + "v3/user_sign"
     val USER_AVATAR_URL = REMOTE_HOST + "v3/user/avatar"
+    val USER_AVATAR_UPLOAD = REMOTE_HOST + "v3/user_avatar"
+    val USER_READ_TIME_UPLOAD = REMOTE_HOST + "v3/user_read_time"
 
-    val ARTICLE_LIST_URL = REMOTE_HOST + "v3/article/list?"
-    val ARTICLE_LIST_POST = REMOTE_HOST + "v3/article/list2?"
-    val ARTICLE_DETAIL_URL = REMOTE_HOST + "v3/article/detail?"
-    val ARTICLE_INFO_URL = REMOTE_HOST + "v3/article/info?"
+    val ARTICLE_LIST_URL = REMOTE_HOST + "v3/article_list2"
+    val ARTICLE_DETAIL_URL = REMOTE_HOST + "v3/article_detail?"
+    val ARTICLE_INFO_URL = REMOTE_HOST + "v3/article_info?"
 
-    val FAVORITE_PUT_URL = REMOTE_HOST + "v3/favorite/put"
-    val FAVORITE_GET_URL = REMOTE_HOST + "v3/favorite/get?"
+    val FAVORITE_PUT_URL = REMOTE_HOST + "v3/favorite_put"
+    val FAVORITE_GET_URL = REMOTE_HOST + "v3/favorite_get?"
 
-    val COMMENT_GET_URL = REMOTE_HOST + "v3/comment/get?"
-    val COMMENT_PUT_URL = REMOTE_HOST + "v3/comment/add"
-    val COMMENT_DELETE_URL = REMOTE_HOST + "v3/comment/delete?"
-    val COMMENT_LOVE_URL = REMOTE_HOST + "v3/comment/love?"
+    val COMMENT_GET_URL = REMOTE_HOST + "v3/comment_get?"
+    val COMMENT_PUT_URL = REMOTE_HOST + "v3/comment_add"
+    val COMMENT_DELETE_URL = REMOTE_HOST + "v3/comment_delete"
+    val COMMENT_LOVE_URL = REMOTE_HOST + "v3/comment_love"
 
-    val ARTICLE_LOVE_URL = REMOTE_HOST + "v3/article/love?"
+    val ARTICLE_LOVE_URL = REMOTE_HOST + "v3/article_love"
 
     val CONNECT_TIME_OUT = 30L
     val READ_TIME_OUT = 30L
@@ -49,4 +50,10 @@ object Config {
     val CAMERA_PERMISSION = arrayOf(
             Manifest.permission.CAMERA
     )
+
+    val PUBLIC_RSA_KEY =
+            "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDZUR+ZVrweku0atvEePdp/vDFP\n" +
+            "PswzyqPFUJU0TdW6Fj+eLbmYEfjrJkDjZhcoI9MupdP3xbQIkKozlnzNUXQW0j77\n" +
+            "h0BLToEEe7gNdN3Ro/QTmE4NxVfkXSBV4GuWNriBzzgratUvAP5K7ZC6hPJr/+a4\n" +
+            "sPrBN2SLwIjuPnTU/wIDAQAB\n"
 }

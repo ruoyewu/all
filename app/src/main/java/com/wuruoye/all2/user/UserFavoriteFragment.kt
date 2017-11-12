@@ -42,6 +42,10 @@ class UserFavoriteFragment : RefreshFragment(){
                 toast(message)
             }
         }
+
+        override fun onReadTimeUpload(result: Boolean) {
+
+        }
     }
 
     private lateinit var refreshVH: HeartRefreshViewHolder

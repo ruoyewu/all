@@ -16,7 +16,7 @@ import com.wuruoye.all2.v3.adapter.HomeListRVAdapter
 import com.wuruoye.all2.v3.adapter.viewholder.HeartRefreshViewHolder
 import com.wuruoye.all2.v3.model.bean.ArticleList
 import com.wuruoye.all2.v3.model.bean.ArticleListItem
-import com.wuruoye.all2.v3.presenter.AppListGet2
+import com.wuruoye.all2.v3.presenter.AppListGet
 import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator
 import kotlinx.android.synthetic.main.fragment_list.*
 
@@ -33,7 +33,7 @@ class AppListFragment : BaseFragment() {
     private lateinit var refreshVH: HeartRefreshViewHolder
 
 //    private lateinit var appListGet: AppListGet
-    private lateinit var appListGet2: AppListGet2
+    private lateinit var appListGet2: AppListGet
     private val mView = object : AbsView<ArticleList>{
         override fun setModel(model: ArticleList) {
             activity.runOnUiThread{
@@ -78,7 +78,7 @@ class AppListFragment : BaseFragment() {
 
 //        appListGet = AppListGet(context)
 //        appListGet.attachView(mView)
-        appListGet2 = AppListGet2(context)
+        appListGet2 = AppListGet(context)
         appListGet2.attachView(mView)
     }
 

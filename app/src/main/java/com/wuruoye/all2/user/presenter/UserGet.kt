@@ -8,6 +8,7 @@ import com.wuruoye.all2.base.presenter.AbsPresenter
 import com.wuruoye.all2.base.util.NetUtil
 import com.wuruoye.all2.user.model.UserCache
 import com.wuruoye.all2.user.model.bean.ArticleFavorite
+import org.json.JSONObject
 
 /**
  * Created by wuruoye on 2017/9/24.
@@ -30,9 +31,14 @@ class UserGet(context: Context) : AbsPresenter<UserView>() {
         if (isNet){
             NetUtil.get(url, object : Listener<String>{
                 override fun onSuccess(model: String) {
-                    getView()?.onFavoriteGet(Gson().fromJson(model, ArticleFavorite::class.java))
-                    mUserCache.userFavoriteList = model
-                    mUserCache.isFavoriteChange = false
+                    val result = checkResponse(model)
+                    if (result.first){
+                        getView()?.onFavoriteGet(Gson().fromJson(result.second, ArticleFavorite::class.java))
+                        mUserCache.userFavoriteList = result.second
+                        mUserCache.isFavoriteChange = false
+                    }else {
+                        getView()?.setWorn(result.second)
+                    }
                 }
 
                 override fun onFail(message: String) {
@@ -47,13 +53,40 @@ class UserGet(context: Context) : AbsPresenter<UserView>() {
         val fileType = "image/*"
         val keyList = arrayListOf<String>("userid")
         val valueList = arrayListOf<String>(userid.toString())
-        NetUtil.postFile(Config.USER_AVATAR_URL, filePath, fileType, keyList, valueList, object : Listener<String>{
+        NetUtil.postFile(Config.USER_AVATAR_UPLOAD, filePath, fileType, keyList, valueList, object : Listener<String>{
             override fun onSuccess(model: String) {
-                getView()?.onAvatarUpload(true)
+                val result = checkResponse(model)
+                if (result.first){
+                    getView()?.onAvatarUpload(true)
+                }else {
+                    getView()?.setWorn(result.second)
+                }
             }
 
             override fun onFail(message: String) {
                 getView()?.onAvatarUpload(false)
+            }
+
+        })
+    }
+
+    fun uploadReadTime(userid: Int, readTime: Long){
+        val keyList = arrayListOf("userid", "read_time")
+        val valueList = arrayListOf(userid.toString(), readTime.toString())
+        NetUtil.post(Config.USER_READ_TIME_UPLOAD, keyList, valueList, object : Listener<String>{
+            override fun onSuccess(model: String) {
+                val result = checkResponse(model)
+                if (result.first){
+                    val obj = JSONObject(result.second)
+                    val result = obj.getBoolean("result")
+                    getView()?.onReadTimeUpload(result)
+                }else {
+                    getView()?.setWorn(result.second)
+                }
+            }
+
+            override fun onFail(message: String) {
+                getView()?.setWorn(message)
             }
 
         })

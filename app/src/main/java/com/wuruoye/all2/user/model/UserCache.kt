@@ -49,12 +49,13 @@ class UserCache(context: Context) : BaseCache(context) {
         userAvatar = ""
     }
 
-    fun loginUser(id: Int, name: String){
+    fun loginUser(id: Int, name: String, readTime: Long){
         isLogin = true
         userId = id
         userName = name
         userAvatar = Config.APP_PATH + "file/avatar.jpg"
         isFavoriteChange = true
+        this.readTime = readTime
     }
 
     fun signUser(id: Int, name: String){
@@ -69,8 +70,9 @@ class UserCache(context: Context) : BaseCache(context) {
         setLong(USER_READ_TIME, last)
     }
 
-    val readTime: Long
+    var readTime: Long
         get() = getLong(USER_READ_TIME, 0L)
+        set(value) = setLong(USER_READ_TIME, value)
 
     var lastRead: String
         get() = getString(USER_LAST_READ, "")

@@ -15,7 +15,6 @@ android {
         renderscriptTargetApi 22
         renderscriptSupportModeEnabled true
     }
-
     signingConfigs {
         config {
             keyAlias 'default'
@@ -61,6 +60,7 @@ dependencies {
     compile 'jp.wasabeef:recyclerview-animators:2.2.7'
     compile 'com.github.chrisbanes:PhotoView:2.1.3'
     compile project(':videoplayer')
+    implementation 'org.ow2.util.base64:base64:2.0.0'
 }
 repositories {
     mavenCentral()

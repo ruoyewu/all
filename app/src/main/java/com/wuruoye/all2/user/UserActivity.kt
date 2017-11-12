@@ -57,7 +57,15 @@ class UserActivity : PhotoActivity() {
         }
 
         override fun setWorn(message: String) {
+            runOnUiThread {
+                toast(message)
+            }
+        }
 
+        override fun onReadTimeUpload(result: Boolean) {
+            runOnUiThread {
+                logOut()
+            }
         }
 
     }
@@ -160,11 +168,7 @@ class UserActivity : PhotoActivity() {
                         .setItems(dialog_items, { _, which ->
                             when (which){
                                 0 -> {      // 注销登录
-                                    mUserCache.cancelUser()
-                                    mUserName = ""
-                                    mUserId = 0
-                                    initUser()
-                                    setUserVP(mUserId)
+                                    mUserGet.uploadReadTime(mUserId, mUserCache.readTime)
                                 }
                                 1 -> {      //相册
                                     choosePhoto("avatar.jpg", 1, 1, 500, 500)
@@ -215,6 +219,14 @@ class UserActivity : PhotoActivity() {
             tv_user_name2.text = "点击登录"
             iv_user_head.setImageResource(0)
         }
+    }
+
+    private fun logOut(){
+        mUserCache.cancelUser()
+        mUserName = ""
+        mUserId = 0
+        initUser()
+        setUserVP(mUserId)
     }
 
     private fun setUserInfo(name: String, avatarPath: String){

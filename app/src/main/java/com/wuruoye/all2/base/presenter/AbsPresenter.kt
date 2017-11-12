@@ -1,6 +1,7 @@
 package com.wuruoye.all2.base.presenter
 
 import android.content.Context
+import org.json.JSONObject
 import java.lang.ref.WeakReference
 
 /**
@@ -11,7 +12,7 @@ import java.lang.ref.WeakReference
 abstract class AbsPresenter<out V : BaseView> : BasePresenter {
     private var mViewRef: WeakReference<V>? = null
 
-    public enum class Method{
+    enum class Method{
         NET,
         LOCAL
     }
@@ -32,6 +33,16 @@ abstract class AbsPresenter<out V : BaseView> : BasePresenter {
             mViewRef!!.get()
         }else{
             null
+        }
+    }
+
+    protected fun checkResponse(response: String): Pair<Boolean, String>{
+        val obj = JSONObject(response)
+        val result = obj.getBoolean("result")
+        if (result){
+            return Pair(result, obj.getString("content"))
+        }else {
+            return Pair(result, obj.getString("info"))
         }
     }
 }

@@ -12,5 +12,7 @@ interface UserView : BaseView {
 
     fun onAvatarUpload(result: Boolean)
 
+    fun onReadTimeUpload(result: Boolean)
+
     fun setWorn(message: String)
 }

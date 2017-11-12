@@ -31,7 +31,8 @@ class LoginLoginFragment : BaseFragment(), View.OnClickListener {
                     val json = JSONObject(info)
                     val id = json.getInt("id")
                     val name = json.getString("name")
-                    onLogin(id, name)
+                    val readTime = json.getLong("read_time")
+                    onLogin(id, name, readTime)
                 }else{
                     tv_login_worn.text = info
                 }
@@ -84,8 +85,8 @@ class LoginLoginFragment : BaseFragment(), View.OnClickListener {
         }
     }
 
-    private fun onLogin(id: Int, name: String){
-        mUserCache.loginUser(id, name)
+    private fun onLogin(id: Int, name: String, readTime: Long){
+        mUserCache.loginUser(id, name, readTime)
         changeType(TYPE_LOGIN)
         NetUtil.downloadFile(Config.USER_AVATAR_URL + "/" + id, "avatar.jpg", object : Listener<String> {
             override fun onSuccess(model: String) {

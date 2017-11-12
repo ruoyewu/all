@@ -16,7 +16,7 @@
             android:textSize="10sp"
             android:text="默认:"
             android:padding="10dp"
-            android:textColor="@color/mountain_mist"
+            android:textColor="@color/denim"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -84,7 +84,7 @@
             android:textSize="10sp"
             android:text="页面:"
             android:padding="10dp"
-            android:textColor="@color/mountain_mist"
+            android:textColor="@color/denim"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 

@@ -22,12 +22,13 @@ class ArticleGet : AbsPresenter<ArticleView>() {
         val url = Config.ARTICLE_DETAIL_URL + "name=" + name + "&category=" + category + "&id=" + id
         NetUtil.get(url, object : Listener<String>{
             override fun onSuccess(model: String) {
-                try {
+                val result = checkResponse(model)
+                if (result.first){
                     getView()?.onArticleDetail(
-                            Gson().fromJson(model, ArticleDetail::class.java)
+                        Gson().fromJson(result.second, ArticleDetail::class.java)
                     )
-                } catch (e: Exception) {
-                    getView()?.setWorn(e.message!!)
+                }else {
+                    getView()?.setWorn(result.second)
                 }
             }
 
@@ -41,9 +42,12 @@ class ArticleGet : AbsPresenter<ArticleView>() {
         val url = Config.ARTICLE_INFO_URL + "key=" + key + "&userid=" + userid
         NetUtil.get(url, object : Listener<String>{
             override fun onSuccess(model: String) {
-                getView()?.onArticleInfo(
-                        Gson().fromJson(model, ArticleInfo::class.java)
-                )
+                val result = checkResponse(model)
+                if (result.first){
+                    getView()?.onArticleInfo(Gson().fromJson(result.second, ArticleInfo::class.java))
+                }else{
+                    getView()?.setWorn(result.second)
+                }
             }
 
             override fun onFail(message: String) {
@@ -57,14 +61,19 @@ class ArticleGet : AbsPresenter<ArticleView>() {
         val url = Config.COMMENT_GET_URL + "key=" + key + "&time=" + time + "&userid=" + userid
         NetUtil.get(url, object : Listener<String>{
             override fun onSuccess(model: String) {
-                val commentResult = Gson().fromJson(model, ArticleComment::class.java)
-                if (commentResult.result){
-                    getView()?.onCommentGet(commentResult)
-                }else{
-                    getView()?.setWorn(commentResult.info)
+                val result = checkResponse(model)
+                if (result.first){
+                    val commentResult = Gson().fromJson(result.second, ArticleComment::class.java)
+                    if (commentResult.result){
+                        getView()?.onCommentGet(commentResult)
+                    }else{
+                        getView()?.setWorn(commentResult.info)
+                    }
+                }else {
+                    getView()?.setWorn(result.second)
                 }
-            }
 
+            }
             override fun onFail(message: String) {
                 getView()?.setWorn(message)
             }
@@ -78,16 +87,22 @@ class ArticleGet : AbsPresenter<ArticleView>() {
         val valueList = arrayListOf(time.toString(), userid.toString(), content, key, parent.toString())
         NetUtil.post(url, keyList, valueList, object : Listener<String>{
             override fun onSuccess(model: String) {
-                val jsonObject = JSONObject(model)
-                val result = jsonObject.getBoolean("result")
-                val info = jsonObject.getString("info")
-                if (result){
-                    getView()?.onCommentPut(
-                            Gson().fromJson(info, ArticleCommentItem::class.java)
-                    )
-                }else{
-                    getView()?.setWorn(info)
+                val result = checkResponse(model)
+                if (result.first){
+                    val jsonObject = JSONObject(result.second)
+                    val result = jsonObject.getBoolean("result")
+                    val info = jsonObject.getString("info")
+                    if (result){
+                        getView()?.onCommentPut(
+                                Gson().fromJson(info, ArticleCommentItem::class.java)
+                        )
+                    }else{
+                        getView()?.setWorn(info)
+                    }
+                }else {
+                    getView()?.setWorn(result.second)
                 }
+
             }
 
             override fun onFail(message: String) {
@@ -98,11 +113,17 @@ class ArticleGet : AbsPresenter<ArticleView>() {
     }
 
     fun deleteComment(id: Int){
-        val url = Config.COMMENT_DELETE_URL + "id=" + id
-        NetUtil.get(url, object : Listener<String>{
+        val keyList = arrayListOf("id")
+        val valueList = arrayListOf(id.toString())
+        NetUtil.post(Config.COMMENT_DELETE_URL, keyList, valueList, object : Listener<String>{
             override fun onSuccess(model: String) {
-                val jsonObject = JSONObject(model)
-                getView()?.onCommentDelete(jsonObject.getBoolean("result"))
+                val result = checkResponse(model)
+                if (result.first){
+                    val jsonObject = JSONObject(result.second)
+                    getView()?.onCommentDelete(jsonObject.getBoolean("result"))
+                }else {
+                    getView()?.setWorn(result.second)
+                }
             }
 
             override fun onFail(message: String) {
@@ -113,17 +134,18 @@ class ArticleGet : AbsPresenter<ArticleView>() {
     }
 
     fun putLove(key: String, userid: Int, love: Boolean){
-        val url = Config.ARTICLE_LOVE_URL + "key=" + key + "&userid=" + userid + "&love=" +
-                if (love){
-                    1
-                }else{
-                    0
-                }
-        NetUtil.get(url, object : Listener<String>{
+        val keyList = arrayListOf("key", "userid", "love")
+        val valueList = arrayListOf(key, userid.toString(), if (love){"1"}else{"0"})
+        NetUtil.post(Config.ARTICLE_LOVE_URL, keyList, valueList, object : Listener<String>{
             override fun onSuccess(model: String) {
-                val jsonObject = JSONObject(model)
-                val result = jsonObject.getBoolean("result")
-                getView()?.onLovePut(result)
+                val result = checkResponse(model)
+                if (result.first){
+                    val jsonObject = JSONObject(result.second)
+                    val result = jsonObject.getBoolean("result")
+                    getView()?.onLovePut(result)
+                }else {
+                    getView()?.setWorn(result.second)
+                }
             }
 
             override fun onFail(message: String) {
@@ -139,9 +161,14 @@ class ArticleGet : AbsPresenter<ArticleView>() {
         val valueList = arrayListOf(commentId.toString(), userid.toString(), if (love){"1"}else{"0"})
         NetUtil.post(url, keyList, valueList, object : Listener<String>{
             override fun onSuccess(model: String) {
-                val jsonObject = JSONObject(model)
-                val result = jsonObject.getBoolean("result")
-                getView()?.onCommentLovePut(result)
+                val result = checkResponse(model)
+                if (result.first){
+                    val jsonObject = JSONObject(result.second)
+                    val result = jsonObject.getBoolean("result")
+                    getView()?.onCommentLovePut(result)
+                }else {
+                    getView()?.setWorn(result.second)
+                }
             }
 
             override fun onFail(message: String) {
@@ -155,13 +182,16 @@ class ArticleGet : AbsPresenter<ArticleView>() {
         val url = Config.FAVORITE_PUT_URL
         val keyList = arrayListOf("key", "userid", "info", "time", "favorite")
         val valueList = arrayListOf(key, userid.toString(), info, time.toString(), if (favorite) "1" else "0")
-        loge(info)
-
         NetUtil.post(url, keyList, valueList, object : Listener<String>{
             override fun onSuccess(model: String) {
-                val jsonObject = JSONObject(model)
-                val result = jsonObject.getBoolean("result")
-                getView()?.onFavoritePut(result)
+                val result = checkResponse(model)
+                if (result.first){
+                    val jsonObject = JSONObject(result.second)
+                    val result = jsonObject.getBoolean("result")
+                    getView()?.onFavoritePut(result)
+                }else {
+                    getView()?.setWorn(result.second)
+                }
             }
 
             override fun onFail(message: String) {

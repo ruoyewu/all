@@ -11,7 +11,7 @@
     <TextView
         android:id="@+id/tv_app_manager_av"
         android:gravity="center"
-        android:textColor="@color/monsoon"
+        android:textColor="@color/denim"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>
