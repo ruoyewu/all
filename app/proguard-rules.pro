@@ -156,6 +156,7 @@
 -keepclasseswithmembernames class android.graphics.Typeface{*;}
 -keepclasseswithmembernames class com.wuruoye.all2.v3.model.bean.**{*;}
 -keepclasseswithmembernames class com.wuruoye.all2.user.model.bean.**{*;}
+-keepclasseswithmembernames class com.wuruoye.all2.setting.model.bean.**{*;}
 
 #-----------处理js交互---------------
 

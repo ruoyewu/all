@@ -3,6 +3,7 @@ package com.wuruoye.all2.v3.model
 import android.content.Context
 import com.google.gson.Gson
 import com.wuruoye.all2.base.model.BaseCache
+import com.wuruoye.all2.setting.model.bean.ManageredApp
 import com.wuruoye.all2.v3.model.bean.AppInfo
 import org.json.JSONArray
 
@@ -59,6 +60,29 @@ class AppInfoCache(context: Context) : BaseCache(context) {
         return appMap
     }
 
+    fun getManageredApp(): ArrayList<ManageredApp> {
+        val result = getString(MANAGER_APP, "")
+        val appList = ArrayList<ManageredApp>()
+        if (result.isEmpty()) {
+            val appMap = getAlAppMap()
+            appMap.entries.forEach {
+                appList.add(ManageredApp(it.value.icon, it.value.title, true))
+            }
+            putManageredApp(appList)
+        }else {
+            val array = JSONArray(result)
+            (0 until array.length()).mapTo(appList) {
+                Gson().fromJson(array.getString(it), ManageredApp::class.java)
+            }
+        }
+        return appList
+    }
+
+    fun putManageredApp(appList: ArrayList<ManageredApp>) {
+        val result = Gson().toJson(appList)
+        setString(MANAGER_APP, result)
+    }
+
     fun putApi(name: String, map: HashMap<String, String>){
         val key = APP_API + name
         val string = Gson().toJson(map)
@@ -83,5 +107,6 @@ class AppInfoCache(context: Context) : BaseCache(context) {
         val AV_APP_LIST = "av_app_list"
         val AL_APP_LIST = "al_app_list"
         val APP_API = "app_api_"
+        val MANAGER_APP = "manager_app"
     }
 }
