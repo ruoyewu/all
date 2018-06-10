@@ -37,6 +37,16 @@ class SettingCache(context: Context) : BaseCache(context) {
         get() = getBoolean(SETTING_CIRCLE_OPEN, false)
         set(value) = setBoolean(SETTING_CIRCLE_OPEN, value)
 
+    fun getArticleGlance(name: String): Int {
+        val key = ARTICLE_GLANCE + name
+        return getInt(key, 0)
+    }
+
+    fun putArticleGlance(name: String, glance: Int) {
+        val key = ARTICLE_GLANCE + name
+        setInt(key, glance)
+    }
+
     companion object {
         val SETTING_MAIN_BUTTON = "setting_main_button"
         val SETTING_DETAIL_BUTTON = "setting_detail_button"
@@ -45,5 +55,6 @@ class SettingCache(context: Context) : BaseCache(context) {
         val SETTING_PRE_SLIDE = "setting_pre_slide"
         val SETTING_CIRCLE_OPEN = "setting_circle_open"
         val SETTING_AUTO_IMAGE = "setting_auto_image"
+        val ARTICLE_GLANCE = "article_glance_"
     }
 }

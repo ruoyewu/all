@@ -25,13 +25,13 @@ class FragmentVPAdapter(
     override fun getPageTitle(position: Int): CharSequence =
             titles[position]
 
-    override fun instantiateItem(container: ViewGroup?, position: Int): Any {
+    override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val fragment = super.instantiateItem(container, position) as Fragment
         fm.beginTransaction().show(fragment).commit()
         return fragment
     }
 
-    override fun destroyItem(container: ViewGroup?, position: Int, `object`: Any?) {
+    override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
         val fragment = fragments[position]
         fm.beginTransaction().hide(fragment).commit()
     }

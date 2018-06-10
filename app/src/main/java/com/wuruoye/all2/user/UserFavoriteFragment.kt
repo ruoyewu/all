@@ -32,13 +32,13 @@ class UserFavoriteFragment : RefreshFragment(){
         }
 
         override fun onFavoriteGet(model: ArticleFavorite) {
-            activity.runOnUiThread {
+            activity?.runOnUiThread {
                 setRecyclerView(model)
             }
         }
 
         override fun setWorn(message: String) {
-            activity.runOnUiThread {
+            activity?.runOnUiThread {
                 toast(message)
             }
         }
@@ -60,7 +60,7 @@ class UserFavoriteFragment : RefreshFragment(){
             val name = key[0]
             val category = key[1]
             val newItem = Gson().fromJson(item.info, ArticleListItem::class.java)
-            val intent = context.getIntent(newItem, name, category)
+            val intent = context!!.getIntent(newItem, name, category)
             val activity = activity as UserActivity
             if (intent != null){
                 activity.startThisActivity(intent)
@@ -74,7 +74,7 @@ class UserFavoriteFragment : RefreshFragment(){
 
     override fun initData(bundle: Bundle?) {
         mUserId = bundle!!.getInt("userid")
-        mUserGet = UserGet(context)
+        mUserGet = UserGet(context!!)
         mUserGet.attachView(mUserView)
     }
 
@@ -103,7 +103,7 @@ class UserFavoriteFragment : RefreshFragment(){
 
     private fun setRecyclerView(data: ArticleFavorite){
         if (isFirst){
-            val adapter = FavoriteRVAdapter(context, data, onItemClickListener)
+            val adapter = FavoriteRVAdapter(context!!, data, onItemClickListener)
             rl_favorite.adapter = adapter
             rl_favorite.layoutManager = LinearLayoutManager(context)
             isFirst = false

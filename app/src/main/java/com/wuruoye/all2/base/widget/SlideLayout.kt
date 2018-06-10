@@ -188,7 +188,7 @@ class SlideLayout : FrameLayout {
                         }
                     }else if (childType == ChildType.VIEWPAGER){
                         if (slideType == SlideType.HORIZONTAL) {
-                            val size = mChildViewPager.adapter.count
+                            val size = mChildViewPager.adapter!!.count
                             val current = mChildViewPager.currentItem
     //                        loge("viewpager horizontal: $offsetX , $offsetY , $size , $current")
                             if (size == 1 && Math.abs(offsetX) > Math.abs(offsetY)){

@@ -15,15 +15,15 @@ abstract class BaseFragment : Fragment() {
     abstract fun initData(bundle: Bundle?)
     abstract fun initView(view: View)
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = LayoutInflater.from(context)
                 .inflate(contentView, null)
         initData(arguments)
         return view
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView(view!!)
+        initView(view)
     }
 }

@@ -11,9 +11,13 @@ import android.util.Log
 import android.widget.ImageView
 import android.widget.Toast
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.request.transition.Transition
 import com.wuruoye.all2.R
 import com.wuruoye.all2.base.App
@@ -66,14 +70,19 @@ fun Context.getImageBitmap(url: String, listener: Listener<Bitmap>){
     Glide.with(this)
             .asBitmap()
             .load(url)
-            .into(object : SimpleTarget<Bitmap>(){
-                override fun onResourceReady(resource: Bitmap?, transition: Transition<in Bitmap>?) {
-                    if (resource != null){
-                        listener.onSuccess(resource)
-                    }
+            .listener(object : RequestListener<Bitmap> {
+                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
+                    listener.onFail(e!!.message!!)
+                    return false
+                }
+
+                override fun onResourceReady(resource: Bitmap?, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                    listener.onSuccess(resource!!)
+                    return true
                 }
 
             })
+            .submit()
 }
 
 fun Context.loadUrl(url: String){

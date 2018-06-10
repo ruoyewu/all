@@ -23,7 +23,7 @@ class AppManagerFragment : BaseFragment(), AppManagerRVAdapter2.OnActionListener
         get() = R.layout.fragment_app_manager
 
     override fun initData(bundle: Bundle?) {
-        mAppInfoCache = AppInfoCache(context)
+        mAppInfoCache = AppInfoCache(context!!)
     }
 
     override fun initView(view: View) {

@@ -99,6 +99,7 @@ class AppInfoCache(context: Context) : BaseCache(context) {
         }
     }
 
+
     companion object {
         val INFO_APP = "info_app_"
         val INFO_APP_DEFAULT = ""

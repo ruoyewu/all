@@ -52,8 +52,8 @@ class UserCourseFragment : RefreshFragment() {
         get() = R.layout.fragment_user_course
 
     override fun initData(bundle: Bundle?) {
-        mUserCache = UserCache(context)
-        mUserGet = UserGet(context)
+        mUserCache = UserCache(context!!)
+        mUserGet = UserGet(context!!)
         mUserGet.attachView(mView)
     }
 

@@ -593,6 +593,10 @@ class ArticleDetailActivity : BaseSlideActivity() {
                 showFAB()
             }
         }
+
+        sv_article.post {
+            sv_article.smoothScrollTo(0, mSettingCache.getArticleGlance(articleKey))
+        }
     }
 
     //设置是否喜欢文章，并且上传到服务器
@@ -823,8 +827,9 @@ class ArticleDetailActivity : BaseSlideActivity() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
+        mSettingCache.putArticleGlance(articleKey, sv_article.scrollY)
         mArticleGet.detachView()
+        super.onDestroy()
     }
 
     private fun log(message: String){

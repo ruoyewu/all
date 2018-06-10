@@ -36,7 +36,7 @@ class AppListFragment : BaseFragment() {
     private lateinit var appListGet2: AppListGet
     private val mView = object : AbsView<ArticleList>{
         override fun setModel(model: ArticleList) {
-            activity.runOnUiThread{
+            activity?.runOnUiThread{
                 if (!isLoadMore) {
                     setRecyclerView(model)
                 }else{
@@ -46,7 +46,7 @@ class AppListFragment : BaseFragment() {
             }
         }
         override fun setWorn(message: String) {
-            activity.runOnUiThread{
+            activity?.runOnUiThread{
                 toast(message)
             }
         }
@@ -59,7 +59,7 @@ class AppListFragment : BaseFragment() {
         }
 
         override fun onItemClick(item: ArticleListItem, name: String, category: String) {
-            val intent = context.getIntent(item, name, category)
+            val intent = context!!.getIntent(item, name, category)
             if (intent != null){
                 val activity = activity as AppInfoActivity
                 activity.startThisActivity(intent)
@@ -78,7 +78,7 @@ class AppListFragment : BaseFragment() {
 
 //        appListGet = AppListGet(context)
 //        appListGet.attachView(mView)
-        appListGet2 = AppListGet(context)
+        appListGet2 = AppListGet(context!!)
         appListGet2.attachView(mView)
     }
 

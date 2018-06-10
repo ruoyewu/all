@@ -20,7 +20,7 @@ class AutoSettingFragment : BaseFragment(), CompoundButton.OnCheckedChangeListen
         get() = R.layout.fragment_auto_setting
 
     override fun initData(bundle: Bundle?) {
-        mSettingCache = SettingCache(context)
+        mSettingCache = SettingCache(context!!)
     }
 
     override fun initView(view: View) {
@@ -41,7 +41,7 @@ class AutoSettingFragment : BaseFragment(), CompoundButton.OnCheckedChangeListen
         switch_setting_circle_open.isChecked = mSettingCache.isCircleOpen
 
         if (!mSettingCache.isSlideBack){
-            val unableColor = ActivityCompat.getColor(context, R.color.mountain_mist)
+            val unableColor = ActivityCompat.getColor(context!!, R.color.mountain_mist)
             tv_setting_black_edge.setTextColor(unableColor)
             tv_setting_pre_slide.setTextColor(unableColor)
             switch_setting_black_edge.isClickable = false
@@ -63,13 +63,13 @@ class AutoSettingFragment : BaseFragment(), CompoundButton.OnCheckedChangeListen
             R.id.switch_setting_change_page -> {
                 mSettingCache.isSlideBack = isChecked
                 if (!isChecked){
-                    val unableColor = ActivityCompat.getColor(context, R.color.mountain_mist)
+                    val unableColor = ActivityCompat.getColor(context!!, R.color.mountain_mist)
                     tv_setting_black_edge.setTextColor(unableColor)
                     tv_setting_pre_slide.setTextColor(unableColor)
                     switch_setting_black_edge.isClickable = false
                     switch_setting_pre_slide.isClickable = false
                 }else{
-                    val enableColor = ActivityCompat.getColor(context, R.color.monsoon)
+                    val enableColor = ActivityCompat.getColor(context!!, R.color.monsoon)
                     tv_setting_black_edge.setTextColor(enableColor)
                     switch_setting_black_edge.isClickable = true
                     switch_setting_pre_slide.isClickable = true

@@ -18,15 +18,15 @@ class ViewVPAdapter(
     override fun isViewFromObject(view: View, `object`: Any): Boolean =
             view === `object`
 
-    override fun instantiateItem(container: ViewGroup?, position: Int): Any {
+    override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val view = viewList[position]
-        if (container?.indexOfChild(view) == -1){
+        if (container.indexOfChild(view) == -1){
             container.addView(view)
         }
         return view
     }
 
-    override fun destroyItem(container: ViewGroup?, position: Int, `object`: Any?) {
+    override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
 
     }
 }

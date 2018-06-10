@@ -24,7 +24,7 @@ class LoginSignFragment : BaseFragment(), View.OnClickListener {
         }
 
         override fun onSign(result: Boolean, info: String) {
-            activity.runOnUiThread {
+            activity?.runOnUiThread {
                 if (result){
                     val json = JSONObject(info)
                     val id = json.getInt("id")
@@ -43,7 +43,7 @@ class LoginSignFragment : BaseFragment(), View.OnClickListener {
         }
 
         override fun setWorn(message: String) {
-            activity.runOnUiThread {
+            activity?.runOnUiThread {
                 toast(message)
             }
         }
@@ -54,7 +54,7 @@ class LoginSignFragment : BaseFragment(), View.OnClickListener {
         get() = R.layout.fragment_login_sign
 
     override fun initData(bundle: Bundle?) {
-        mUserCache = UserCache(context)
+        mUserCache = UserCache(context!!)
         mLoginGet = LoginGet()
         mLoginGet.attachView(mLoginView)
     }
