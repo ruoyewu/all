@@ -11,7 +11,7 @@
         android:textSize="10sp"
         android:gravity="center"
         android:textColor="@color/mountain_mist"
-        android:text="长按后拖动进行排序或归类"
+        android:text="长按后拖动进行排序"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

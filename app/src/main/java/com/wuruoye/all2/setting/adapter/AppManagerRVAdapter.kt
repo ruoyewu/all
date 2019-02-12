@@ -25,7 +25,7 @@ class AppManagerRVAdapter(
     override fun getItemCount(): Int =
             appList.size
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (getItemViewType(position)){
             TYPE_AV -> {
                 val viewHolder = holder as AppManagerAVViewHolder
@@ -45,8 +45,8 @@ class AppManagerRVAdapter(
     }
 
     @SuppressLint("InflateParams")
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
-        mContext = parent!!.context
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        mContext = parent.context
         mAppInfoCache = AppInfoCache(mContext)
 
         when (viewType){

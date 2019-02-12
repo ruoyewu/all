@@ -63,9 +63,3 @@ dependencies {
     implementation project(':videoplayer')
     implementation 'org.ow2.util.base64:base64:2.0.0'
 }
-repositories {
-    mavenCentral()
-    jcenter()
-    maven { url "https://maven.google.com/" }
-    maven { url "https://jitpack.io" }
-}

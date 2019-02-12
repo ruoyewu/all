@@ -11,12 +11,10 @@ import android.view.View
 import com.transitionseverywhere.*
 import com.transitionseverywhere.extra.Scale
 import com.wuruoye.all2.R
-import com.wuruoye.all2.base.BaseActivity
 import com.wuruoye.all2.base.BaseSlideActivity
 import com.wuruoye.all2.base.presenter.AbsPresenter
 import com.wuruoye.all2.base.presenter.AbsView
 import com.wuruoye.all2.base.util.*
-import com.wuruoye.all2.base.widget.SlideLayout
 import com.wuruoye.all2.setting.SettingActivity
 import com.wuruoye.all2.setting.model.SettingCache
 import com.wuruoye.all2.v3.model.bean.AppInfo
@@ -88,7 +86,7 @@ class MainActivity : BaseSlideActivity(){
         settingCache = SettingCache(applicationContext)
 
         isSlideBack = false
-        isCircleOpe = false
+        isCircleOpen = false
     }
 
     override fun initView() {

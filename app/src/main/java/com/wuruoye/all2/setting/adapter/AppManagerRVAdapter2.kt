@@ -24,17 +24,17 @@ class AppManagerRVAdapter2(
 
     private var mOnActionListener: OnActionListener? = null
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent!!.context)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_app_manager_app_2, parent, false)
         return ViewHolder(view)
     }
 
     override fun getItemCount(): Int = appList.size
 
-    override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val app = appList[position]
-        with(holder!!) {
+        with(holder) {
             civ.context.loadImage(app.icon, civ)
             tv.text = app.title
             switch.isChecked = app.isChecked

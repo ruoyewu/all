@@ -1,5 +1,6 @@
 package com.wuruoye.all2.user.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -24,7 +25,7 @@ class FavoriteRVAdapter(
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val appInfoCache = AppInfoCache(context)
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (position >= data.info.size){
             val viewHolder = holder as HeartRefreshViewHolder
             listener.onLoadMore(data.next, viewHolder)
@@ -42,7 +43,8 @@ class FavoriteRVAdapter(
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder =
+    @SuppressLint("InflateParams")
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
             when (viewType){
                 TYPE_REFRESH -> {
                     HeartRefreshViewHolder(

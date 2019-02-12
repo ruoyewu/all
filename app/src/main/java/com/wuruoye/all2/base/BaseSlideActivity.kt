@@ -9,7 +9,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.*
 import com.wuruoye.all2.R
-import com.wuruoye.all2.base.util.loge
+import com.wuruoye.all2.base.util.StatusBarUtil
 import com.wuruoye.all2.base.widget.SlideHelper
 import com.wuruoye.all2.base.widget.SlideLayout
 import com.wuruoye.all2.setting.model.SettingCache
@@ -36,7 +36,7 @@ abstract class BaseSlideActivity : AppCompatActivity() {
     private var isBlackEdge = false
     private var isPreSlide = false
 
-    var isCircleOpe = false
+    var isCircleOpen = false
     private val mPoint = Point()
     private val mPress = Point()
 
@@ -52,9 +52,11 @@ abstract class BaseSlideActivity : AppCompatActivity() {
     override fun onBackPressed() {
         if (isSlideBack) {
             mSlideLayout!!.closePage()
-        }else if (isCircleOpe && Build.VERSION.SDK_INT >= 21){
-            val animator = ViewAnimationUtils.createCircularReveal(mContentView, mPoint.x, mPoint.y,
-                    if (mContentView.height > mContentView.width) {mContentView.height.toFloat()} else {mContentView.width.toFloat()}, 0F)
+        }else if (isCircleOpen && Build.VERSION.SDK_INT >= 21){
+            val animator = ViewAnimationUtils.createCircularReveal(mContentView, mPoint.x,
+                    mPoint.y,
+                    if (mContentView.height > mContentView.width) {mContentView.height.toFloat()}
+                    else {mContentView.width.toFloat()}, 0F)
             animator.duration = 500
             animator.addListener(object : Animator.AnimatorListener{
                 override fun onAnimationRepeat(animation: Animator?) {
@@ -88,7 +90,7 @@ abstract class BaseSlideActivity : AppCompatActivity() {
     }
 
     override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
-        mPress.set(event!!.x.toInt(), event.y.toInt())
+        mPress.set(event!!.rawX.toInt(), event.rawY.toInt() - StatusBarUtil.getHeight(this))
         return super.dispatchTouchEvent(event)
     }
 
@@ -109,8 +111,8 @@ abstract class BaseSlideActivity : AppCompatActivity() {
 //        isSlideBack = false
         isBlackEdge = mSettingCache.isBlackEdge
         isPreSlide = mSettingCache.isPreSlide
-        isCircleOpe = mSettingCache.isCircleOpen
-//        isCircleOpe = true
+        isCircleOpen = mSettingCache.isCircleOpen
+//        isCircleOpen = true
 
         try {
             val point = bundle!!.getParcelable<Point>("point")
@@ -136,13 +138,15 @@ abstract class BaseSlideActivity : AppCompatActivity() {
             if (!isInitAfterOpen){
                 initView()
             }
-        }else if (isCircleOpe && Build.VERSION.SDK_INT >= 21){
+        }else if (isCircleOpen && Build.VERSION.SDK_INT >= 21){
             setContentView(mContentView)
             initView()
             overridePendingTransition(R.anim.activity_no, R.anim.activity_no)
             mContentView.post {
-                val animator = ViewAnimationUtils.createCircularReveal(mContentView, mPoint.x, mPoint.y, 0F,
-                        if (mContentView.height > mContentView.width) {mContentView.height.toFloat()} else {mContentView.width.toFloat()})
+                val animator = ViewAnimationUtils.createCircularReveal(mContentView,
+                        mPoint.x, mPoint.y, 0F,
+                        if (mContentView.height > mContentView.width) {mContentView.height.toFloat()}
+                        else {mContentView.width.toFloat()})
                 animator.duration = 500
                 animator.start()
             }
@@ -161,7 +165,8 @@ abstract class BaseSlideActivity : AppCompatActivity() {
         mSlideLayout!!.childType = mChildType
         mSlideLayout!!.slideType = mSlideType
 
-        val layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        val layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.
+                MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         view.layoutParams = layoutParams
 
         mSlideLayout!!.setOnSlideListener(object : SlideLayout.OnSlideListener{

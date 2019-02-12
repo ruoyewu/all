@@ -1,5 +1,6 @@
 package com.wuruoye.all2.v3.adapter
 
+import android.annotation.SuppressLint
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -23,7 +24,7 @@ class ArticleCommentRVAdapter(
         private val onItemClickListener: OnItemClickListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (position >= comment.list.size){
             val viewHolder = holder as HeartRefreshViewHolder
             onItemClickListener.onLoadMore(comment.next, viewHolder)
@@ -55,17 +56,18 @@ class ArticleCommentRVAdapter(
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder =
+    @SuppressLint("InflateParams")
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
             when (viewType){
                 TYPE_REFRESH -> {
                     HeartRefreshViewHolder(
-                            LayoutInflater.from(parent!!.context)
+                            LayoutInflater.from(parent.context)
                                     .inflate(R.layout.item_heart_refresh, null, false)
                     )
                 }
                 else -> {
                     ArticleCommentViewHolder(
-                            LayoutInflater.from(parent!!.context)
+                            LayoutInflater.from(parent.context)
                                     .inflate(R.layout.item_comment_list, null, false)
                     )
                 }

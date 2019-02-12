@@ -27,92 +27,95 @@ class AllListRVAdapter(
     private var isShowImage: Boolean = true
 
     @SuppressLint("SetTextI18n")
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
-        if (position >= data.list.size && isShowMore){
-            val viewHolder: HeartRefreshViewHolder = holder as HeartRefreshViewHolder
-            onItemClickListener.loadMore(data.next, viewHolder)
-        }else{
-            val item = data.list[position]
-            holder!!.itemView.setOnClickListener { onItemClickListener.onItemClick(item, data.name, data.category) }
-            if (item.category_id == "0"){
-                val viewHolder: OneHeadViewHolder = holder as OneHeadViewHolder
-                val date = item.date.substring(0, 10).split("-")
-                val info = item.other_info.split("|")
-                with(viewHolder){
-                    tvDate.text = date[0] + " / " + date[1] + " / " + date[2]
-                    tvForward.text = item.forward
-                    tvForwardAuthor.text = info[1]
-                    tvImgAuthor.text = item.title + " | " + info[0]
-                    itemView.context.loadImage(item.image, ivImg)
-                }
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
+            if (position >= data.list.size && isShowMore){
+                val viewHolder: HeartRefreshViewHolder = holder as HeartRefreshViewHolder
+                onItemClickListener.loadMore(data.next, viewHolder)
             }else{
-                val viewHolder: AllListViewHolder = holder as AllListViewHolder
-                with(viewHolder){
-                    if (item.type == ""){
-                        tvType.visibility = View.GONE
-                    }else{
-                        tvType.visibility = View.VISIBLE
-                        tvType.text = "-- " + item.type + " --"
-                    }
-                    if (item.title == ""){
-                        tvTitle.visibility = View.GONE
-                    }else{
-                        tvTitle.visibility = View.VISIBLE
-                        tvTitle.text = item.title
-                    }
-                    if (item.author == ""){
-                        tvAuthor.visibility = View.GONE
-                    }else{
-                        tvAuthor.visibility = View.VISIBLE
-                        tvAuthor.text = "-\t" + item.author
-                    }
-                    if (item.image == "" || !isShowImage){
-                        ivImg.visibility = View.GONE
-                    }else{
-                        ivImg.visibility = View.VISIBLE
-                        itemView.context.loadImage(item.image, ivImg)
-                        ivImg.post {
-                            val width = ivImg.measuredWidth
-                            val layoutParams = ivImg.layoutParams
-                            layoutParams.height = width * 3 / 5
-                            ivImg.layoutParams = layoutParams
-                        }
-                    }
-                    if (item.forward == ""){
-                        tvForward.visibility = View.GONE
-                    }else{
-                        tvForward.visibility = View.VISIBLE
+                val item = data.list[position]
+                holder.itemView.setOnClickListener {
+                    onItemClickListener.onItemClick(item, data.name, data.category)
+                }
+                if (item.category_id == "0"){
+                    val viewHolder: OneHeadViewHolder = holder as OneHeadViewHolder
+                    val date = item.date.substring(0, 10).split("-")
+                    val info = item.other_info.split("|")
+                    with(viewHolder){
+                        tvDate.text = date[0] + " / " + date[1] + " / " + date[2]
                         tvForward.text = item.forward
+                        tvForwardAuthor.text = info[1]
+                        tvImgAuthor.text = item.title + " | " + info[0]
+                        itemView.context.loadImage(item.image, ivImg)
                     }
-                    if (item.age == ""){
-                        if (item.date == ""){
-                            if (item.time_millis == ""){
-                                tvDate.visibility = View.GONE
+                }else{
+                    val viewHolder: AllListViewHolder = holder as AllListViewHolder
+                    with(viewHolder){
+                        if (item.type == ""){
+                            tvType.visibility = View.GONE
+                        }else{
+                            tvType.visibility = View.VISIBLE
+                            tvType.text = "-- " + item.type + " --"
+                        }
+                        if (item.title == ""){
+                            tvTitle.visibility = View.GONE
+                        }else{
+                            tvTitle.visibility = View.VISIBLE
+                            tvTitle.text = item.title
+                        }
+                        if (item.author == ""){
+                            tvAuthor.visibility = View.GONE
+                        }else{
+                            tvAuthor.visibility = View.VISIBLE
+                            tvAuthor.text = "-\t" + item.author
+                        }
+                        if (item.image == "" || !isShowImage){
+                            ivImg.visibility = View.GONE
+                        }else{
+                            ivImg.visibility = View.VISIBLE
+                            itemView.context.loadImage(item.image, ivImg)
+                            ivImg.post {
+                                val width = ivImg.measuredWidth
+                                val layoutParams = ivImg.layoutParams
+                                layoutParams.height = width * 3 / 5
+                                ivImg.layoutParams = layoutParams
+                            }
+                        }
+                        if (item.forward == ""){
+                            tvForward.visibility = View.GONE
+                        }else{
+                            tvForward.visibility = View.VISIBLE
+                            tvForward.text = item.forward
+                        }
+                        if (item.age == ""){
+                            if (item.date == ""){
+                                if (item.time_millis == ""){
+                                    tvDate.visibility = View.GONE
+                                }else{
+                                    tvDate.visibility = View.VISIBLE
+                                    val calendar = Calendar.getInstance()
+                                    calendar.timeInMillis = item.time_millis.toLong()
+                                    val date = calendar.get(Calendar.YEAR).toString() +
+                                            "-" + (calendar.get(Calendar.MONTH) + 1) +
+                                            "-" + calendar.get(Calendar.DAY_OF_MONTH) + " " +
+                                            calendar.get(Calendar.HOUR) + ":" +
+                                            calendar.get(Calendar.MINUTE)
+                                    tvDate.text = date
+                                }
                             }else{
                                 tvDate.visibility = View.VISIBLE
-                                val calendar = Calendar.getInstance()
-                                calendar.timeInMillis = item.time_millis.toLong()
-                                val date = calendar.get(Calendar.YEAR).toString() + "-" + (calendar.get(Calendar.MONTH) + 1) +
-                                        "-" + calendar.get(Calendar.DAY_OF_MONTH) + " " + calendar.get(Calendar.HOUR) + ":" +
-                                        calendar.get(Calendar.MINUTE)
-                                tvDate.text = date
+                                tvDate.text = item.date.substring(0, 16)
                             }
                         }else{
                             tvDate.visibility = View.VISIBLE
-                            tvDate.text = item.date.substring(0, 16)
+                            tvDate.text = item.age
                         }
-                    }else{
-                        tvDate.visibility = View.VISIBLE
-                        tvDate.text = item.age
                     }
                 }
             }
-        }
-    }
 
     @SuppressLint("InflateParams")
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
-        isShowImage = SettingCache(parent!!.context).isAutoImage
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        isShowImage = SettingCache(parent.context).isAutoImage
         return when (viewType) {
             TYPE_NORMAL -> {
                 AllListViewHolder(
@@ -186,10 +189,10 @@ class AllListRVAdapter(
     }
 
     companion object {
-        val TYPE_NORMAL = 1
-        val TYPE_REFRESH = 2
-        val TYPE_ONE_HEAD = 3
+        const val TYPE_NORMAL = 1
+        const val TYPE_REFRESH = 2
+        const val TYPE_ONE_HEAD = 3
 
-        val ANIMATOR_DELAY = 50
+        const val ANIMATOR_DELAY = 50
     }
 }

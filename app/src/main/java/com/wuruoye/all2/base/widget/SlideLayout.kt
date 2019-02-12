@@ -172,7 +172,8 @@ class SlideLayout : FrameLayout {
 //                loge("move: $offsetX , $offsetY")
                     if (childType == ChildType.SCROLLVIEW){
                         if (slideType == SlideType.VERTICAL){
-                            val maxScrollY = mChildScrollView.getChildAt(0).height - mChildScrollView.height
+                            val maxScrollY = mChildScrollView.getChildAt(0).height
+                            - mChildScrollView.height
                             val scrollY = mChildScrollView.scrollY
     //                        loge("scrollView vertical $scrollY , $maxScrollY")
                             if ((scrollY == 0 && offsetY > 0) || (scrollY == maxScrollY && offsetY < 0)) {
@@ -184,7 +185,8 @@ class SlideLayout : FrameLayout {
                                 handle = true
                             }
                         }else {
-                            throw IllegalArgumentException("childType must be SlideType.VERTICAL or SlideType.HORIZONTAL")
+                            throw IllegalArgumentException("childType must be SlideType.VERTICAL" +
+                                    " or SlideType.HORIZONTAL")
                         }
                     }else if (childType == ChildType.VIEWPAGER){
                         if (slideType == SlideType.HORIZONTAL) {
@@ -193,9 +195,11 @@ class SlideLayout : FrameLayout {
     //                        loge("viewpager horizontal: $offsetX , $offsetY , $size , $current")
                             if (size == 1 && Math.abs(offsetX) > Math.abs(offsetY)){
                                 handle = true
-                            }else if (current == 0 && offsetX > 0 && Math.abs(offsetX) > Math.abs(offsetY)){
+                            }else if (current == 0 && offsetX > 0 && Math.abs(offsetX)
+                                    > Math.abs(offsetY)){
                                 handle = true
-                            }else if (current == size - 1 && offsetX < 0 && Math.abs(offsetX) > Math.abs(offsetY)){
+                            }else if (current == size - 1 && offsetX < 0 && Math.abs(offsetX)
+                                    > Math.abs(offsetY)){
                                 handle = true
                             }
                         }else {
@@ -301,7 +305,8 @@ class SlideLayout : FrameLayout {
         val offsetY = translationY
         val width = if (offsetX >= 0) measuredWidth else -measuredWidth
         val height = if (offsetY >= 0) measuredHeight else -measuredHeight
-//        loge("SlideLayout: closePage : offset: $offsetX, $offsetY, width: $width, height: $height, slideType: $slideType")
+//        loge("SlideLayout: closePage : offset: $offsetX, $offsetY, width: $width,
+// height: $height, slideType: $slideType")
         when (slideType){
             SlideType.VERTICAL -> {
                 closeAnimatorY.setFloatValues(offsetY, height.toFloat())
@@ -358,7 +363,8 @@ class SlideLayout : FrameLayout {
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {init()}
 
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {init()}
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context,
+            attrs, defStyleAttr) {init()}
 
     private fun log(message: String){
 //        loge("slideLayout: $message")

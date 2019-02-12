@@ -71,9 +71,9 @@ class HomeListRVAdapter(
 
     }
 
-    override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val appInfo = infoList[appNameList[position]]!!
-        with(holder!!){
+        with(holder){
             tvTitle.text = appInfo.title
             itemView.setOnLongClickListener { onItemClickListener.onLongClick(appInfo) }
             btnEnter.setOnClickListener { onItemClickListener.enterApp(appInfo) }
@@ -106,8 +106,8 @@ class HomeListRVAdapter(
 
     override fun getItemCount(): Int = appNameList.size
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent!!.context)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_home_app, parent, false)
         context = parent.context
         appListGet2 = AppListGet(context)

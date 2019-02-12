@@ -8,8 +8,10 @@ import android.support.v4.view.ViewPager
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.PopupMenu
 import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
+import android.widget.EditText
 import com.github.chrisbanes.photoview.PhotoView
 import com.transitionseverywhere.*
 import com.wuruoye.all2.R
@@ -32,7 +34,10 @@ class ImageActivity : BaseSlideActivity() {
     private var mIsShowTop = false
 
     private lateinit var imageDialog: AlertDialog
+    private lateinit var dlgEditName: AlertDialog
     private lateinit var mImageMenu: PopupMenu
+    private lateinit var etEditName: EditText
+    private lateinit var mBp: Bitmap
 
     override val contentView: Int
         get() = R.layout.activity_image
@@ -46,7 +51,8 @@ class ImageActivity : BaseSlideActivity() {
     }
 
     override fun initView() {
-//        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
+//        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams
+//                .FLAG_FULLSCREEN)
 
         initDialog()
 
@@ -106,20 +112,21 @@ class ImageActivity : BaseSlideActivity() {
         }
     }
 
-    @SuppressLint("RestrictedApi")
+    @SuppressLint("RestrictedApi", "InflateParams")
     private fun initDialog(){
         imageDialog = AlertDialog.Builder(this)
                 .setItems(dialog_items, { _, position ->
                     when (position){
                         0 -> {
                             val imageUrl = imageList[vp_image.currentItem]
-                            val imageName = imageUrl.split('/').last()
                             getImageBitmap(imageUrl, object : Listener<Bitmap>{
                                 override fun onSuccess(model: Bitmap) {
-                                    Thread({
-                                        val filePath = FileUtil.saveImage(model, imageName)
-                                        runOnUiThread { toast(filePath) }
-                                    }).start()
+                                    val fullName = imageUrl.split("/").last()
+                                    val realName = fullName.removeSuffix("." +
+                                            fullName.split(".").last())
+                                    etEditName.hint = realName
+                                    mBp = model
+                                    dlgEditName.show()
                                 }
 
                                 override fun onFail(message: String) {
@@ -165,17 +172,34 @@ class ImageActivity : BaseSlideActivity() {
         mImageMenu.setOnMenuItemClickListener { item ->
             when (item!!.itemId){
                 R.id.menu_image_save -> {
+//                    val imageUrl = imageList[vp_image.currentItem]
+//                    val imageName = imageUrl.split('/').last()
+//                    getImageBitmap(imageUrl, object : Listener<Bitmap>{
+//                        override fun onSuccess(model: Bitmap) {
+//                            Thread({
+//                                val filePath = FileUtil.saveImage(model, imageName)
+//                                runOnUiThread {
+//                                    val path = filePath.removePrefix(Environment
+//                                            .getExternalStorageDirectory().absolutePath + "/")
+//                                    toast(path)
+//                                }
+//                            }).start()
+//                        }
+//
+//                        override fun onFail(message: String) {
+//                            toast(message)
+//                        }
+//
+//                    })
                     val imageUrl = imageList[vp_image.currentItem]
-                    val imageName = imageUrl.split('/').last()
                     getImageBitmap(imageUrl, object : Listener<Bitmap>{
                         override fun onSuccess(model: Bitmap) {
-                            Thread({
-                                val filePath = FileUtil.saveImage(model, imageName)
-                                runOnUiThread {
-                                    val path = filePath.removePrefix(Environment.getExternalStorageDirectory().absolutePath + "/")
-                                    toast(path)
-                                }
-                            }).start()
+                            val fullName = imageUrl.split("/").last()
+                            val realName = fullName.removeSuffix("." +
+                                    fullName.split(".").last())
+                            etEditName.hint = realName
+                            mBp = model
+                            dlgEditName.show()
                         }
 
                         override fun onFail(message: String) {
@@ -208,6 +232,27 @@ class ImageActivity : BaseSlideActivity() {
             }
             true
         }
+
+        val view = LayoutInflater.from(this)
+                .inflate(R.layout.dlg_img_name_edit, null, false)
+        etEditName = view.findViewById(R.id.et_dlg_img_name_edit)
+        dlgEditName = AlertDialog.Builder(this)
+                .setTitle("保存文件名")
+                .setView(view)
+                .setPositiveButton("确定", {_, _ ->
+                    val name = if (etEditName.text.isEmpty())
+                        etEditName.hint.toString() else etEditName.text.toString()
+                    Thread({
+                        val filePath = FileUtil.saveImage(mBp, "$name.jpg")
+                        runOnUiThread {
+                            toast("文件已保存 $filePath")
+                        }
+                    }).start()
+                })
+                .setNegativeButton("取消", {_, _ ->
+
+                })
+                .create()
     }
 
     companion object {
