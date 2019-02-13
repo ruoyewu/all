@@ -92,6 +92,7 @@ class UserActivity : PhotoActivity() {
 
     override fun initView() {
         getSlideLayout()?.attachViewPager(vp_user)
+        PermissionUtil(this).requestPermission(Config.FILE_PERMISSION)
 
         initUser()
         setUserVP(mUserId)
