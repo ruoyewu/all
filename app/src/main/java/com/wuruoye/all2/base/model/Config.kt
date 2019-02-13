@@ -9,9 +9,8 @@ import android.os.RemoteException
  * this file is to do
  */
 object Config {
-    private val REMOTE_HOST = "https://all.wuruoye.com/"
-//    private val REMOTE_HOST = "http://139.199.153.45:3422/"
-    val APP_LIST_URL = "https://git.whutdev.com/wuruoye/repository/raw/master/all/app.json"
+    private val REMOTE_HOST = "http://all.wuruoye.com/"
+    val APP_LIST_URL = "https://all-1251826226.cos.ap-shanghai.myqcloud.com/app.json"
 
     val APP_API_URL = REMOTE_HOST + "v3/app_api?"
 

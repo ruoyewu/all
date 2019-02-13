@@ -182,8 +182,8 @@ class HomeListRVAdapter(
     }
 
     companion object {
-        val ANIMATOR_DURATION = 200L
-        val ANIMATOR_DELAY = 50L
+        const val ANIMATOR_DURATION = 200L
+        const val ANIMATOR_DELAY = 50L
     }
 
     private fun log(message: String){

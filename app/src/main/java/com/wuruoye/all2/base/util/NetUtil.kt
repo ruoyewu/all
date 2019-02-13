@@ -28,6 +28,7 @@ object NetUtil {
     fun get(url: String, listener: Listener<String>){
         val request = Request.Builder()
                 .url(url)
+                .header("User-Agent", "ONE/4.6.1 (iPhone; iOS 12.1.4; Scale/3.00)")
                 .build()
         client.newCall(request).enqueue(object : Callback{
             override fun onFailure(call: Call?, e: IOException?) {
